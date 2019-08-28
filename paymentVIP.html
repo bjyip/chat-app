@@ -1,0 +1,524 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>升级会员</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+	<script src="js/i18next-1.7.7.min.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+	<script src="js/bbmis.js"></script>
+	<style>
+		.price-item > .mui-ellipsis-2{
+			width: 76%
+		}
+		.xs-font {
+		    line-height: normal;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="mui-page-content payment">
+    	<h5 class="hide-span" data-i18n="paymentVIP-title">升级会员</h5>
+    	<h6 class="hide-span" data-i18n="paymentVIP-record">记录</h6>
+
+		<ul class="mui-table-view vipType">
+			<li class="mui-table-view-cell mui-media headTitle">
+				<a class="mui-navigate-right hideArrowFlag" href="javascript:void(0)">
+					<img id="headPic" class="mui-media-object mui-pull-left" src="">
+					<div class="mui-media-body">
+						<p>
+							<span class="vipText" id="vipLevel" style="color:#3B2C2A;" data-i18n="paymentVIP-ordinary">普通会员</span>
+							<span class="xs-font" id="vipAlert" data-i18n="paymentVIP-noservice">(未开通服务)</span>
+							<img class="vip-logo" src="./img/pi_HonourableMember.png" alt="">
+						</p>
+						<p class="xs-font text-gray mui-ellipsis-2" id="permission"></p>
+					</div>
+				</a>
+			</li>
+			<!-- 普通男 -->
+			<li class="mui-table-view-cell price-item liMale">
+				<span data-i18n="paymentVIP-days14">14天</span><img src="./img/pic_GoldMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-count">伯爵会员</span>
+				<p class="xs-font" data-i18n="paymentVIP-browse100">浏览100名异性资料/天</p>
+				<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_a' class="money" data-i18n="paymentVIP-money488">488</span><span data-i18n="paymentVIP-yuan">元</span></span>
+			</li>
+			<li class="mui-table-view-cell price-item liMale">
+				<span data-i18n="paymentVIP-days28">28天</span><img src="./img/pic_DiamondMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-duke">公爵会员</span>
+				<p class="xs-font mui-ellipsis-2" data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 <span class="text-primary" data-i18n="paymentVIP-code1">送1个邀请码</span></p>
+				<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_b' class="money" data-i18n="paymentVIP-money988">988</span><span data-i18n="paymentVIP-yuan">元</span></span>
+			</li>
+			<li class="mui-table-view-cell price-item liMale">
+				<span data-i18n="paymentVIP-days90">90天</span><img src="./img/pic_CrownMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-king">国王会员</span>
+				<p class="xs-font mui-ellipsis-2" data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 <span class="text-primary" data-i18n="paymentVIP-code3">送3个邀请码</span></p>
+				<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_c' class="money" data-i18n="paymentVIP-money1998">1998</span><span data-i18n="paymentVIP-yuan">元</span></span>
+			</li>
+			<!-- 普通女 -->
+			<li class="mui-table-view-cell price-item liFemale">
+				<span data-i18n="paymentVIP-days14">14天</span><img src="./img/women_pic_MonarchMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-infanta">郡主会员</span>
+				<p class="xs-font" data-i18n="paymentVIP-browse200">浏览200名异性资料/天</p>
+				<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_a' class="money" data-i18n="paymentVIP-money233">233</span><span data-i18n="paymentVIP-yuan">元</span></span>
+			</li>
+			<li class="mui-table-view-cell price-item liFemale">
+				<span data-i18n="paymentVIP-days28">28天</span><img src="./img/women_pic_PrincessMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-princess">公主会员</span>
+				<p class="xs-font mui-ellipsis-2" data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 <span class="text-primary" data-i18n="paymentVIP-code1">送1个邀请码</span></p>
+				<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_b' class="money" data-i18n="paymentVIP-money488">488</span><span data-i18n="paymentVIP-yuan">元</span></span>
+			</li>
+			<li class="mui-table-view-cell price-item liFemale">
+				<span data-i18n="paymentVIP-days90">90天</span><img src="./img/women_pic_QueenMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-queen">女王会员</span>
+				<p class="xs-font mui-ellipsis-2" data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 <span class="text-primary" data-i18n="paymentVIP-code3">送3个邀请码</span></p>
+				<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_c' class="money" data-i18n="paymentVIP-money698">698</span><span data-i18n="paymentVIP-yuan">元</span></span>
+			</li>
+			<!-- 分销男 -->
+			<li class="mui-table-view-cell price-item codeliMale">
+				<span data-i18n="paymentVIP-days28">28天</span><img src="./img/pic_DiamondMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-duke">公爵会员</span>
+				<p class="xs-font mui-ellipsis-2" data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 <span class="text-primary" data-i18n="paymentVIP-code1">送1个邀请码</span></p>
+				<div class="rightCon">
+					<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_b' class="money" data-i18n="paymentVIP-money488">488</span><span data-i18n="paymentVIP-yuan">元</span></span>
+					<p class="originalMan1">原￥998元</p>
+				</div>
+				<span class="sale" data-i18n="paymentVIP-Preferential">特惠!</span>
+			</li>
+			<li class="mui-table-view-cell price-item codeliMale">
+				<span data-i18n="paymentVIP-days90">90天</span><img src="./img/pic_CrownMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-king">国王会员</span>
+				<p class="xs-font mui-ellipsis-2" data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 <span class="text-primary" data-i18n="paymentVIP-code3">送3个邀请码</span></p>
+				<div class="rightCon">
+					<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_c' class="money" data-i18n="paymentVIP-money998">998</span><span data-i18n="paymentVIP-yuan">元</span></span>
+					<p class="originalMan2">原￥1998元</p>
+				</div>
+				<span class="sale" data-i18n="paymentVIP-Preferential">特惠!</span>
+			</li>
+			<!-- 分销女 -->
+			<li class="mui-table-view-cell price-item codeliFemale">
+				<span data-i18n="paymentVIP-days28">28天</span><img src="./img/women_pic_PrincessMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-princess">公主会员</span>
+				<p class="xs-font mui-ellipsis-2"><span data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 </span><span class="text-primary" data-i18n="paymentVIP-code1">送1个邀请码</span></p>
+				<div class="rightCon">
+					<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_b' class="money" data-i18n="paymentVIP-money248">248</span><span data-i18n="paymentVIP-yuan">元</span></span>
+					<p class="originalFeman1">原￥488元</p>
+				</div>
+				<span class="sale" data-i18n="paymentVIP-Preferential">特惠!</span>
+			</li>
+			<li class="mui-table-view-cell price-item codeliFemale">
+				<span data-i18n="paymentVIP-days90">90天</span><img src="./img/women_pic_QueenMember.png" width="20">
+				<span class="xs-font text-primary" data-i18n="paymentVIP-queen">女王会员</span>
+				<p class="xs-font mui-ellipsis-2"><span data-i18n="paymentVIP-browseInfinite">无限浏览会员资料、级别 </span><span class="text-primary" data-i18n="paymentVIP-code3">送3个邀请码</span></p>
+				<div class="rightCon">
+					<span class="mui-badge mui-badge-dark"><span class='symbol'>￥</span><span data-meal='meal_c' class="money" data-i18n="paymentVIP-money348">348</span><span data-i18n="paymentVIP-yuan">元</span></span>
+					<p class="originalFeman2">原￥698元</p>
+				</div>
+				<span class="sale" data-i18n="paymentVIP-Preferential">特惠!</span>
+			</li>
+		</ul>
+		<div class="title">
+			<span data-i18n="paymentVIP-privilege">VIP会员专属特权</span>
+			<p class="xs-font">The dating layer filters down until you find the perfect person!</p>
+		</div>
+		<ul class="mui-table-view power">
+			<li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-left" src="./img/dialogue.png">
+		            <div class="mui-media-body">
+		                <span data-i18n="paymentVIP-messageInfinite">无限收发消息</span>
+		                <p class='xs-font mui-ellipsis-2' data-i18n="paymentVIP-anytime">随时无限制畅聊，查看消息阅读状态</p>
+		            </div>
+		        </a>
+		    </li>
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-left" src="./img/Identify-.png">
+		            <div class="mui-media-body">
+		                <span data-i18n="paymentVIP-distinguish">识别优质对象</span>
+		                <p class='xs-font mui-ellipsis-2' data-i18n="paymentVIP-individualization">个性化定制搜索，辨识身份认证高级或普通会员</p>
+		            </div>
+		        </a>
+		    </li>
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-left" src="./img/display.png">
+		            <div class="mui-media-body">
+		                <span data-i18n="paymentVIP-exhibition">10倍展示机会</span>
+		                <p class='xs-font mui-ellipsis-2' data-i18n="paymentVIP-search">尊享搜索页面置顶显示特权，成功约率倍增</p>
+		            </div>
+		        </a>
+		    </li>
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-left" src="./img/Padlock-.png">
+		            <div class="mui-media-body">
+		                <span data-i18n="paymentVIP-privacy">更高隐私权限</span>
+		                <p class='xs-font mui-ellipsis-2' data-i18n="paymentVIP-unlock">解锁更多隐私权限，可查看首张私密照</p>
+		            </div>
+		        </a>
+		    </li>
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-left" src="./img/Heart-.png">
+		            <div class="mui-media-body">
+		                <span data-i18n="paymentVIP-love">有宠爱我的TA</span>
+		                <p class='xs-font mui-ellipsis-2' data-i18n="paymentVIP-date">约会层层过滤，直至找到理想中的最佳人选</p>
+		            </div>
+		        </a>
+		    </li>
+		    <li class="mui-table-view-cell mui-media">
+		        <a href="javascript:;">
+		            <img class="mui-media-object mui-pull-left" src="./img/Disting.png">
+		            <div class="mui-media-body">
+		                <span data-i18n="paymentVIP-identity">尊贵身份标识</span>
+		                <p class='xs-font mui-ellipsis-2' data-i18n="paymentVIP-display">显示尊贵身份VIP标识，优先极速审核特权</p>
+		            </div>
+		        </a>
+		    </li>
+		</ul>
+	</div>
+
+	<script src="js/mui.min.js"></script>
+	<script src="js/i18n_data.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		 var u = navigator.userAgent;
+		 var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+		 var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+		 //安卓货币符号bug
+		 if(isAndroid){
+		 	$('.money').prev('span').text('');
+		 }
+		if(lang == 'zh'){
+	        var text1 = '普通用户';
+	        var text2 = '浏览10名异性资料/天';
+	        var text3 = '浏览100名异性资料/天';
+	        var text4 = '无限浏览会员资料、级别';
+	        var text5 = '浏览50名异性资料/天';
+	        var text6 = '浏览200名异性资料/天';
+	        var vip2 = '伯爵会员';
+	        var vip3 = '公爵会员';
+	        var vip4 = '国王会员';
+	        var vip22 = '郡主会员';
+	        var vip33 = '公主会员';
+	        var vip44 = '女王会员';
+	        var symbol = isAndroid?'':'￥';
+	        $('.symbol').text(isAndroid?'':'￥');
+	        $('.originalMan1').text(isAndroid?'原998元':'原￥998元');
+	        $('.originalMan2').text(isAndroid?'原1998元':'原￥1998元');
+	        $('.originalFeman1').text(isAndroid?'原488元':'原￥488元');
+	        $('.originalFeman2').text(isAndroid?'原698元':'原￥698元');
+
+	      
+	    }else if(lang == 'en'){
+	        var text1 = 'Average user';
+	        var text2 = 'Visit 10 members of the opposite sex/day';
+	        var text3 = 'Visit 100 members of the opposite sex/day';
+	        var text4 = 'Unlimited access to membership information and levels';
+	        var text5 = 'Visit 50 members of the opposite sex/day';
+	        var text6 = 'Visit 200 members of the opposite sex/day';
+	        var vip2 = 'Count Member';
+	        var vip3 = 'Duke Member';
+	        var vip4 = 'King Member';
+	        var vip22 = 'Infanta Member';
+	        var vip33 = 'Princess Member';
+	        var vip44 = 'Queen Member';
+	        var symbol = '$';
+	        $('.symbol').text('$');
+	        $('.originalMan1').text('$149.99');
+	        $('.originalMan2').text('$299.99');
+	        $('.originalFeman1').text('$74.99');
+	        $('.originalFeman2').text('$109.99');
+
+	    }else{
+	        var text1 = '普通用戶';
+	        var text2 = '瀏覽10名异性資料/天';
+	        var text3 = '瀏覽100名异性資料/天';
+	        var text4 = '無限瀏覽會員資料、級別';
+	        var text5 = '瀏覽50名异性資料/天';
+	        var text6 = '瀏覽200名异性資料/天';
+	        var vip2 = '伯爵會員';
+	        var vip3 = '公爵會員';
+	        var vip4 = '國王會員';
+	        var vip22 = '郡主會員';
+	        var vip33 = '公主會員';
+	        var vip44 = '女王會員';
+	        var symbol = '$';
+	        $('.symbol').text('$');
+	        $('.originalMan1').text('$149.99');
+	        $('.originalMan2').text('$299.99');
+	        $('.originalFeman1').text('$74.99');
+	        $('.originalFeman2').text('$109.99');
+
+	    }
+		var coTitle = $('h5[data-i18n]').text();
+		var record = $('h6[data-i18n]').text();
+		getInterface().initDataWithArray("#ffffff","back",coTitle,record,"","#AC9455","","#AC9455");
+		function leftBtnClick(){
+			getInterface().leftBtnClick();
+		}
+		function rightBtnClick(){
+			getInterface().html_jump_href(service+'/rechargeRecord.html', 'no');
+		}
+		getInterface().post_action("getInfo",{},"get");
+
+
+
+		// var data = {
+		//     "ret": 1,
+		//     "err": "ok",
+		//     "msgNum": 0,
+		//     "noticeNum": 0,
+		//     "endTime": "于2017-11-14到期",
+		//     "shield": "no",
+		//     "vipText": "钻石会员",
+		//     "result": {
+		//         "_id": "59bb3a91ec5f2f457553cd11",
+		//         "traceid": {
+		//             "_id": "59bb3a91ec5f2f457553cd13",
+		//             "userid": "59bb3a91ec5f2f457553cd11",
+		//             "sex": 1,
+		//             "__v": 0,
+		//             "meta": {
+		//                 "updatedAt": "2017-09-15T03:45:20.927Z",
+		//                 "createdAt": "2017-09-15T02:27:29.294Z"
+		//             },
+		//             "report": [],
+		//             "soundChat": true,
+		//             "soundCare": true,
+		//             "careSet": true,
+		//             "browseSet": true,
+		//             "listSet": true,
+		//             "photoPried": [],
+		//             "photoPri": [],
+		//             "hated": [],
+		//             "hate": [],
+		//             "browsed": [],
+		//             "browse": [],
+		//             "careNum": 0,
+		//             "cared": [],
+		//             "care": [],
+		//             "loginAt": "2017-09-15T03:45:20.926Z"
+		//         },
+		//         "couponType": "agent",
+		//         "coupon": "PKSW",
+		//         "platform": "ios",
+		//         "registration_id": "170976fa8ab4c9f5455",
+		//         "mobile": "15074436855",
+		//         "sex": 2,
+		//         "lat": "23.136469",
+		//         "lng": "113.295683",
+		//         "password": "$2a$10$COKqCCC/Nzhex7YcCfX2veniuSZ8QkHf441d86Bfjtk.692nJ2KdO",
+		//         "from": "boss",
+		//         "__v": 0,
+		//         "addr": "内蒙古-呼和浩特-新城",
+		//         "age": 40,
+		//         "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/150744368551505442470.jpg",
+		//         "city": "呼和浩特",
+		//         "nickname": "我是大boss",
+		//         "province": "内蒙古",
+		//         "meta": {
+		//             "updatedAt": "2017-09-15T03:45:20.918Z",
+		//             "createdAt": "2017-09-15T02:27:29.283Z"
+		//         },
+		//         "photoPri": [],
+		//         "photoPub": [],
+		//         "vipLevel": "vip3",
+		//         "rmbTotal": 988,
+		//         "vip": {
+		//             "coupons": "PKSW",
+		//             "category": "alipay",
+		//             "to": "2017-11-14T03:44:03.956Z",
+		//             "from": "2017-09-15T03:44:03.956Z",
+		//             "role": true
+		//         },
+		//         "auditStatus": "ing",
+		//         "auditContent": {
+		//             "avatar": "2",
+		//             "nickname": "2"
+		//         },
+		//         "loc": {
+		//             "type": "Point",
+		//             "coordinates": [
+		//                 113.295683,
+		//                 23.136469
+		//             ]
+		//         },
+		//         "locAuthorize": true,
+		//         "loginAt": "2017-09-15T02:27:29.282Z",
+		//         "completion": 40,
+		//         "tour": [],
+		//         "sports": [],
+		//         "online": "no",
+		//         "isActive": "yes",
+		//         "number": 1,
+		//         "mock": false
+		//     }
+		// }
+		// if(data.result.avatar){
+		// 	if(data.result.avatar.indexOf('x-oss')==-1){
+		// 		$('#headPic').attr('src',data.result.avatar+'?x-oss-process=image/resize,h_65');
+		// 	}else{
+		// 		$('#headPic').attr('src',data.result.avatar);
+		// 	}
+		// }else if(data.result.sex==1){
+		// 	$('#headPic').attr('src','img/nan01.png');
+		// }else{
+		// 	$('#headPic').attr('src','img/nv01.png');
+		// }
+
+		// if(data.result.couponType=='agent'){
+		// 	if(data.result.sex==1){
+		// 		$('.codeliMale').show();
+		// 		showVIP(data.result.vipLevel,1)
+		// 	}else{
+		// 		$('.codeliFemale').show();
+		// 		showVIP(data.result.vipLevel,2)
+		// 	}
+		// }else{
+		// 	if(data.result.sex==1){
+		// 		$('.liMale').show();
+		// 		$('.liFemale').hide();
+		// 		showVIP(data.result.vipLevel,1)
+		// 	}else{
+		// 		$('.liFemale').show();
+		// 		$('.liMale').hide();
+		// 		showVIP(data.result.vipLevel,2)
+		// 	}
+		// }
+
+
+
+
+
+
+		function return_action(data,data2){
+			if(data2 == 'getInfo'){
+				// if(data.result.avatar){
+				// 	if(data.result.avatar.indexOf('x-oss')==-1){
+				// 		$('#headPic').attr('src',data.result.avatar+'?x-oss-process=image/resize,h_65');
+				// 	}else{
+				// 		$('#headPic').attr('src',data.result.avatar);
+				// 	}
+				// }else if(data.result.sex==1){
+				// 	$('#headPic').attr('src','img/nan01.png');
+				// }else{
+				// 	$('#headPic').attr('src','img/nv01.png');
+				// }
+				
+				// 头像
+				if(data.result.avatar&&data.result.auditContent.avatar && data.result.auditContent.avatar!='0' || data.result.avatar && !data.result.auditContent.avatar){
+					if(data.result.avatar.indexOf('x-oss')==-1){
+						$('#headPic').attr('src',data.result.avatar+'?x-oss-process=image/resize,h_65');
+					}else{
+						$('#headPic').attr('src',data.result.avatar);
+					}
+				}else if(data.result.auditContent && data.result.auditContent.avatar && data.result.auditContent.avatar=='0' && data.result.oldAvatar){
+					if(data.result.avatar.indexOf('x-oss')==-1){
+						$('#headPic').attr('src',data.result.oldAvatar+'?x-oss-process=image/resize,h_65');
+					}else{
+						$('#headPic').attr('src',data.result.oldAvatar);
+					}
+				}else if(data.result.sex==1){
+					$('#headPic').attr('src','img/nan01.png');
+				}else{
+					$('#headPic').attr('src','img/nv01.png');
+				}
+
+				if(data.result.couponType=='agent'){
+					if(data.result.sex==1){
+						$('.codeliMale').show();
+						showVIP(data.result.vipLevel,1)
+					}else{
+						$('.codeliFemale').show();
+						showVIP(data.result.vipLevel,2)
+					}
+				}else{
+					if(data.result.sex==1){
+						$('.liMale').show();
+						$('.liFemale').hide();
+						showVIP(data.result.vipLevel,1)
+					}else{
+						$('.liFemale').show();
+						$('.liMale').hide();
+						showVIP(data.result.vipLevel,2)
+					}
+				}
+			}
+		}
+		$('.payment ').on('tap','.price-item',function(){
+			var money = $(this).find('.money').text();
+			var mealSta = $(this).find('.money').attr('data-meal');
+			console.log(money+mealSta)
+			getInterface().pay_alert(symbol+money,1,mealSta);
+		})
+		function return_paySure(data){
+			if(data.ret==1){
+				localStorage.setItem('payState',1);
+				getInterface().reload_main('fix');
+				setTimeout(function(){
+                    getInterface().leftBtnClick();
+                },1500)
+			}
+		}
+
+
+
+		function showVIP(vipLevel,sex){
+			if(sex==1){
+				if(vipLevel == "vip0"){
+					$('.vip-logo').hide();
+					$('.vipText').text(text1);
+					$('#permission').text(text2)
+				}else if(vipLevel == "vip1" || vipLevel == "vip2"){
+					$('.vip-logo').show();
+					$('.vip-logo').attr("src","./img/pic_GoldMember.png");
+					$('#vipLevel').text(vip2);
+					$('#vipAlert').remove();
+					$('#permission').text(text3)
+				}else if(vipLevel == "vip3"){
+					$('.vip-logo').show();
+					$('.vip-logo').attr("src","./img/pic_DiamondMember.png");
+					$('#vipLevel').text(vip3);
+					$('#vipAlert').remove();
+					$('#permission').text(text4)
+				}else if(vipLevel == "vip4"){
+					$('.vip-logo').show();
+					$('.vip-logo').attr("src","./img/pic_CrownMember.png");
+					$('#vipLevel').text(vip4);
+					$('#vipAlert').remove();
+					$('#permission').text(text4)
+				}
+			}else{
+				if(vipLevel == "vip0"){
+					$('.vip-logo').hide();
+					$('.vipText').text(text1);
+					$('#permission').text(text5)
+				}else if(vipLevel == "vip1"||vipLevel == "vip2"){
+					$('.vip-logo').show();
+					$('.vip-logo').attr("src","./img/women_pic_MonarchMember.png");
+					$('#vipLevel').text(vip22);
+					$('#vipAlert').remove();
+					$('#permission').text(text6)
+				}else if(vipLevel == "vip3"){
+					$('.vip-logo').show();
+					$('.vip-logo').attr("src","./img/women_pic_PrincessMember.png");
+					$('#vipLevel').text(vip33);
+					$('#vipAlert').remove();
+					$('#permission').text(text4)
+				}else if(vipLevel == "vip4"){
+					$('.vip-logo').show();
+					$('.vip-logo').attr("src","./img/women_pic_QueenMember.png");
+					$('#vipLevel').text(vip44);
+					$('#vipAlert').remove();
+					$('#permission').text(text4)
+				}
+			}
+		}
+	</script>
+</body>
+</html>

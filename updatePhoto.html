@@ -1,0 +1,607 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>上传照片</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script type="application/javascript"  src="js/hkJS.js"></script>
+</head>
+
+<body class="whiteBg">
+    <span class="hide-span" data-i18n="updatePhoto-title">上传照片</span>
+    <div class="mui-page-content" id="updatePhotoWrap">
+        <div class="integrity">
+            <span class="" data-i18n="collect-integrity">信息完整度</span>
+            <progress max="100" value="" id="ratePro"></progress>
+            <span id="rate">0%</span>
+            <p id="trip"></p>
+        </div>
+        <div class="photo">
+
+            <div class="title">
+                <span class="text-primary" data-i18n="updatePhoto-photoTitle">公开照</span>
+                <i class="text-gray" data-i18n="updatePhoto-PhotoNum">(最多6张)</i>
+                <!-- <i class="mui-icon mui-icon mui-icon-info" id="pub-alert"></i> -->
+                <p data-i18n="updatePhoto-publicHint">
+            您的照片质量对您在BOSS直约平台能否如愿邂逅心仪异性非常重要，请甄选拍摄清晰、体现个人魅力的照片上传!</p>
+            </div>
+            <div class="mui-row picBox" id="photoPub">
+                <div class="mui-col-sm-4 mui-col-xs-4 pho">
+                </div>
+                <div class="mui-col-sm-4 mui-col-xs-4" id="updatePhoto">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+        <div class="photo">
+
+            <div class="title">
+                <span class="text-primary" data-i18n="updatePhoto-photoTitle2">私密照</span>
+                <i class="text-gray" data-i18n="updatePhoto-PhotoNum">(最多6张)</i>
+                <!-- <i class="mui-icon mui-icon mui-icon-info" id="pri-alert"></i> -->
+                <p data-i18n="updatePhoto-privateHint">私密照只对您允许的异性查看。放心上传，展示您的最佳一面吧!</p>
+            </div>
+            <div class="mui-row" id="photoPri">
+                <div class="mui-col-sm-4 mui-col-xs-4 pho">
+                </div>
+                <div class="mui-col-sm-4 mui-col-xs-4" id="updatePhotoPri">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.zoom.js"></script>
+<script src="js/mui.previewimage.js"></script>
+<script src="js/i18n_data.js"></script>
+<script>
+    var coTitle = $('.hide-span').text();
+    var msgAlert,noPass,inAudit;
+    if(lang == 'zh'){
+        msgAlert = "删除成功！";
+        noPass = "不通过";
+        inAudit = "审核中"
+    }else if(lang == 'en'){
+        msgAlert = "deleted successfully!"
+        noPass = "Not Pass";
+        inAudit = "In Audit"
+    }else{
+        msgAlert = "删除成功！"
+        noPass = "不通過";
+        inAudit = "稽核中"
+    }
+    $(function(){
+        getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+    })
+    getInterface().hud_loading(); //loading
+    function leftBtnClick(){
+        getInterface().leftBtnClick();
+    }
+    // mui预览图片
+	mui.previewImage();
+    var userSex = window.location.search.split('=')[1];
+    getInterface().post_action("getInfo",{},"get");
+    function return_action(data,data2){
+        if(data2 == 'getInfo'){
+            $('#ratePro').attr('value',data.result.completion);
+            $('#rate').text(data.result.completion+'%');
+            localStorage.setItem('completion',data.result.completion)
+            // 设置完整度
+            if(data.result.completion < 90){
+                $('.integrity').show();
+                $('#trip').text(textArr[0]);
+            }else if(data.result.completion >89 && data.result.completion <100){
+                $('.integrity').show();
+                $('#trip').text(textArr[1]);
+            }else{
+                $('.integrity').css('display','none');
+            }
+            $('#ratePro').attr('value',data.result.completion);
+            $('#rate').text(data.result.completion+'%');
+            var res = data.result;
+
+            // 渲染公开照
+            loadPic('#photoPub',res.photoPub,'',6,1,'updatePhoto');
+            // 渲染私密照
+            loadPic('#photoPri',res.photoPri,'common',6,2,'updatePhotoPri');
+        }else if(data2 == 'delePub'){
+            if(data.ret== 1){
+                getInterface().msg_alert(msgAlert)
+            }else{
+                getInterface().msg_alert(data.err);
+            }
+        }else if(data2 == 'delePri'){
+            if(data.ret == 1){
+                getInterface().msg_alert(msgAlert)
+            }else{
+                getInterface().msg_alert(data.err);
+            }
+        }
+    }
+
+    //ios原生方法上传照片后的回调
+    function return_photo(data,data2){
+        if(data.indexOf('public')!=-1){
+            showPic(data,'#updatePhoto',6,'#photoPub','uploadPub','',1);
+        }else{
+            if(data2 == 'common'){
+                showPic(data,'#updatePhotoPri',6,'#photoPri','photoPri',data2,2);
+            }
+        }
+    }
+    //上传照片后显示在页面： data返回的url，sel上传图片的按钮，num上传几张，fsel放图片的盒子，url接口地址，data2私照类型
+    function showPic(data,sel,num,fsel,url,data2,group){
+        //num=6就是公开照和私密照，其他就是只上传一张的生活照等
+        if(num == 6){
+            var item = '<div class="mui-col-sm-4 mui-col-xs-4 pho"><img src="'+ data+'?x-oss-process=image/resize,h_300' +'" data-preview-src="" data-preview-group="'+group+'"><span class="mui-icon mui-icon-close"></span><div class="shadow">'+inAudit+'</div></div>';
+            $(fsel).prepend(item);
+            if($('.pho').length == num || $(fsel).find('.pho').length>=num){
+                $(sel).remove();
+            }
+        }else{
+            var item = '<img src="'+ data+'?x-oss-process=image/resize,h_300' +'" data-preview-src="" data-preview-group="'+group+'"><span class="mui-icon mui-icon-close"></span><div class="shadow">'+inAudit+'</div>';
+            $(fsel).find('.pho').prepend(item);
+        }
+        getInterface().post_action(url,JSON.stringify({url:data,category:data2}),"post");
+    }
+    //加载已有的照片：sel选择器，res数据，type特殊类型，num照片数量，group预览大图时分组，btnId上传按钮
+    function loadPic(sel,res,type,num,group,btnId){
+        var temp = $(sel).find('.pho');
+        temp.prepend('<img src="" data-preview-src="" data-preview-group="1"><span class="mui-icon mui-icon-close"></span><div class="shadow">'+inAudit+'</div>')
+        var photos = res;
+        $(sel).html('')
+        for( var i in photos ){
+            // 普通私照
+            if(type && type=='common'){
+                if(photos[i].category == type){
+                    var t = temp.clone();
+                    if($(sel).find('.pho').length<num){
+                        if(photos[i].addr.indexOf('x-oss')==-1){
+                            t.find('img').attr('src',photos[i].addr+'?x-oss-process=image/resize,h_300');
+                        }else{
+                            t.find('img').attr('src',photos[i].addr);
+                        }
+
+                        if(photos[i].enable=='ing'){
+                            t.find('.shadow').show();
+                        }else if(photos[i].enable==false){
+                            t.find('.shadow').show();
+                            t.find('.shadow').text(noPass)
+                        }else{
+                            t.find('.shadow').hide();
+                        }
+
+                        t.find('img').attr('data-preview-group',group)
+                        $(sel).append(t);
+                    }
+                }
+            }else{ // 公开照
+                var t = temp.clone();
+                if($(sel).find('.pho').length<num){
+
+                    if(photos[i].addr.indexOf('x-oss')==-1){
+                        t.find('img').attr('src',photos[i].addr+'?x-oss-process=image/resize,h_300');
+                    }else{
+                        t.find('img').attr('src',photos[i].addr);
+                    }
+
+                    if(photos[i].enable=='ing'){
+                        t.find('.shadow').show();
+                    }else if(photos[i].enable==false){
+                        t.find('.shadow').show();
+                        t.find('.shadow').text(noPass)
+                    }else{
+                        t.find('.shadow').hide();
+                    }
+
+                    t.find('img').attr('data-preview-group',group)
+                    $(sel).append(t);
+                }
+            }
+        }
+        // 如果没有num张图片，就显示上传图片按钮
+        if($(sel).find('.pho').length<num){
+            if(type && type!='common'){//特殊私照，布局特殊处理
+                var upBtn = '<div class="pho"><span class="updatePho2"></span></div>';
+                $(sel).append(upBtn);
+            }else{
+                var upBtn = '<div class="mui-col-sm-4 mui-col-xs-4" id="'+btnId+'"><span class="updatePhoto"></span></div>';
+                $(sel).append(upBtn);
+            }
+        }
+    }
+    // 删除公开照片
+    $('#photoPub').on('tap','.mui-icon-close',function(){
+        var url = $(this).siblings('img').attr('src').split('?')[0];
+        getInterface().post_action('delePub',JSON.stringify({photoName:url}),'post');
+        $(this).parent('.pho').remove();
+        if($('#updatePhoto').length == 0){
+            $('#photoPub').append('<div class="mui-col-sm-4 mui-col-xs-4" id="updatePhoto"><span class="updatePhoto"></span></div>');
+            // 调用ios原生方法，上传公照
+            $('#updatePhoto').on('tap',function(){
+                if(userSex==1){
+                    getInterface().post_photo('man-public/','public','');
+                }else{
+                    getInterface().post_photo('woman-public/','public','');
+                }
+            });
+        }
+    })
+    // 删除普通私照
+    $('#photoPri').on('tap','.mui-icon-close',function(){
+        var url = $(this).siblings('img').attr('src').split('?')[0];
+        getInterface().post_action('delePri',JSON.stringify({photoName:url,photoType:'common'}),'post');
+        $(this).parent('.pho').remove();
+        if($('#updatePhotoPri').length == 0){
+            $('#photoPri').append('<div class="mui-col-sm-4 mui-col-xs-4" id="updatePhotoPri"><span class="updatePhoto"></span></div>');
+            // 调用ios原生方法，上传私照
+            $('#updatePhotoPri').on('tap',function(){
+                if(userSex==1){
+                    getInterface().post_photo('man-private/','private','common');
+                }else{
+                    getInterface().post_photo('woman-private/','private','common');
+                }
+            });
+        }
+    })
+
+    if(userSex==1){
+        // 调用ios原生方法，上传公照
+        $('#photoPub').on('tap','.updatePhoto',function(){
+            getInterface().post_photo('man-public/','public','');
+        });
+        // 上传私照
+        $('#photoPri').on('tap','.updatePhoto',function(){
+            getInterface().post_photo('man-private/','private','common');
+        });
+    }else{
+        $('#photoPub').on('tap','.updatePhoto',function(){
+           getInterface().post_photo('woman-public/','public','');
+        });
+        // 上传私照
+        $('#photoPri').on('tap','.updatePhoto',function(){
+            getInterface().post_photo('woman-private/','private','common');
+        });
+    }
+
+    /*$('#pub-alert').on('tap',function(){
+        mui.alert("您的照片质量对您在BOSS直约平台能否如愿邂逅心仪异性非常重要，请甄选拍摄清晰、体现个人魅力的照片上传。")
+    })
+    $('#pri-alert').on('tap',function(){
+        mui.alert("私密照只对您允许的异性查看。放心上传，展示您的最佳一面吧。")
+    })*/
+
+
+
+
+
+
+    /*var data ={
+        "ret": 1,
+        "err": "ok",
+        "msgNum": 0,
+        "noticeNum": 1,
+        "endTime": "于2017-09-30到期",
+        "shield": "no",
+        "vipText": "尊贵会员",
+        "result": {
+            "_id": "59805436e86b3e0da72f4b82",
+            "traceid": {
+                "_id": "59805436e86b3e0da72f4b83",
+                "userid": "59805436e86b3e0da72f4b82",
+                "__v": 228,
+                "targetChat": "5996a377e5c1703991364636",
+                "feedback": {
+                    "info": "婆婆嘴",
+                    "photo": "",
+                    "email": "11@qq.com",
+                    "mobile": "",
+                    "reply": ""
+                },
+                "sex": 2,
+                "meta": {
+                    "updatedAt": "2017-09-05T09:09:31.665Z",
+                    "createdAt": "2017-08-01T10:13:10.399Z"
+                },
+                "report": [],
+                "soundChat": true,
+                "soundCare": true,
+                "careSet": true,
+                "browseSet": true,
+                "listSet": true,
+                "photoPried": [
+                    "59780383a5c2d9366ba0774d",
+                    "5996a15c0c31c13923879b82"
+                ],
+                "photoPri": [
+                    "597ef32b509b8c7230ab6c8b",
+                    "59780383a5c2d9366ba0774d",
+                    "598c0ba095022661c07e5e09"
+                ],
+                "hated": [
+                    "599596534e187b165bd962b0",
+                    "59969faa5ad0d838cd55a526",
+                    "598c0ba095022661c07e5e09",
+                    "5992e0d8f950857af06f19f3"
+                ],
+                "hate": [
+                    "597ef32b509b8c7230ab6c8b",
+                    "597ee6bcef98d970e0fc8d86",
+                    "597edce0ef98d970e0fc8d7c",
+                    "597eac4cbdb23c6817671ed1",
+                    "597d31f5f6a57559a60938f2",
+                    "5971cb7017c86e6fd3bc19dc",
+                    "5996a15c0c31c13923879b82",
+                    "59855eb3f912e63a8a4bdeb9",
+                    "5992ce6d65abd2789a47805a",
+                    "597326da79fb420650253bc4",
+                    "59959a7c4e187b165bd96314"
+                ],
+                "browsed": [
+                    "59806034662f050f0c4a7d2b",
+                    "59780383a5c2d9366ba0774d",
+                    "598420b20669e10c8878938c",
+                    "598daafd863b4264f32f05f8",
+                    "5992ce6d65abd2789a47805a",
+                    "599596534e187b165bd962b0",
+                    "59959a7c4e187b165bd96314",
+                    "5996484e4e187b165bd9639c",
+                    "5992e0d8f950857af06f19f3",
+                    "5996962c626a2336469272e4",
+                    "59969faa5ad0d838cd55a526",
+                    "5996a15c0c31c13923879b82",
+                    "59969dcc6553fe372f30cf1b",
+                    "5996a652561bdb3a0793af55",
+                    "598c0ba095022661c07e5e09",
+                    "5996ae7244b9dd3e045663bb",
+                    "597ee6bcef98d970e0fc8d86",
+                    "5973146b72292702a79a9486",
+                    "597318174c1a8c0350ccc296",
+                    "5988174912a1a519a25778dd",
+                    "5971c4dd5425e56dd7b290ba",
+                    "599e7567f42fa11bff3c6fa6",
+                    "599f875da0ef5627f03c4e03",
+                    "599fa2089f9e78531237be5d",
+                    "599fd4914f5e936824cf13f0",
+                    "599f92f833ece550174108f8",
+                    "5996a377e5c1703991364636"
+                ],
+                "browse": [
+                    "597ef32b509b8c7230ab6c8b",
+                    "5971c4d85425e56dd7b29074",
+                    "5971c4dc5425e56dd7b290a2",
+                    "5971c4d55425e56dd7b2904e",
+                    "5971c4de5425e56dd7b290c2",
+                    "5971c4de5425e56dd7b290be",
+                    "5971c4d55425e56dd7b29050",
+                    "5971c4d65425e56dd7b2905c",
+                    "5971c4d85425e56dd7b29076",
+                    "5971c4dd5425e56dd7b290b4",
+                    "5971c4dc5425e56dd7b290a0",
+                    "5971c4dd5425e56dd7b290ba",
+                    "5971c4d65425e56dd7b2905e",
+                    "5971c4db5425e56dd7b2909e",
+                    "5971c4d95425e56dd7b29080",
+                    "5971c4dd5425e56dd7b290ae",
+                    "5971c4d65425e56dd7b29056",
+                    "5971c4dd5425e56dd7b290b2",
+                    "5971c4d95425e56dd7b29084",
+                    "5971c4d65425e56dd7b29058",
+                    "5971c4d75425e56dd7b2906c",
+                    "5971c4d85425e56dd7b29072",
+                    "5971c4d75425e56dd7b2906a",
+                    "59806034662f050f0c4a7d2b",
+                    "597ee6bcef98d970e0fc8d86",
+                    "597eac4cbdb23c6817671ed1",
+                    "59780383a5c2d9366ba0774d",
+                    "597edce0ef98d970e0fc8d7c",
+                    "5976a9a66cffa223ef7df569",
+                    "5971cb7017c86e6fd3bc19dc",
+                    "5971c4de5425e56dd7b290c0",
+                    "5971c4dd5425e56dd7b290b6",
+                    "5971c4de5425e56dd7b290bc",
+                    "5971c4dd5425e56dd7b290b0",
+                    "5971c4dc5425e56dd7b290a4",
+                    "598c0ba095022661c07e5e09",
+                    "597318174c1a8c0350ccc296",
+                    "5992e0d8f950857af06f19f3",
+                    "597326da79fb420650253bc4",
+                    "598d97072629f052b7e649d9",
+                    "59855eb3f912e63a8a4bdeb9",
+                    "598420b20669e10c8878938c",
+                    "598dab12863b4264f32f05fa",
+                    "5996a15c0c31c13923879b82",
+                    "599682b0ce26523055d55815",
+                    "59959a7c4e187b165bd96314",
+                    "5973146b72292702a79a9486",
+                    "5996ae7244b9dd3e045663bb",
+                    "5996484e4e187b165bd9639c",
+                    "5993aeae0296aa17747a7afd",
+                    "597310ab685a1101c00cbe64",
+                    "599586ad4e187b165bd96263",
+                    "59967e90ce26523055d557ec",
+                    "5992ce6d65abd2789a47805a",
+                    "5996a652561bdb3a0793af55",
+                    "598ab7a80a93883b78f7f538",
+                    "598daafd863b4264f32f05f8",
+                    "5996a377e5c1703991364636",
+                    "59881e19af144f1b7db9eb8f",
+                    "598d4c2ff4566637ea785d9a",
+                    "599febb7088abd6b38e9fa42",
+                    "599f875da0ef5627f03c4e03",
+                    "598d2d1308f3ed2cd84813ec",
+                    "598992ff2770d37f2ffb7eb8",
+                    "59969dcc6553fe372f30cf1b",
+                    "597b16f548eb14558dfc1296"
+                ],
+                "careNum": 6,
+                "cared": [
+                    "59806034662f050f0c4a7d2b",
+                    "599596534e187b165bd962b0",
+                    "59969faa5ad0d838cd55a526",
+                    "5996a652561bdb3a0793af55",
+                    "597318174c1a8c0350ccc296",
+                    "5988174912a1a519a25778dd"
+                ],
+                "care": [
+                    "59806034662f050f0c4a7d2b",
+                    "59780383a5c2d9366ba0774d",
+                    "59855eb3f912e63a8a4bdeb9",
+                    "599682b0ce26523055d55815"
+                ],
+                "loginAt": "2017-09-05T06:20:34.278Z"
+            },
+            "platform": "ios",
+            "registration_id": "13165ffa4e3215b22ec",
+            "mobile": "15626439929",
+            "sex": 2,
+            "lat": "23.136587",
+            "lng": "113.295825",
+            "password": "$2a$10$mLsrptpc5nXVbBzO1rkAP.UB6NiIp3HDraD6pDd2N/mhfj/l3D5Di",
+            "auditAt": "2017-08-24T09:15:31.405Z",
+            "__v": 766,
+            "nickname": "肥佳",
+            "age": 24,
+            "addr": "广东省广州市",
+            "lovePrice": "小清新",
+            "loveDate": "初见",
+            "body": "较瘦",
+            "height": "176cm",
+            "drink": "不喝酒",
+            "smoking": "不抽烟",
+            "education": "博士/博后",
+            "work": "程序员",
+            "character": "你在哪里追求，是否已经拥有",
+            "selfInfo": "女汉子",
+            "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-public/156264399291502243536.jpg",
+            "income": "50万",
+            "assets": "500万",
+            "looking": "正在寻找可以陪伴到老的另一半，日子那么长",
+            "oldName": "老佳",
+            "iNeed": "浪漫旅行",
+            "afford": "浪漫旅行",
+            "hopeful": "情人关系",
+            "meta": {
+                "updatedAt": "2017-09-05T09:34:43.815Z",
+                "createdAt": "2017-08-01T10:13:10.398Z"
+            },
+            "photoPri": [
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-private/156264399291502256631.jpg",
+                    "category": "life",
+                    "enable": true
+                },
+                {
+                    "addr": "http://love-chat.oss-cn-shanghai.aliyuncs.com/woman-private/156264399291502431620.jpg",
+                    "category": "common",
+                    "enable": true
+                },
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-private/156264399291502680487.jpg",
+                    "category": "common",
+                    "enable": true
+                },
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-private/156264399291502680538.jpg",
+                    "category": "tour",
+                    "enable": true
+                },
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-private/156264399291502689248.jpg",
+                    "category": "common",
+                    "enable": true
+                },
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-private/156264399291502689305.jpg",
+                    "category": "common",
+                    "enable": false
+                },
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-private/156264399291503460269.jpg",
+                    "category": "common",
+                    "enable": "ing"
+                }
+            ],
+            "photoPub": [
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-public/156264399291502261656.jpg",
+                    "enable": true
+                },
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-public/156264399291502453521.jpg",
+                    "enable": true
+                },
+                {
+                    "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-public/156264399291503648954.jpg",
+                    "enable": "ing"
+                }
+            ],
+            "vipLevel": "vip1",
+            "rmbTotal": 0,
+            "vip": {
+                "category": "alipay",
+                "to": "2017-09-30T05:51:56.250Z",
+                "from": "2017-08-05T05:51:56.250Z",
+                "role": true
+            },
+            "auditStatus": "ing",
+            "auditReson": {
+                "nickname": "11"
+            },
+            "auditContent": {
+                "character": "1",
+                "looking": "1",
+                "nickname": "2",
+                "selfInfo": "1",
+                "work": "1"
+            },
+            "loc": {
+                "type": "Point",
+                "coordinates": [
+                    113.295825,
+                    23.136587
+                ]
+            },
+            "locAuthorize": true,
+            "loginAt": "2017-08-01T10:13:10.398Z",
+            "completion": 100,
+            "tour": [
+                "私人庄园",
+                "高尔夫胜地",
+                "篮球联赛"
+            ],
+            "sports": [
+                "羽毛球",
+                "斯诺克",
+                "足球",
+                "棋牌"
+            ],
+            "online": "no",
+            "isActive": "yes",
+            "number": 1,
+            "mock": false
+        }
+    }
+    $('#ratePro').attr('value',data.result.completion);
+    $('#rate').text(data.result.completion+'%');
+    localStorage.setItem('completion',data.result.completion)
+    if(data.result.completion >= 90){
+        $('.integrity').css('display','none');
+    }else{
+        $('.integrity').css('display','block');
+    }
+    var res = data.result;
+    // 渲染公开照
+    loadPic('#photoPub',res.photoPub,'',6,1,'updatePhoto');
+    // 渲染私密照
+    loadPic('#photoPri',res.photoPri,'common',6,2,'updatePhotoPri');*/
+
+
+</script>
+</html>

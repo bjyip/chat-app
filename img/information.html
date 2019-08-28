@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>个人信息</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta name="format-detection" content="telephone=no" />
+        <link href="css/mui.min.css" rel="stylesheet" />
+        <link href="css/iconfont.css" rel="stylesheet" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="js/zepto.min.js"></script>
+        <script src="js/bbmis.js"></script>
+        <script type="application/javascript"  src="js/hkJS.js"></script>
+		<style>
+			#vip_li{
+				display: none;
+			}
+		</style>
+    </head>
+
+    <body class="whiteBg">
+		<div class="mui-page-content blackGold">
+            <ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="avatar_li">
+					<a class="mui-navigate-right">
+						头像
+						<div class="mui-badge noBg" id="avatar_span"><img src="" width="50"></div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell" id="vip_li">
+			        <a class="mui-navigate-right">
+			        	会员
+			        	<div class="mui-badge noBg" id="vip_span">
+			        		<i class="mui iconfont icon-huangguan-filled"></i>
+			        		<img id="vip_logo" class="vip-logo" src="">
+			        		<span class="vipLevel" id="vipLevel">普通</span>
+							<span id="goUpgrade">前去升级</span>
+							<p id="stopDate" class="xs-font"></p>
+			        	</div>
+			        </a>
+			    </li>
+			    <li class="mui-table-view-cell" id='nickname_li'>
+			        <a class="mui-navigate-right">
+			        	昵称
+			        	<span class="mui-badge noBg" id='nickname_span'></span>
+			        </a>
+			    </li>
+			    <li class="mui-table-view-cell" id='number_li'>
+			        手机号码
+		        	<span class="mui-badge noBg" id='number_span'></span>
+			    </li>
+			</ul>
+        </div>
+    </body>
+<script src="js/mui.min.js"></script>
+<script src="js/zepto.min.js"></script>
+<script>
+	// 初始化顶部导航
+	getInterface().initDataWithArray("#FFFFFF","back","个人信息","","","#AC9455","","");
+	//修改资料前需先加载资料
+	getInterface().post_action("getInfo",{},"get");
+	// 原生返回
+	function leftBtnClick(){
+		getInterface().leftBtnClick();
+	}
+	var userSex;
+	var shield1 = localStorage.getItem('shield1');
+	function return_action(data,data2){
+		if( data2=='getInfo' ){
+			// 得到用户信息
+			var res = data.result;
+			userSex = res.sex;
+			if(res.mock){
+                $('#nickname_span').text(res.nickname);
+            }else{
+				if(haha(res.nickname) && haha(res.auditContent)){//伪会员
+			        $('#nickname_span').text(res.nickname);
+			    }else if(haha(res.nickname) && haha(res.auditContent.nickname)=='1'){//改名且审核通过
+			        $('#nickname_span').text(res.nickname);
+			    }else if(haha(res.auditContent) && haha(res.auditContent.nickname)!='1' && haha(res.oldName)){//改名没通过
+			        $('#nickname_span').text(res.nickname);
+			    }else{
+			        if(res.sex==1){
+			           $('#nickname_span').text("绅士");
+			        }else{
+			           $('#nickname_span').text("甜心");
+			        }
+			    }
+			}
+			$('#number_span').text(res.mobile.substr(0,3)+'****'+res.mobile.substr(7));
+			if(res.avatar){
+				$('#avatar_span img').attr('src',res.avatar)
+			}
+			if(res.vip.role){
+				$('#vip_span .iconfont').hide();
+				$('#goUpgrade').hide();
+				$('#vip_logo').show();
+				$('#stopDate').text(data.endTime);
+				$('#vipLevel').css('background-color','#D1AA50');
+				$('#vip_logo').css('margin-top','-4px')
+				if(res.sex==1){
+					if(res.vipLevel == "vip1" || res.vipLevel == "vip2"){
+						$('#vip_logo').attr("src","./img/pic_GoldMember.png");
+						$('#vipLevel').text('伯爵会员');
+					}else if(res.vipLevel == "vip3"){
+						$('#vip_logo').attr("src","./img/pic_DiamondMember.png");
+						$('#vipLevel').text('公爵会员');
+					}else if(res.vipLevel == "vip4"){
+						$('#vip_logo').attr("src","./img/pic_CrownMember.png");
+						$('#vipLevel').text('国王会员');
+					}
+				}else{
+					if(res.vipLevel == "vip1" || res.vipLevel == "vip2"){
+						$('#vip_logo').attr("src","./img/women_pic_MonarchMember.png");
+						$('#vipLevel').text('郡主会员');
+					}else if(res.vipLevel == "vip3"){
+						$('#vip_logo').attr("src","./img/women_pic_PrincessMember.png");
+						$('#vipLevel').text('公主会员');
+					}else if(res.vipLevel == "vip4"){
+						$('#vip_logo').attr("src","./img/women_pic_QueenMember.png");
+						$('#vipLevel').text('女王会员');
+					}
+				}
+			}
+		}else{
+			localStorage.setItem('photoSta',1);
+		}
+	}
+
+	if(shield1=='no'){
+		$('#vip_li').show()
+	}
+	$('#vip_li').on('tap',function(){
+		getInterface().html_jump_href(service+'/paymentVIP.html', 'no');
+	})
+	$('#nickname_li').on('tap',function(){
+		getInterface().html_jump_href(service+'/newUpdateInfo.html', 'no');
+	})
+	$('#avatar_li').on('tap',function(){
+		if(userSex==1){
+			getInterface().post_photo('man-avatar/','','');
+		}else{
+			getInterface().post_photo('woman-avatar/','','');
+		}
+		getInterface().post_action("getInfo",{},"get");
+	})
+	function return_photo(data,data2){
+		$('#avatar_span img').attr('src',data+'?x-oss-process=image/resize,h_50');
+		getInterface().post_action('avatar',JSON.stringify({url:data}),'post');
+	}
+</script>
+</html>

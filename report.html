@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>举报原因</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script type="application/javascript"  src="js/hkJS.js"></script>
+</head>
+
+<body>
+
+<div class="mui-content ">
+        <h6 class="hide-span" data-i18n="report-title">举报原因</h6>
+
+    <ul class="mui-table-view">
+        <li class="mui-table-view-cell report-item">
+            <a class="mui-navigate-right" data-i18n="report-inappropriate">发布不正当内容造成骚扰</a>
+        </li>
+        <li class="mui-table-view-cell report-item">
+            <a class="mui-navigate-right" data-i18n="report-deception">存在欺诈骗钱行为</a>
+        </li>
+        <li class="mui-table-view-cell" id="other">
+            <a class="mui-navigate-right" data-i18n="report-other">其他原因</a>
+        </li>
+    </ul>
+
+</div>
+<script src="js/mui.min.js"></script>
+<script src="js/i18n_data.js"></script>
+<script>
+    if(lang == 'zh'){
+        var btnArray = ['取消', '确定'];
+        var reportText = '举报';
+        var reportAlert = '举报成功，我们将在24小时内给您回复！';
+    }else if(lang == 'en'){
+        var btnArray = ['Cancel', 'Confirm'];
+        var reporttext = 'Report';
+        var reportAlert = 'Report success, we will reply to you within 24 hours!';
+    }else{
+        var btnArray = ['取消', '確認'];
+        var reporttext = '舉報';
+        var reportAlert = '舉報成功，我們將在24小時內給您回復！';
+    }
+    var coTitle = $('h6[data-i18n]').text();
+    getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+
+    function leftBtnClick(){
+        getInterface().leftBtnClick();
+    }
+    var userId = getQueryString('userId')[0].split('=')[1];
+    $('.mui-table-view').on('tap','.report-item',function(){
+        var content = '';
+        content = $(this).find('a').text();
+        mui.confirm($(this).find('a').text(), reportText, btnArray, function(e) {
+            // e.preventDefault();
+            if (e.index == 1) {
+                getInterface().post_action('report',JSON.stringify({content: content,imgUrl: "",id: userId}),'post');
+            }else {
+
+            }
+        })
+        console.log($(this).find('a').text())
+    })
+
+    function return_action(data,data2){
+        if( data2=='report' ){
+            if(data.ret == 1){
+                getInterface().msg_alert(reportAlert);
+            }
+        }
+    }
+
+    // 跳转到其他原因
+    $('#other').on('tap',function(){
+        getInterface().html_jump_href(service+'/otherReasons.html?userId='+userId, 'no');
+    })
+</script>
+</body>
+</html>

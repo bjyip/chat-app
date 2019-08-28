@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>关于</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+	<script src="js/i18next-1.7.7.min.js"></script>
+	<script src="js/bbmis.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+</head>
+
+<body class="whiteBg">
+
+	<!--页面主内容区开始-->
+	<div class="mui-page-content about">
+		<span class="hide-span" data-i18n="about-title">关于我们</span>
+		<div class="logo">
+			<img src="img/logov1.0-72px.png" width="80">
+			<h5 data-i18n="about-name">BOSS直约</h5>
+			<p id="versionText"></p>
+		</div>
+		<div class="about-con" data-i18n="about-explain">
+			<p>BOSS直约作为高端商务社交平台，独创颜值人工智能分析系统，确保用户资料的真实性。展现精英商务人士的成熟、睿智的价值观，展现魅力女生的的可爱迷人。BOSS直约致力为绅士和甜心缔造一个高效、优品的约会平台。</p>
+		</div>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell" id="version">
+		        <a class="mui-navigate-right">
+					<div class="mui-media-body" data-i18n="about-version">
+						版本更新
+					</div>
+					<!-- <span class="mui-badge mui-badge-danger">new</span> -->
+				</a>
+		    </li>
+		</ul>
+		<footer class="copyRight">
+			<p id="p1" data-i18n="about-attention">约会注意事项及防骗提醒</p>
+			<p id="p2" data-i18n="about-agreement">《用户协议》</p>
+			<p id="p3" data-i18n="about-privacy">《用户隐私政策》</p>
+			<p style="color:#666;font-size:12px;line-height: 16px;margin-bottom: 0;">copyright&nbsp;©&nbsp;2017 </p>
+			<p style="color:#666;font-size:12px;line-height: 16px;margin-bottom: 0;" data-i18n="about-company">广州聆歌信息科技有限公司</p>
+		</footer>
+	</div>
+
+	<script src="js/mui.min.js"></script>
+	<script src="js/i18n_data.js"></script>
+	<script type="text/javascript">
+		mui.init();
+
+		var coTitle = $('span[data-i18n]').text();
+		getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+
+		var shield1 = localStorage.getItem('shield1');
+		function leftBtnClick(){
+			getInterface().leftBtnClick();
+		}
+		//获取版本号
+		getInterface().getAPPInfo();
+		function return_APPInfo(data){
+			$('#versionText').text(data);
+			//ios调用接口
+			var u = navigator.userAgent;
+			var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+			var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+			if(isiOS){
+				getInterface().post_action("apkInfo",JSON.stringify({prrv: 'as',vest: 'boss', versionName: data}),"post");
+			}
+		}
+		function return_action(data,data2){
+			if(data2=='apkInfo'){
+				if(data.ret == 1){
+					if(data.data.alipay == 'yes'){
+						$('.mui-table-view').hide();
+						$("#versionText").hide();
+					}
+				}
+			}
+		}
+
+		//获取是否隐藏
+		if(shield1=='yes'){
+			$('#version').hide()
+		}
+
+		$('#helpPage').on('tap',function(){
+			getInterface().html_jump_href(service+'/help.html', 'none');
+		})
+		$('#p1').on('tap',function(){
+			getInterface().html_jump_href(service+'/remind.html', 'none');
+		})
+		$('#p2').on('tap',function(){
+			getInterface().html_jump_href(service+'/agreement.html', 'none');
+		})
+		$('#p3').on('tap',function(){
+			getInterface().html_jump_href(service+'/privacy.html', 'none');
+		})
+		$('#version').on('tap',function(){
+			getInterface().getNewVersionAPP();
+		})
+	</script>
+</body>
+
+
+
+</html>

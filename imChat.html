@@ -1,0 +1,978 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>BOSS直约 面向高端人群的甜蜜社交应用</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="format-detection" content="telephone=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/mui.picker.min.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<script src="js/bbmis.js"></script>
+		<style type="text/css">
+			.mark{
+				width: 100%;
+				height:100rem;
+				background-color: rgba(0,0,0,.7);
+				position:absolute;
+				top: 0%;
+			}
+
+			.userInfo {
+				z-index: 999;
+				position: fixed;
+			}
+			.mui-picker-inner {
+				font-size: 22rem;
+			}
+			.copyBox{
+				position: absolute;
+				padding: 0 0 15px 0;
+				overflow: hidden;
+				z-index: 9999;
+				top: -40px;
+				left: 50%;
+			}
+			.CopyContent{
+				background-color: #333;
+				color: #fff;
+				font-size: 12px;
+				border-radius: 5px;
+				width: 50px;
+				text-align: center;
+				padding: 5px;
+				float: left;
+			}
+			.CopyContent::after{
+			    content: '';
+			    border: 8px;
+			    border-color: #333 transparent transparent transparent;
+			    border-style: solid dashed dashed dashed;
+			    position: absolute;
+			    bottom: 0px;
+			    left: 15px;
+			}
+			.copyBox1{
+				position: absolute;
+				padding: 0 0 15px 0;
+				z-index: 9999;
+				top: 51px;
+				left: 50%;
+			}
+			.CopyContent1{
+				background-color: #333;
+				color: #fff;
+				font-size: 12px;
+				border-radius: 5px;
+				width: 50px;
+				text-align: center;
+				padding: 5px;
+				float: left;
+			}
+			.CopyContent1::before{
+			    content: '';
+			    border: 8px;
+			    border-color: transparent transparent #333 transparent;
+			    border-style: solid dashed dashed dashed;
+			    position: absolute;
+			    top: -16px;
+			    left: 15px;
+			}
+			.boxShadow{
+				background-color: transparent;
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				display: none;
+				z-index: 9998;
+			}
+			.copy {
+				position: relative;
+				min-height: 41px;
+			}
+			.messBox {
+				overflow: visible;
+				min-height: 51px;
+				margin-top: 24px;
+				width: 100%;
+			}
+			.sender {
+				float: left;
+			}
+			.receiver {
+				float: right;
+			}
+			.unread {
+				position: absolute;
+			    bottom: -8px;
+			    left: -30px;
+				font-size: 30px;
+			}
+			.left_triangle {
+				left: -16px;
+			}
+			.right_triangle {
+				right: -16px;
+			}
+			.xs-font {
+				font-size: 11px;
+				position: absolute;
+				left: 50%;
+				margin-left: -45px;
+				top: -22px;
+				color: #919191;
+			}
+
+			.mui-icon {
+				font-size: 36px;
+			}
+			.quickReply {
+				border-radius: 20px;
+				font-size: 30px;
+				border: 1px solid #4B4434;
+			}
+			.mui-scroll-wrapper {
+				background-color: #F3F3F3;
+			}
+			.mui-picker-inner {
+				background-color: #EAEAEA;
+			}
+			.mui-pciker-list .highlight {
+				color: #786436!important;
+			}
+			.mui-poppicker-btn-ok {
+				background-color: #AC9455;
+				border: none;
+			}
+			.footer-right {
+/*				width: 42px;
+				height: 42px;*/
+			}
+			.mui-icon-paperplane{
+				background-color: #d2ae5a;
+				color: #fff;
+				border-radius: 20px;
+				width: 42px;
+				height: 42px;
+				text-align: center;
+				line-height: 42px;
+			}
+			.img-div {
+				float: right;
+			}
+			.img-div img {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+			}
+			.mess {
+				min-width: 20px;
+				max-width: 170px;
+			}
+		</style>
+	</head>
+
+	<body class="whiteBg">
+		<div class="mui-content noBg" id="noBg">
+			<div class="mui-scroll-wrapper" id="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<div class="chatBox" id="chatBox">
+
+					</div>
+				</div>
+			</div>
+
+			<div class="input-box" id="input-box">
+				<textarea placeholder="" id="userResult" autofocus="autofocus"></textarea>
+				<div class="btn-group">
+					<button class="quickReply mui-icon mui-icon-plusempty" id="quickReply" type='button'></button>
+					<!-- <button class="send mui-icon mui-icon-paperplane" type='button' id="send_btn"></button> -->
+					<span class="footer-right">
+						<i id='msg-type' class="mui-icon mui-icon-paperplane send"></i>
+					</span>
+				</div>
+			</div>
+			<div class="boxShadow"></div>
+		</div>
+	</body>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+	<script type="text/javascript" src="js/zepto.min.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.picker.min.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script type="text/template" id="text">
+		<div class="sender messBox">
+			<span class="xs-font messTime"></span>
+			<div class="img-div">
+				<img src="">
+			</div>
+			<div class="sender-con copy">
+				<div class="left_triangle"></div>
+				<div class="mess"></div>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="text1">
+		<div class="receiver messBox">
+			<span class="xs-font messTime"></span>
+			<div class="img-div">
+				<img src="">
+			</div>
+			<div class="receiver-con copy">
+				<div class="right_triangle"></div>
+				<div class="mess"></div>
+            	<span class="unread mui-icon mui-icon-checkmarkempty" id="unread"></span>
+
+			</div>
+		</div>
+
+	</script>
+	<script type="text/template" id="text2">
+		<div class="response">
+			<span class="text-primary"></span>
+			<div>
+				<button class="btn-agree">同意</button>
+				<button class="btn-reply">拒绝</button>
+			</div>
+			<p class="priTime"></p>
+		</div>
+	</script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script src="js/i18n_data.js"></script>
+	<script>
+
+		//初始化事件
+        mui.init({
+            gestureConfig:{
+               longtap: true, //默认为false
+            }
+        });
+        //翻译
+        //
+        if(lang == 'zh'){
+	      	$($("#text2").html()).find('.btn-agree').text('同意')
+	      	$($("#text2").html()).find('.btn-reply').text('拒绝')
+	        var text1 = '很高兴认识你,我想和你进行甜蜜的约会';
+	        var text2 = '请问是长期还是短期的甜蜜';
+	        var text3 = '发个微信吧，我们微信上聊';
+	        var text4 = '我想邀请你和我一起去旅行';
+	        var text5 = '方便的话，我们可以先出来吃个饭聊聊';
+	        var alertTip = '提示';
+	        var alertShield = '屏蔽此人';
+	        var alertReport = '举报此人';
+	        var askPho = '请求查看对方的私照';
+	        var askedPho = '对方请求查看您的私照';
+	        var refusePho = '已经拒绝对方的私照请求';
+	        var adoptPho = '已经通过对方的私照请求';
+	        var refusedPho = '对方拒绝了您的私照请求';
+	        var adoptedPho = '对方通过了您的私照请求，请到对方首页查看';
+	        var tips1 = '屏蔽成功！';
+	        var tips2 = '同意';
+	        var tips3 = '拒绝';
+	        var copyBtn = '复制';
+	        $('.mui-poppicker-header .mui-poppicker-btn-cancel').text('取消');
+	        $('.mui-poppicker-header .mui-poppicker-btn-ok').text('确定');
+	    }else if(lang == 'en'){
+	      	$($("#text2").html()).find('.btn-agree').text('Agree')
+	      	$($("#text2").html()).find('.btn-reply').text('Refuse')
+	        var text1 = 'Nice to meet you,I want to have a sweet date with you';
+	        var text2 = 'Is it a long or short sweet?';
+	        var text3 = "Send a WeChat,Let's talk on WeChat";
+	        var text4 = "I'd like to invite you to go on a trip with me";
+	        var text5 = 'We can have dinner firs in your free time';
+	        var alertTip = 'Tips';
+	        var alertShield = 'Pull Into Blacklist';
+	        var alertReport = 'Report This Person';
+	        var askPho = 'Request to view the private photos of the other party';
+	        var askedPho = 'The other party asks to see your private photos';
+	        var refusePho = "Has rejected the other's private photo request";
+	        var adoptPho = "Have passed the other party's private photo request";
+	        var refusedPho = 'The other party refused your request for private photos';
+	        var adoptedPho = 'The other party has passed your private photo request, please go to the other side of the page to check';
+	        var tips1 = 'Successful!';
+	        var tips2 = 'Agree';
+	        var tips3 = 'Refuse';
+	        var copyBtn = 'Copy';
+	        $('.mui-poppicker-header .mui-poppicker-btn-cancel').text('Cancel');
+	        $('.mui-poppicker-header .mui-poppicker-btn-ok').text('OK');
+	    }else{
+	      	$($("#text2").html()).find('.btn-agree').text('同意')
+	      	$($("#text2").html()).find('.btn-reply').text('拒絕')
+	        var text1 = '很高興認識你，我想和你進行甜蜜的約會';
+	        var text2 = '請問是長期還是短期的甜蜜';
+	        var text3 = '發個微信吧，我們微信上聊';
+	        var text4 = '我想邀請你和我一起去旅行';
+	        var text5 = '方便的話，我們可以先出來吃個飯聊聊';
+	        var alertTip = '提示';
+	        var alertShield = '拉黑此人';
+	        var alertReport = '舉報此人';
+	        var askPho = '請求查看對方的私照';
+	        var askedPho = '對方請求查看您的私照';
+	        var refusePho = '已經拒絕對方的私照請求';
+	        var adoptPho = '已經通過對方的私照請求';
+	        var refusedPho = '對方拒絕了您的私照請求';
+	        var adoptedPho = '對方通過了您的私照請求，請到對方首頁查看';
+	        var tips1 = '拉黑成功！';
+	        var tips2 = '同意';
+	        var tips3 = '拒絕';
+	        var copyBtn = '複製';
+	        $('.mui-poppicker-header .mui-poppicker-btn-cancel').text('取消');
+	        $('.mui-poppicker-header .mui-poppicker-btn-ok').text('確定');
+
+	    }
+
+
+		mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+		//数据加载时显示加载框
+    	getInterface().hud_loading();
+
+
+		var switchFlag = localStorage.getItem('switchFlag');
+		var switchFlag1 = localStorage.getItem('switchFlag1');
+		if(switchFlag == 'yes'){
+			$('.flag-vip').hide();
+		}
+		if(switchFlag1 == 'yes'){
+			$('.flag-vip').hide();
+		}
+
+		$("textarea").blur();
+
+		//监测键盘出现,隐藏顶部对方信息
+		function keyboardWillShow(data){
+			getInterface().return_keyboardWillShow()
+			// alert($(".chatBox").css("height"))
+			// document.getElementById('noBg').style.top = (data - 500) + "px"
+
+		}
+
+		//监测键盘消失,显示顶部对方信息
+		function keyboardWillHide(){
+			getInterface().return_keyboardWillHide()
+		}
+
+
+		$('.userPhoto').on('tap',function(){
+			mui('#chatBox').scroll().scrollTo(110,110,100);
+		});
+
+// var userId = '598061a0662f050f0c4a7d30';
+
+		(function($, doc){
+			$.ready(function() {
+				var name = window.location.search.split("?")[1].split("&")[1].split("=")[1];
+				var vipLev = window.location.search.split("?")[1].split("&")[2].split("=")[1];
+				if(vipLev == 'vip0' || switchFlag1 == 'yes'){
+					getInterface().initDataWithArray("#FFFFFF","back",name,"","","#333333","Icon_btnright","#FFFFFF");
+				}else{
+					getInterface().initDataWithArray("#FFFFFF","back",name,"","","#AC9455","Icon_btnright","#FFFFFF");
+				}
+
+				var _getParam = function(obj, param) {
+					return obj[param] || '';
+				};
+				//普通示例
+				var userPicker = new $.PopPicker();
+				userPicker.setData([{
+					value: 'ywj',
+					text: text1
+				}, {
+					value: 'aaa',
+					text: text2
+				}, {
+					value: 'lj',
+					text: text3
+				}, {
+					value: 'ymt',
+					text: text4
+				}, {
+					value: 'shq',
+					text: text5
+				}]);
+				var showUserPickerButton = doc.getElementById('quickReply');
+				var userResult = doc.getElementById('userResult');
+
+				showUserPickerButton.addEventListener('tap', function(event) {
+
+					//收起键盘
+					document.activeElement.blur();
+					userPicker.show(function(items) {
+
+
+						console.log(items)
+						// if(!myvip){
+						// 	getInterface().msg_alert("你没有发送消息的权限，请充值会员")
+						// }else{
+						// 	msg = items[0].text;
+						// 	if(msg.length){
+						// 		getInterface().post_action("sendmsg",JSON.stringify({to: userId,msg:msg}),"post");
+						// 	}
+						// }
+							msg = items[0].text;
+							if(msg.length){
+								getInterface().post_action("sendmsg",JSON.stringify({to: userId,msg:msg}),"post");
+							}
+
+						// userResult.innerText = items[0].text;
+						//返回 false 可以阻止选择框的关闭
+
+					});
+					//翻译
+			        if(lang == 'zh'){
+				    	console.log($('.mui-poppicker-btn-cancel'));
+				        $('.mui-poppicker-btn-cancel')[0].innerHTML = '取消';
+				        $('.mui-poppicker-btn-ok')[0].innerHTML = '确定';
+				    }else if(lang == 'en'){
+				        $('.mui-poppicker-btn-cancel')[0].innerHTML = 'Cancel';
+				        $('.mui-poppicker-btn-ok')[0].innerHTML = 'OK';
+				    }else{
+				        $('.mui-poppicker-btn-cancel')[0].innerHTML = '取消';
+				        $('.mui-poppicker-btn-ok')[0].innerHTML = '確定';
+				    }
+				}, false);
+			});
+		})(mui, document);
+
+		var userId = window.location.search.split("?")[1].split("&")[0].split("=")[1];
+		var backtype = getQueryStringByName('backtype')
+
+		// 调用ios原生方法，请求用户列表
+		var sender = $($("#text").html())
+		var receiver = $($("#text1").html())
+		var response = $($("#text2").html())
+		var formimg
+		getInterface().post_action("readMsg",JSON.stringify({userId: userId}),"get");
+
+		function rightBtnClick(){
+	        getInterface().bottom_alert(alertTip,alertShield,alertReport)
+	    }
+	    function return_sureMsg(data){
+	        data = decodeURI(data);
+	        //拉黑
+	        if(data == alertShield){
+	            getInterface().post_action("userHate",JSON.stringify({id: userId}),"post");
+	        //举报
+	        }else if(data == alertReport){
+	            // 跳转到举报
+	            getInterface().html_jump_href(service+'/report.html?userId='+userId, 'no');
+	        }else{
+	        	if(switchFlag1=='no'){
+	        		if(edit == 1){
+	        			//编辑
+	        			getInterface().html_jump_href(service+'/newUpdateInfo.html','no');
+	        		}else if(edit == 0){
+	        			//升级
+	        			getInterface().html_jump_href(service+'/paymentVIP.html?back=two','yes');
+	        		}
+	        	}
+	        }
+	    }
+
+		// 调用ios原生方法，返回用户列表
+		function return_action(data,data2) {
+			if(data2 == "readMsg"){
+				// if(data.ret == 1){
+				var result = data.chats
+				//z自己
+				if(data.user.auditContent.avatar && data.user.auditContent.avatar == '0'){
+					if(data.user.sex == 1){
+						//自己是男的
+						selfimg = data.user.oldAvatar || "img/nan01.png"
+
+					}else if(data.user.sex == 2){
+						//自己是女的
+						selfimg = data.user.oldAvatar || "img/nv01.png"
+					}
+				}else{
+					if(data.user.sex == 1){
+						//自己是男的
+						selfimg = data.user.avatar || "img/nan01.png"
+
+					}else if(data.user.sex == 2){
+						//自己是女的
+						selfimg = data.user.avatar || "img/nv01.png"
+					}
+				}
+				//对方
+				if(data.chatTo.auditContent.avatar && data.chatTo.auditContent.avatar != '1'){
+					if(data.chatTo.sex == 1){
+						//自己是男的
+						formimg =  data.chatTo.oldAvatar || "img/nan01.png"
+
+					}else if(data.chatTo.sex == 2){
+						//自己是女的
+						formimg =  data.chatTo.oldAvatar || "img/nv01.png"
+					}
+				}else{
+					if(data.chatTo.sex == 1){
+						//对方是男的
+						formimg = data.chatTo.avatar || "img/nan01.png"
+
+					}else if(data.chatTo.sex == 2){
+						//对方是女的
+						formimg = data.chatTo.avatar || "img/nv01.png"
+					}
+				}
+
+
+
+
+				//屏蔽
+				if(switchFlag == 'yes'){
+					isV = "vip0"
+				}else{
+					isV = data.chatTo.vipLevel
+				}
+				if(switchFlag1 == 'yes'){
+					isV = "vip0"
+				}else{
+					isV = data.chatTo.vipLevel
+				}
+
+				myvip = data.user.vip.role
+				//给头像做跳转
+				// $("#goto").attr("href",service+'/personal.html?myId='+data.user._id+"&personId="+data.chatTo._id)
+				// $(".userPhoto").attr("src",formimg)
+				//对方名字
+				// $("#nickname").html(data.chatTo.nickname)
+				// $("#nickname").css("color","#333")
+
+				if(!data.chatTo.addr){
+					var addr = ""
+				}else{
+					var addr = data.chatTo.addr+"/"
+				}
+				if(!data.chatTo.age){
+					var age = ""
+				}else{
+					var age = data.chatTo.age+"/"
+				}
+				if(!data.chatTo.lovePrice){
+					var lovePrice = ""
+				}else{
+					var lovePrice = data.chatTo.lovePrice
+				}
+				// $(".info").html(addr+age+lovePrice)
+				//个人信息导航栏
+				// alert(formimg)
+				if(data.chatTo.sex == 1){
+					//对方是男的
+					var nicknames = data.chatTo.nickname || maleNicknameLang();
+					if(nicknames.length > 10){
+						var nicknames = nicknames.slice(0,10) + "..."
+					}
+
+				}else if(data.chatTo.sex == 2){
+					//对方是女的
+					var nicknames = data.chatTo.nickname || femaleNicknameLang();
+					if(nicknames.length > 10){
+						var nicknames = nicknames.slice(0,10) + "..."
+					}
+				}
+				getInterface().setChatNavWithData(nicknames,addr+age+lovePrice,isV,formimg)
+
+				//渲染聊天记录
+				$(".chatBox").html("");
+				selfId = data.user._id
+				otherId = data.chatTo._id
+				for( var i = 0;i < result.length;i++){
+					var cloneSender = $($("#text").html())
+					var cloneReceiver = $($("#text1").html())
+					var cloneResponse = $($("#text2").html())
+					//userId是对方的id
+					//selfId是自己的id
+					//formid是消息谁发的
+					//toid是发给谁的
+
+					//自己发文字
+					if(result[i].msgType == "text" && result[i].toid == userId && result[i].fromdel == 'no'){
+						cloneReceiver.find('.mess').html(result[i].content);
+						cloneReceiver.find('.receiver img').attr("src",selfimg);
+						cloneReceiver.find('.messTime').html(formatTime(result[i].meta.createdAt));
+						if(result[i].readed == true){
+							cloneReceiver.find('#unread').css('color','#60C6A4');
+						}
+						$(".chatBox").append(cloneReceiver);
+					}
+					//对方发文字
+					if(result[i].msgType == "text" && result[i].fromid == userId && result[i].todel == 'no'){
+						cloneSender.find('.mess').html(result[i].content);
+						cloneSender.find('.sender img').attr("src",formimg);
+						cloneSender.find('.messTime').html(formatTime(result[i].meta.createdAt));
+						$(".chatBox").append(cloneSender);
+					}
+					//自己请求私照
+					if(result[i].msgType == "requirePhotoPri" && result[i].fromid == selfId && result[i].photo == "ing" && result[i].fromdel == 'no'){
+						cloneResponse.find(".text-primary").html(askPho)
+						cloneResponse.find('.btn-agree').css("display","none");
+						cloneResponse.find('.btn-reply').css("display","none");
+						cloneResponse.find('.priTime').html(formatTime(result[i].meta.createdAt));
+						$(".chatBox").append(cloneResponse);
+					}
+					//别人请求私照
+					if(result[i].msgType == "requirePhotoPri" && result[i].fromid == userId && result[i].photo == "ing" && result[i].todel == 'no'){
+						cloneResponse.find(".text-primary").html(askedPho)
+						cloneResponse.find('.btn-agree').text(tips2)
+						cloneResponse.find('.btn-reply').text(tips3)
+
+						cloneResponse.find('.priTime').html(formatTime(result[i].meta.createdAt));
+						$(".chatBox").append(cloneResponse);
+					}
+					//自己拒绝请求私照
+					if(result[i].msgType == "requirePhotoPri" && result[i].fromid == userId && result[i].photo == "no" && result[i].todel == 'no'){
+						cloneResponse.find('.text-primary').html(refusePho);
+						cloneResponse.find('.btn-agree').css("display","none");
+						cloneResponse.find('.btn-reply').css("display","none");
+						cloneResponse.find('.priTime').html(formatTime(result[i].meta.createdAt));
+						$(".chatBox").append(cloneResponse);
+					}
+					//自己通过请求私照
+					if(result[i].msgType == "requirePhotoPri" && result[i].fromid == userId && result[i].photo == "yes" && result[i].todel == 'no'){
+						cloneResponse.find('.text-primary').html(adoptPho);
+						cloneResponse.find('.btn-agree').css("display","none");
+						cloneResponse.find('.btn-reply').css("display","none");
+						cloneResponse.find('.priTime').html(formatTime(result[i].meta.createdAt));
+						$(".chatBox").append(cloneResponse);
+					}
+					//对方拒绝请求私照
+					if(result[i].msgType == "requirePhotoPri" && result[i].toid == userId && result[i].photo == "no" && result[i].fromdel == 'no'){
+						cloneResponse.find('.text-primary').html(refusedPho);
+						cloneResponse.find('.btn-agree').css("display","none");
+						cloneResponse.find('.btn-reply').css("display","none");
+						cloneResponse.find('.priTime').html(formatTime(result[i].meta.createdAt));
+						$(".chatBox").append(cloneResponse);
+					}
+					//对方通过请求私照
+					if(result[i].msgType == "requirePhotoPri" && result[i].toid == userId && result[i].photo == "yes" && result[i].fromdel == 'no'){
+						cloneResponse.find('.text-primary').html(adoptedPho);
+						cloneResponse.find('.btn-agree').css("display","none");
+						cloneResponse.find('.btn-reply').css("display","none");
+						cloneResponse.find('.priTime').html(formatTime(result[i].meta.createdAt));
+						$(".chatBox").append(cloneResponse);
+					}
+
+				}
+				// mui('.chatBox').scroll().scrollToBottom(0)
+				mui('.mui-scroll-wrapper').scroll().reLayout();
+				mui('.mui-scroll-wrapper').scroll().scrollToBottom();//滚动到底部
+
+
+				// }
+				// else if(data.ret == 2){
+				// 	if(data.chatTo.sex == 1){
+				// 	//对方是男的
+				// 	formimg = data.chatTo.avatar || "img/nan01.png"
+
+				// }else if(data.chatTo.sex == 2){
+				// 	//对方是女的
+				// 	formimg = data.chatTo.avatar || "img/nv01.png"
+				// }
+				// 	$(".chatBox").html("");
+				// 	var cloneSender = sender.clone();
+				// 	cloneSender.find('.mess').html("你没有查看消息的权限，请充值会员");
+				// 	cloneSender.find('.sender img').attr("src",formimg);
+				// 	$(".chatBox").append(cloneSender);
+				// 	//没有权限
+				// 	// $(".mark").css("display","block")
+				// 	// getInterface().msg_alert("你没有查看消息的权限，请充值会员")
+				// }
+			}else if(data2 == "sendmsg"){
+
+				// alert("data.ret:"+data.ret+"=="+"data.msg:"+data.msg)
+				if(data.ret == 1){
+					var cloneReceiver = receiver.clone();
+					cloneReceiver.find('.receiver img').attr("src",selfimg);
+					cloneReceiver.find('.mess').html(msg);
+					cloneReceiver.find('.messTime').html(formatTime(new Date()));
+					$(".chatBox").append(cloneReceiver);
+					//隐藏加载狂
+					getInterface().hud_hide();
+					//解决发送按钮拼命按会发送空内容的bug
+					$('.send').on('tap',sendFn);
+					if($('#chatBox').height() < 420){
+						document.activeElement.blur();
+					}
+					$("#userResult").val("")
+					mui('.mui-scroll-wrapper').scroll().reLayout();
+					mui('.mui-scroll-wrapper').scroll().scrollToBottom();//滚动到底部
+				}else if(data.ret == 4){//非会员，消息超10条
+					//收起键盘
+					document.activeElement.blur();
+					//解决发送按钮拼命按会发送空内容的bug
+	        		$('.send').on('tap',sendFn);
+					edit = 0
+					getInterface().msg_alert(data.err)
+
+				}else if(data.ret == 5){//发送敏感词
+					//解决发送按钮拼命按会发送空内容的bug
+	        		$('.send').on('tap',sendFn);
+					mui.toast(data.err)
+
+				}else if(data.ret == 6){//被对方屏蔽
+					//解决发送按钮拼命按会发送空内容的bug
+	        		$('.send').on('tap',sendFn);
+					mui.toast(data.err);
+
+				}else if(data.ret == 7){//资料不满90
+					//收起键盘
+					document.activeElement.blur();
+					//解决发送按钮拼命按会发送空内容的bug
+	        		$('.send').on('tap',sendFn);
+					edit = 1
+					getInterface().msg_alert(data.err)
+
+				}
+			}else if(data2 == "replyPhotoPri"){
+				if(data.ret == 1 && data.state == "yes"){
+					$(".text-primary").html(adoptPho)
+					$(".btn-agree").css("display","none")
+					$(".btn-reply").css("display","none")
+					$('.priTime').html(formatTime(new Date()));
+
+				}else{
+					$(".text-primary").html(refusePho)
+					$(".btn-agree").css("display","none")
+					$(".btn-reply").css("display","none")
+					$('.priTime').html(formatTime(new Date()));
+
+				}
+			}else if(data2 == "userHate"){
+				if(data.ret==1){
+	                mui.toast(tips1);
+	                localStorage.setItem('chatstate',1)
+	                setTimeout(function(){
+	                	// 从主页跳转过来，屏蔽后需返回2次
+	                	if(backtype=='p'){
+	                		getInterface().leftback_rootvc();
+	                	}else{//返回1次
+	                		getInterface().leftBtnClick();
+	                	}
+
+	                },1000)
+	            }
+			}
+			//隐藏加载狂
+			getInterface().hud_hide();
+		}
+
+		function msgTextFocusAndroid() {
+			$('#userResult').focus();
+			setTimeout(function() {
+				$('#userResult').focus();
+			}, 1);
+		}
+
+		function sendFn(){
+			//防止点击发送键盘关闭
+			msgTextFocusAndroid();
+			msg = $("#userResult").val();
+			if(msg.length){
+				$("#userResult").val("");
+				//解决发送按钮拼命按会发送空内容的bug
+				$('.send').unbind("tap");
+				getInterface().post_action("sendmsg",JSON.stringify({to: userId,msg:msg}),"post");
+				//数据加载时显示加载框
+				getInterface().hud_loading();
+			}
+		}
+		//发送消息
+		$('.send').on('tap',sendFn);
+
+		//同意请求私照方法
+		$('.chatBox').on('tap','.btn-agree',function(){
+			getInterface().post_action("replyPhotoPri",JSON.stringify({id: userId,reply:"yes"}),"post");
+
+		})
+		//拒绝请求私照方法
+		$('.chatBox').on('tap','.btn-reply',function(){
+			getInterface().post_action("replyPhotoPri",JSON.stringify({id: userId,reply:"no"}),"post");
+
+		})
+		//监听ios事件
+		function send_message(data){
+			var msg = data.extras.msg
+			var type = data.extras.type
+			var userid = data.extras.userId
+			var time = data.extras.createdAt
+			var cloneSender = sender.clone();
+			var cloneReceiver = receiver.clone();
+			var cloneResponse = response.clone();
+
+			// var formimg = $(".sender").find('img').attr("src")
+			if(userid == otherId){
+				//解决键盘存在时，个人信息条出现的bug
+				if($('#chatBox').height() > 420){
+					getInterface().return_keyboardWillShow();
+					// document.activeElement.blur();
+				}
+				//消息类型是文字
+				if(type == "chat"){
+					//已读
+					getInterface().post_action("msgReaded",JSON.stringify({id: userid}),"post");
+					cloneSender.find('.mess').html(msg);
+					cloneSender.find('.sender img').attr("src",formimg);
+					cloneSender.find('.messTime').html(formatTime(new Date()));
+					$(".chatBox").append(cloneSender);
+				}
+				//消息类型是请求私照
+				if(type == "requirePhotoPri"){
+					// alert(cloneResponse)
+					var str = '<div class="response">'
+					str += '<span class="text-primary">'+askedPho+'</span>'
+					str += '<div>'
+					str += '<button class="btn-agree">'+tips2+'</button>'
+					str += '<button class="btn-reply">'+tips3+'</button>'
+					str += '</div>'
+					str += '<p class="priTime">'+formatTime(new Date())+'</p>'
+					str += "</div>"
+					// cloneResponse.find('.text-primary').html("对方请求查看私照");
+					// cloneResponse.find('.btn-agree').css("display","none");
+					// cloneResponse.find('.btn-reply').css("display","none");
+					// cloneResponse.find('.priTime').html(formatTime(new Date()));
+					$(".chatBox").append(str);
+				}
+				//消息类型是请求私照回复
+				if(type == "replyPhotoPri"){
+					if(data.reply == "yes"){
+						var str1 = '<div class="response">'
+							str1 += '<span class="text-primary">'+adoptedPho+'</span>'
+							str1 += '<p class="priTime">'+formatTime(new Date())+'</p>'
+							str1 += "</div>"
+						$(".chatBox").append(str1);
+					}else if(data.reply == "no"){
+						var str2 = '<div class="response">'
+							str2 += '<span class="text-primary">'+refusedPho+'</span>'
+							str2 += '<p class="priTime">'+formatTime(new Date())+'</p>'
+							str2 += "</div>"
+						$(".chatBox").append(str2);
+					}
+				}
+				if(type == "read"){
+					getInterface().post_action("readMsg",JSON.stringify({userId: userId}),"get");
+				}
+				//新的信息滚到底部
+				mui('.mui-scroll-wrapper').scroll().reLayout();
+				mui('.mui-scroll-wrapper').scroll().scrollToBottom();//滚动到底部
+			}
+
+		}
+		//后退方法
+		function leftBtnClick(){
+			getInterface().leftBtnClick();
+
+		}
+		//格式化时间
+		function formatTime(time){
+			var date = new Date(time);
+			var Y = date.getFullYear() + '-';
+			var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+			var D = date.getDate() + ' ';//https://www.google.co.jp/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0ahUKEwixg5rIwZTVAhVMybwKHfCVAhUQFggmMAA&url=http%3A%2F%2Fblog.sina.com.cn%2Fs%2Fblog_5f54f0be0100ds2r.html&usg=AFQjCNHV6WCrr3SmQ024eTgG8Ss6pCcVjA
+			var h = date.getHours() + ':';
+			var m = date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes();
+			// var s = date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds();
+			var nowTime = Y+M+D+h+m
+			return nowTime
+		}
+		//和右上角的方法冲突，暂时屏蔽
+		/*function return_sureMsg(data){
+			getInterface().html_jump_href(service+'/upgradeVIP.html?back=two','yes');
+		}*/
+
+
+
+		//导航栏跳转
+		function click_chatNav(){
+			getInterface().html_jump_href(service+'/personal.html?myId='+selfId+"&personId="+otherId,'yes');
+		}
+
+		//解决点击发送后键盘关闭的bug
+		function msgTextFocus() {
+			$('#userResult').focus();
+			setTimeout(function() {
+				$('#userResult').focus();
+			}, 150);
+		}
+		$('.footer-right').on('touchstart', function(event) {
+			if ($('#msg-type').contains('mui-icon-paperplane')) {
+				msgTextFocus();
+				event.preventDefault();
+			}
+		});
+
+
+		// 解决输入法遮挡
+        var timer = null;
+        $('textarea').on('focus', function() {
+        	setTimeout(function(){
+        		$('textarea').click();
+        	},200)
+      //   	var viewTop = $(window).scrollTop(),            // 可视区域顶部
+    		// viewBottom = viewTop + window.innerHeight;
+    		// alert(viewBottom)
+			// alert(12)
+            clearInterval(timer);
+            var index = 0;
+            timer = setInterval(function() {
+                if(index>2) {
+                    $('body').scrollTop(1000000);
+                    clearInterval(timer);
+
+                }
+                index++;
+            }, 0)
+
+        })
+        //兼容安卓
+    	$('textarea').on('touchstart',function(){
+			setTimeout(function(){
+				mui('.mui-scroll-wrapper').scroll().reLayout();
+				mui('.mui-scroll-wrapper').scroll().scrollToBottom();//滚动到底部
+			},10)
+
+		})
+
+
+
+
+        var copyFlag = false;
+        //长按复制
+        $('#chatBox').on('longtap','.copy',function(){
+        	$('.copyClick').hide();
+        	if($(this).offset().top > 94){
+        		$(this).append('<div class="copyBox copyClick"><div class="CopyContent" id="copy">'+copyBtn+'</div></div>');
+        	}else{
+        		$(this).append('<div class="copyBox1 copyClick"><div class="CopyContent1" id="copy">'+copyBtn+'</div></div>');
+        	}
+        	$('.copyClick').css({'margin-left':'-25px'});
+        	// $('.boxShadow').show();
+        	copyFlag = true;
+        })
+        // 点击屏幕隐藏复制框
+        $(document).on('touchstart','.chatBox, .messBox, .response', function(){
+        	console.log(1)
+        	setTimeout(function(){
+        		$('.copyClick').remove();
+        	},100);
+        })
+        // 复制
+        $('#chatBox').on('tap','.copyClick',function(){
+        	var copyVal = $(this).parents('.messBox').find('.mess').html();
+        	console.log(copyVal)
+        	getInterface().copyMsg(copyVal);
+        	$(this).hide(100);
+        })
+        //点击屏幕收起键盘
+        $('.chatBox').on('touchstart',function(){
+        	document.activeElement.blur();
+        })
+
+
+	</script>
+</html>
+

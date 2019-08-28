@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+	<script src="js/bbmis.js"></script>
+    <script type="application/javascript" src="js/hkJS.js"></script>
+    <title>面向高端人群的甜蜜社交应用</title>
+</head>
+<body class="vip-tip">
+	<section class="container noBg">
+		<div class="topInfo">
+			<p class="ta-p">想给心仪的<span class="ta">TA</span>发消息</p>
+			<span class="speak">先获得您的免费发言权</span>
+			<div class='writeInfo-div'>
+				<div class="writeInfo-left">
+					<img src="./img/person.png" />
+					<div>
+						<span>完善资料</span>
+						<p class="text-gray">免费获得发送10条信息</p>
+					</div>
+				</div>
+				<div class="writeInfo-right">
+					<img src="./img/camera.png" />
+					<div>
+						<span>上传照片</span>
+						<p class="text-gray">美丽的颜值让别人关注你</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div class="upgrade-vip">
+			<div class="upgradeCon">
+				<h5>不想等那么久</h5>
+				<span class="text-gray">无限量发消息、不用等</span>
+				<span class="text-gray">现在就升级到</span>
+				<button class="btn btn-primary">高级会员资格</button>
+			</div>
+		</div> -->
+	</section>
+<script src="js/mui.min.js"></script>
+<script type="text/javascript">
+	mui.init();
+	// 调用ios原生方法，初始化顶部栏
+	$(function(){
+		getInterface().initDataWithArray("#FFFFFF","back","完善资料","","","#333333","","");
+	});
+	//左侧返回
+	function leftBtnClick(){
+		getInterface().leftBtnClick();
+	}
+
+	//完善资料
+	$('.writeInfo-left').on('tap',function(){
+		getInterface().html_jump_href(service+'/updateInfo.html', 'no');
+	});
+	//上传图片
+	$('.writeInfo-right').on('tap',function(){
+		getInterface().html_jump_href(service+'/updatePhoto.html', 'no');
+	});
+	//升级会员
+	$('.btn-primary').on('tap',function(){
+		getInterface().html_jump_href(service+'/paymentVIP.html', 'no');
+	});
+
+
+	function leftBtnClick(){
+		if(window.location.search.split("?")[1].split("=")[1] && window.location.search.split("?")[1].split("=")[1] == "two"){
+			getInterface().leftback_rootvc();
+		}else if(window.location.search.split("?")[1].split("=")[1] && window.location.search.split("?")[1].split("=")[1] == "one"){
+			getInterface().leftBtnClick();
+		}
+	}
+
+
+</script>
+</body>
+</html>

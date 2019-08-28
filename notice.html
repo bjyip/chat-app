@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>通知中心</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script type="text/javascript" src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+</head>
+
+<body>
+    <span class="hide-span" data-i18n="notice-title">通知中心</span>
+	<div class="mui-page-content" id="notice">
+		<ul class="mui-table-view">
+
+		</ul>
+	</div>
+</body>
+<script type="text/template" id="messItem">
+    <li class="mui-table-view-cell mui-media notice-item">
+        <div class="mui-slider-right mui-disabled" id="delete">
+            <a class="mui-btn mui-btn-red noticeDel" data-i18n="notice-delete">删除</a>
+        </div>
+        <a class="mui-slider-handle" href="javascript:;">
+            <img class="mui-pull-left" src="img/Megaphone.png">
+            <div class="mui-media-body">
+                <p class='mui-ellipsis text-primary' id="notice-con"></p>
+                <p class='text-primary xs-font' id="notice-time"></p>
+            </div>
+        </a>
+    </li>
+</script>
+<script type="application/javascript"  src="js/hkJS.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.picker.min.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/i18n_data.js"></script>
+<script>
+	mui.init({
+		gestureConfig:{
+		   longtap: true, //默认为false
+	  	}
+	});
+    var coTitle = $('.hide-span').text();
+	getInterface().initDataWithArray("#ffffff","back",coTitle,"","","#AC9455","Icon_Garbage","");
+	function leftBtnClick(){
+		getInterface().leftBtnClick();
+	}
+	getInterface().post_action("noticeList",'',"get");
+    localStorage.setItem('noticeSta','1');
+	// 调用ios原生方法，返回用户列表
+	function return_action(data,data2) {
+		if(data2=='noticeList'){
+			if(data.list.length>0){
+				var results = data.list;
+				for(var i=0; i<results.length; i++){
+					var t = $($("#messItem").html());
+					t.attr('_id',results[i]._id);
+					t.find('#notice-con').text(results[i].content);
+					t.find('#notice-time').text(results[i].locationTime);
+					$('#notice ul').append(t);
+				}
+			}
+			if($('#notice li').length==0){
+                if(lang == 'ch'){
+                    $('#notice').append('<p class="phoAlert">暂无系统消息哦!</p>')
+                }else if(lang == 'en'){
+                    $('#notice').append('<p class="phoAlert">No Notice!</p>')
+                }else{
+                    $('#notice').append('<p class="phoAlert">暫無系統消息哦!</p>')
+                }
+			}
+		}
+            changeLang('noticeDel');
+	}
+
+	function rightBtnClick(){
+		if($('#notice li').length==0){
+            if(lang == 'ch'){
+                mui.alert('暂无系统消息哦!')
+            }else if(lang == 'en'){
+                mui.alert('No Notice!')
+            }else{
+                mui.alert('暫無系統消息哦!')
+            }
+		}else{
+            var btnArray = ['取消', '确认'],sureTitle = '确认删除所有记录？',blackTem = '通知列表';
+            if(lang == 'en'){
+                btnArray = ['cancel', 'confirm'];
+                sureTitle = 'Confirm delete all record?'
+                blackTem = 'Notice List';
+            }else if(lang == 'ft'){
+                btnArray = ['取消', '確認'];
+                sureTitle = '確認删除所有记录？'
+                blackTem = '黑名單';
+            }
+            mui.confirm(sureTitle, blackTem, btnArray, function(e) {
+                if (e.index == 1) {
+                    getInterface().post_action("noticedel",JSON.stringify({all:'yes'}),"post");
+                    $('#notice ul li').remove();
+                }
+            })
+		}
+	}
+
+	//长按删除
+    $('#notice').on('longtap','.notice-item',function(e){
+    	$(this).addClass('mui-selected');
+    	$(this).find('#delete').addClass('mui-selected');
+    	$(this).find('.mui-btn-red').animate({'transform':'translate(-88px, 0px)'});
+    	$(this).find('.mui-slider-handle').animate({'transform':'translate(-88px, 0px)'});
+    })
+    $('#notice').on('tap','#delete',function(){
+    	var _id = $(this).parent('.notice-item').attr('_id');
+    	getInterface().post_action("noticedel",JSON.stringify({id:_id}),"post");
+    	$(this).parent('.notice-item').remove();
+    })
+
+    $('#notice').on('tap','.mui-table-view-cell',function(){
+    	$(this).find('#notice-con').toggleClass('noticeToggle');
+    })
+
+	/*var data ={
+	    "ret": 1,
+	    "unreadNum": 1,
+	    "list": [
+             {
+                "locationTime": "2017-09-21 13:54:45",
+                "_id": "59c35425f73c0b712ac602ee",
+                "userid": "597318174c1a8c0350ccc296",
+                "content": "您的资料通过了审核",
+                "__v": 0,
+                "meta": {
+                    "updatedAt": "2017-09-21T06:14:39.080Z",
+                    "createdAt": "2017-09-21T05:54:45.490Z"
+                },
+                "level": "normal",
+                "readed": true,
+                "msgType": "text"
+            },
+            {
+                "locationTime": "2017-09-21 11:32:53",
+                "_id": "59c332e5b1b1636f25a30d1e",
+                "userid": "597318174c1a8c0350ccc296",
+                "content": "头像审核被拒绝,请尽快修改",
+                "__v": 0,
+                "meta": {
+                    "updatedAt": "2017-09-21T03:46:07.346Z",
+                    "createdAt": "2017-09-21T03:32:53.941Z"
+                },
+                "level": "normal",
+                "readed": true,
+                "msgType": "text"
+            }
+	    ]
+	}
+	if(data.list.length>0){
+		var results = data.list;
+		for(var i=0; i<results.length; i++){
+			var t = $($("#messItem").html())
+			t.attr('_id',results[i]._id);
+			t.find('#notice-con').text(results[i].content);
+			t.find('#notice-time').text(results[i].locationTime)
+			$('#notice ul').append(t)
+		}
+	}
+	if($('#notice li').length==0){
+		$('#notice').append('<p class="phoAlert">暂无系统消息哦~</p>')
+	}*/
+</script>
+</html>

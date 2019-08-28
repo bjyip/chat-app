@@ -1,0 +1,2043 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>修改资料</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <link href="css/mui.min.css" rel="stylesheet" />
+        <link href="css/mui.picker.min.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="js/zepto.min.js"></script>
+        <script src="js/i18next-1.7.7.min.js"></script>
+        <script src="js/bbmis.js"></script>
+        <script type="application/javascript"  src="js/hkJS.js"></script>
+		<style>
+			#promptBtn .mui-navigate-right{
+				color: #777;
+				font-size: 14px;
+			}
+			#characterDes .mui-navigate-right{
+				white-space:normal;
+				padding: 11px 15px;
+			}
+			#selfInfoResult span{
+				margin-left: 8px;
+				display: inline-block;
+			}
+			.mui-poppicker-btn-ok {
+			    background-color: #AC9455;
+			    border: none;
+			}
+			.mui-pciker-list .highlight {
+			    color: #786436!important;
+			}
+		</style>
+    </head>
+
+    <body class="whiteBg" id='promptBtn'>
+		<span class="hide-span updateInfo-title1" data-i18n="updateInfo-title1">修改资料</span>
+		<div id="app" class="mui-views">
+			<div class="mui-view">
+				<div class="mui-pages"></div>
+			</div>
+		</div>
+		<!-- 主页面 -->
+		<div id="updateInfoCon" class="mui-page">
+			<div class="mui-page-content">
+				<div class="integrity">
+	                <span class="" data-i18n="collect-integrity">信息完整度</span>
+	                <progress max="100" value="0" id="ratePro"></progress>
+		            <span id="rate">0%</span>
+	                <p id="trip"></p>
+	            </div>
+	            <ul class="mui-table-view">
+	            	<li class="mui-table-view-cell info-title" data-i18n="personal-information">基本信息<span data-i18n="updateInfo-hint" style="color:#EF5151">(完善资料并审核通过可以提高曝光率)</span></li>
+					<li class="mui-table-view-cell" id="nickN">
+						<a href="" class="mui-navigate-right">
+							<div class="flag-title2" data-i18n="personal-nickname">昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称</div>
+							<span class="mui-badge noBg" id="nickname"></span>
+						</a>
+					</li>
+					<li class="mui-table-view-cell" id="age">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-age">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄</span>
+				        	<span class="mui-badge noBg" id="ageResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id='showCityPicker3'>
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-area">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;区</span>
+				        	<span class="mui-badge noBg" id='cityResult3'></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell info-title" data-i18n="personal-about">关于我</li>
+				    <li class="mui-table-view-cell" id="lovePrice">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-index">宠爱指数</span>
+				        	<span class="mui-badge noBg" id="lovePriceResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="loveDate">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-target">甜蜜目标</span>
+				        	<span class="mui-badge noBg" id="loveDateResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="income">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-income">年&nbsp;&nbsp;收&nbsp;&nbsp;入</span>
+				        	<span class="mui-badge noBg" id="incomeResult"></span>
+				        </a>
+				    </li>
+				    <!-- <li class="mui-table-view-cell" id="assets">
+				        <a class="mui-navigate-right">
+				        	总资产
+				        	<span class="mui-badge noBg" id="assetsResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="sports">
+				        <a href="#sportType" class="mui-navigate-right" style="min-height:60px">
+				        	<span style="display:inline-block">运动&nbsp;<img src="img/list_exercise@2x.png" width="20"></span>
+				        	运动
+				        	<div class="mui-badge noBg" id="sportsResult"></div>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="tour">
+				        <a href="#tourType" class="mui-navigate-right" style="min-height:60px">
+				        	<span style="display:inline-block">旅游&nbsp;<img src="img/list_tourism@2x.png" width="20"></span>
+				        	旅游
+				        	<div class="mui-badge noBg" id="tourResult"></div>
+				        </a>
+				    </li> -->
+				    <li class="mui-table-view-cell" id="mybody">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-shape">体&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型</span>
+				        	<span class="mui-badge noBg" id="mybodyResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="myHeight">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-height">身&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;高</span>
+				        	<span class="mui-badge noBg" id="myHeightResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="drink">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-drink">饮酒习惯</span>
+				        	<span class="mui-badge noBg" id="drinkResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="smoking">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-smoke">抽烟习惯</span>
+				        	<span class="mui-badge noBg" id="smokingResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="education">
+				        <a class="mui-navigate-right">
+				        	<span data-i18n="personal-education">最高学历</span>
+				        	<span class="mui-badge noBg" id="educationResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell info-title" data-i18n="personal-introduce">自我介绍</li>
+				    <li class="mui-table-view-cell" id="workSta">
+				        <a href="#workDes" class="mui-navigate-right">
+				        	<div class="flag-title title-name" data-i18n="personal-work">职业描述</div>
+				        	<!-- <span class="mui-badge-orange audit">审核中</span> -->
+				        	<span class="mui-badge noBg word-normal" id="workResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="characterSta">
+				        <a href="#characterDes" class="mui-navigate-right">
+				        	<div class="flag-title title-name" data-i18n="personal-sign">个性签名</div>
+				        	<!-- <span class="mui-badge-orange audit">审核中</span> -->
+				        	<span class="mui-badge noBg word-normal" id="characterResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="selfInfoSta">
+				        <a href="#selfInfoDes" class="mui-navigate-right Mtext">
+				        	<div class="flag-title title-name" data-i18n="personal-introduce">自我介绍</div>
+				        	<!-- <span class="mui-badge-orange audit">审核中</span> -->
+				        	<span class="mui-badge noBg word-normal" id="selfInfoResult"></span>
+				        </a>
+				    </li>
+					<li class="mui-table-view-cell info-title" data-i18n="updateInfo-looking">我正在寻找</li>
+					<li class="mui-table-view-cell" id="iNeed">
+				        <a href="#iNeedDes" class="mui-navigate-right">
+				        	<div class="flag-title title-name" data-i18n="updateInfo-ineed">我需要的</div>
+				        	<span class="mui-badge noBg word-normal" id="iNeedResult"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell" id="hopeful">
+				        <a href="#hopefulDes" class="mui-navigate-right">
+				        	<div class="flag-title title-name" data-i18n="personal-relation">期待关系</div>
+				        	<span class="mui-badge noBg word-normal" id="hopefulResult"></span>
+				        </a>
+				    </li>
+				</ul>
+	        </div>
+	    </div>
+
+	    <!-- 运动 -->
+		<!-- <div id="sportType" class="mui-page sportType">
+			<div class="mui-page-content">
+				<div class="mui-row">
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>游泳</label>
+						<input name="checkbox1" value="游泳" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>跑步</label>
+						<input name="checkbox1" value="跑步" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>健身</label>
+						<input name="checkbox1" value="健身" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>瑜伽</label>
+						<input name="checkbox1" value="瑜伽" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>高尔夫</label>
+						<input name="checkbox1" value="高尔夫" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>赛车</label>
+						<input name="checkbox1" value="赛车" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>帆船</label>
+						<input name="checkbox1" value="帆船" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>滑浪风帆</label>
+						<input name="checkbox1" value="滑浪风帆" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>冲浪</label>
+						<input name="checkbox1" value="冲浪" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>独木舟</label>
+						<input name="checkbox1" value="独木舟" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>马球</label>
+						<input name="checkbox1" value="马球" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>马术</label>
+						<input name="checkbox1" value="马术" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>滑雪</label>
+						<input name="checkbox1" value="滑雪" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>打猎</label>
+						<input name="checkbox1" value="打猎" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>射击</label>
+						<input name="checkbox1" value="射击" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>登山</label>
+						<input name="checkbox1" value="登山" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>射箭</label>
+						<input name="checkbox1" value="射箭" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>潜水</label>
+						<input name="checkbox1" value="潜水" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>网球</label>
+						<input name="checkbox1" value="网球" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>羽毛球</label>
+						<input name="checkbox1" value="羽毛球" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>篮球</label>
+						<input name="checkbox1" value="篮球" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>斯诺克</label>
+						<input name="checkbox1" value="斯诺克" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>保龄球</label>
+						<input name="checkbox1" value="保龄球" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>足球</label>
+						<input name="checkbox1" value="足球" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>电子游戏</label>
+						<input name="checkbox1" value="电子游戏" type="checkbox" class="rds">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>棋牌</label>
+						<input name="checkbox1" value="棋牌" type="checkbox" class="rds" class="rds">
+					</div>
+				</div>
+				<div class="comfirmBtn">
+					<button class="btn btn-primary" id="sportsBtn">确定</button>
+				</div>
+			</div>
+		</div> -->
+
+		<!-- 旅游 -->
+		<!-- <div id="tourType" class="mui-page sportType">
+			<div class="mui-page-content">
+				<div class="mui-row">
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>阳光海滩</label>
+						<input name="checkbox1" value="阳光海滩" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>自驾探险</label>
+						<input name="checkbox1" value="自驾探险" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>人文历史</label>
+						<input name="checkbox1" value="人文历史" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>都市购物</label>
+						<input name="checkbox1" value="都市购物" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>极限运动</label>
+						<input name="checkbox1" value="极限运动" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>豪华酒店</label>
+						<input name="checkbox1" value="豪华酒店" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>产业探究</label>
+						<input name="checkbox1" value="产业探究" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>滑浪风帆</label>
+						<input name="checkbox1" value="滑浪风帆" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>派对交友</label>
+						<input name="checkbox1" value="派对交友" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>私人庄园</label>
+						<input name="checkbox1" value="私人庄园" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>地貌奇观</label>
+						<input name="checkbox1" value="地貌奇观" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>高尔夫胜地</label>
+						<input name="checkbox1" value="高尔夫胜地" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>足球联赛</label>
+						<input name="checkbox1" value="足球联赛" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>篮球联赛</label>
+						<input name="checkbox1" value="篮球联赛" type="checkbox" class="rdt">
+					</div>
+					<div class="mui-col-sm-6 mui-col-xs-6 mui-checkbox mui-left">
+						<label>巡回演唱会</label>
+						<input name="checkbox1" value="巡回演唱会" type="checkbox" class="rdt">
+					</div>
+				</div>
+				<div class="comfirmBtn">
+					<button class="btn btn-primary" id="tourBtn">确定</button>
+				</div>
+			</div>
+		</div> -->
+
+		<!-- 职业描述 -->
+	    <div id="workDes" class="mui-page">
+			<div class="mui-page-content">
+				<ul class="mui-table-view mui-table-view-radio" style="margin-top:0;">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work1">
+							公务员
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work2">
+							律师
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work3">
+							IT从业者
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work4">
+							金融学家
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work5">
+							总裁
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work6">
+							高管
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work7">
+							中层
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work8">
+							骨干
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-work9">
+							自由职业者
+						</a>
+					</li>
+					<li class="titleName" id="work" title="职业描述" style="padding: 11px 15px;" data-i18n="updateInfo-workOther">
+						其他
+					</li>
+				</ul>
+				<span class="hide-span updateInfo-title2" data-i18n="updateInfo-title2">职业描述</span>
+			</div>
+		</div>
+
+		<!-- 个性签名 -->
+	    <div id="characterDes" class="mui-page">
+			<div class="mui-page-content">
+				<span class="hide-span updateInfo-title3" data-i18n="updateInfo-title3">个性签名</span>
+				<ul class="mui-table-view mui-table-view-radio" id="chareMale">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character1">
+							只要你不嫌弃我，我可以陪你天长地久
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character2">
+							爱我所爱，千夫所指我不改
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character3">
+							我对你仍有爱意，我对自己无能为力
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character4">
+							霸道总裁就是我，干我所干，乐我所乐
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character5">
+							我愿成为你可以依靠的那个男人
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character6">
+							人帅又有才，快到碗里来
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character7">
+							我忘不了你的拥抱和那甜甜的微笑
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character8">
+							我爱的那个女人也爱我
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character9">
+							喜欢爱与自由，更喜欢你与温柔
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character10">
+							左手握着幸福，右手握着回忆
+						</a>
+					</li>
+					<li class="titleName" id="character" title="个性签名" style="padding: 11px 15px;" data-i18n="updateInfo-workOther">
+						其他
+					</li>
+				</ul>
+				<ul class="mui-table-view mui-table-view-radio" id="chareFemale">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character11">
+							女强人就是我，想我所想，做我所做
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character12">
+							找个爱我的也是我爱的男人
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character13">
+							姐姐我的性感妩媚不是谁都可以享受的
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character14">
+							我愿成为你背后默默无闻的小女人
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character15">
+							希望你连我生气的样子你都爱
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character16">
+							我在等你，一直都在，只要你转身，我就在你生后
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character17">
+							抵挡不住我温柔和美貌的人，恰巧你就是
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character18">
+							你在哪里追求，是否已经拥有
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character19">
+							我在这里就是你的小太阳
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character20">
+							我要以最美的姿态等待爱情的到来
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character21">
+							你说你喜欢我，姐也喜欢你那款式的货色
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character22">
+							可不可以用心爱我一次，有没有人用心懂我一次
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character23">
+							我只有一份爱，要么不付出，要付出就是全部
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" data-i18n="updateInfo-character24">
+							幸福是要自己争取的，所以我争取了我幸福
+						</a>
+					</li>
+					<li class="titleName" id="character" title="个性签名" style="padding: 11px 15px;" data-i18n="updateInfo-workOther">
+						其他
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- 自我介绍 -->
+	    <div id="selfInfoDes" class="mui-page">
+			<div class="mui-page-content">
+				<form class="mui-input-group" id="selfMale">
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self1">潮叔</label>
+						<input name="checkbox1" value="潮叔" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self2">暖男</label>
+						<input name="checkbox1" value="暖男" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self3">小鲜肉</label>
+						<input name="checkbox1" value="小鲜肉" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self4">猛男</label>
+						<input name="checkbox1" value="猛男" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self5">霸道总裁</label>
+						<input name="checkbox1" value="霸道总裁" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self6">时尚</label>
+						<input name="checkbox1" value="时尚" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self7">阳刚</label>
+						<input name="checkbox1" value="阳刚" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self8">博学</label>
+						<input name="checkbox1" value="博学" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self9">豪爽</label>
+						<input name="checkbox1" value="豪爽" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self10">比烟寂寞</label>
+						<input name="checkbox1" value="比烟寂寞" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<input name="checkbox1" value="放在心底" type="checkbox" class="sch"><label data-i18n="updateInfo-self11">放在心底</label>
+
+					</div>
+				</form>
+				<form class="mui-input-group" id="selfFemale">
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self12">贤妻良母</label>
+						<input name="checkbox1" value="贤妻良母" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self13">辣妹</label>
+						<input name="checkbox1" value="辣妹" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self14">女汉子</label>
+						<input name="checkbox1" value="女汉子" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self15">女强人</label>
+						<input name="checkbox1" value="女强人" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self16">女神</label>
+						<input name="checkbox1" value="女神" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self17">梦妹子</label>
+						<input name="checkbox1" value="梦妹子" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self18">御姐</label>
+						<input name="checkbox1" value="御姐" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self19">萝莉</label>
+						<input name="checkbox1" value="萝莉" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self20">才女</label>
+						<input name="checkbox1" value="才女" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self21">淑女</label>
+						<input name="checkbox1" value="淑女" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self22">小女人</label>
+						<input name="checkbox1" value="小女人" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self23">美女</label>
+						<input name="checkbox1" value="美女" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self24">邻家小妹</label>
+						<input name="checkbox1" value="邻家小妹" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self25">宅女</label>
+						<input name="checkbox1" value="宅女" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self26">少女</label>
+						<input name="checkbox1" value="少女" type="checkbox" class="sch">
+					</div>
+					<div class="mui-input-row mui-checkbox">
+						<label data-i18n="updateInfo-self27">软妹子</label>
+						<input name="checkbox1" value="软妹子" type="checkbox" class="sch">
+					</div>
+				</form>
+				<div class="mui-table-view-cell titleName" id="selfInfo" title="自我介绍" data-i18n="updateInfo-workOther">
+					其他
+				</div>
+			</div>
+			<span class="hide-span updateInfo-title4" data-i18n="updateInfo-title4">自我介绍</span>
+		</div>
+
+    </body>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.view.js"></script>
+<script src="js/mui.picker.min.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/zepto.min.js"></script>
+<script src="js/i18n_data.js"></script>
+<script>
+	var coTitle = $('.updateInfo-title1').text();
+	var coTitle2 = $('.updateInfo-title2').text();
+	var coTitle3 = $('.updateInfo-title3').text();
+	var coTitle4 = $('.updateInfo-title4').text();
+	getInterface().hud_loading(); //loading
+	// 初始化顶部导航
+	getInterface().initDataWithArray("#ffffff","back",coTitle,"","","#AC9455","","");
+	//修改资料前需先加载资料
+	getInterface().post_action("getInfo",{},"get");
+
+	//初始化单页view
+	var viewApi = mui('#app').view({
+		defaultPage: '#updateInfoCon'
+	});
+	var userSex = window.location.search.split('=')[1];
+	var sTop;
+	var view = viewApi.view;
+	view.addEventListener('pageBeforeShow', function(e) {
+		document.getElementById('updateInfoCon').style.display = 'none';
+	});
+	view.addEventListener('pageBack', function(e) {
+		document.getElementById('updateInfoCon').style.display = 'block';
+　　});
+	if(lang == 'zh'){
+		var closeTitle = '关闭';
+		var muiText1 = '请选择';
+		var muiText2 = "最多只能选8项";
+		var cancel = "取消";
+		var save = "保存";
+		var placeholder = "请输入至少2个字的昵称";
+		var muiText3 = "最多不能超过";
+		var muiText4 = "最少不能低于";
+		var noPass = "请重新修改";
+		var pass = "审核通过";
+        var inAudit = "审核中";
+		var lovePrice1 = '小清新';
+		var lovePrice2 = '浪漫';
+		var lovePrice3 = '轻奢';
+		var lovePrice4 = '高奢';
+		var loveDate1 = '初见';
+		var loveDate2 = '短期';
+		var loveDate3 = '中期';
+		var loveDate4 = '长期';
+		var loveDate5 = '密友';
+		var loveDate6 = '结婚';
+		var income1 = '白领级别';
+		var income2 = '金领级别';
+		var income3 = '高管级别';
+		var income4 = '董事长级别';
+		var income5 = '上市公司主席';
+		var body1 = '较瘦';
+		var body2 = '健美';
+		var body3 = '匀称';
+		var body4 = 'S型';
+		var body5 = '微胖';
+		var body6 = '偏胖';
+		var body7 = '其他';
+		var drink1 = '不喝酒';
+		var drink2 = '社交应酬';
+		var drink3 = '经常喝酒';
+		var smok1 = '不抽烟';
+		var smok2 = '偶尔抽烟';
+		var smok3 = '经常抽烟';
+		var education1 = '高中';
+		var education2 = '专科';
+		var education3 = '学士学位';
+		var education4 = '硕士研究生';
+		var education5 = '博士/博后';
+		var ineed1 = '理财指导';
+		var ineed2 = '创业导师';
+		var ineed3 = '心灵沟通';
+		var ineed4 = '浪漫旅行';
+		var ineed5 = '温馨约会';
+		var ineed6 = '人生指导';
+		var ineed7 = '恋爱婚姻';
+		var ineed8 = '温柔陪伴';
+		var hopeful1 = '玩伴关系';
+		var hopeful2 = '激情关系';
+		var hopeful3 = '情人关系';
+		var hopeful4 = '恋爱关系';
+		var hopeful5 = '婚姻关系';
+		var updateInfoWork = '职业描述';
+		var updateInfoCharater = '个性签名';
+		var wordNum = "目前字数为";
+		var btnArray = ['取消', '确认'];
+	}else if(lang == 'en'){
+		var closeTitle = 'Close';
+		var muiText1 = 'Please Select';
+		var muiText2 = "Only 8 items can be selected at most";
+		var cancel = "Cancel";
+		var save = "Save";
+		var placeholder = "Please enter a nickname of at least 2 words";
+		var muiText3 = "At most not more than";
+		var muiText4 = "At least not below";
+		var noPass = "Please re edit";
+        var inAudit = "In Audit";
+        var pass = "passed";
+		var lovePrice1 = 'Partysu';
+		var lovePrice2 = 'Romantic';
+		var lovePrice3 = 'Light Luxury';
+		var lovePrice4 = 'High Luxury';
+		var loveDate1 = 'Has Shown Signs';
+		var loveDate2 = 'Short Period';
+		var loveDate3 = 'Interim';
+		var loveDate4 = 'Long Time';
+		var loveDate5 = 'Close Friend';
+		var loveDate6 = 'Get Married';
+		var income1 = 'White-collar Level';
+		var income2 = 'Jinling Level';
+		var income3 = 'Executive Level';
+		var income4 = 'Chairman Level';
+		var income5 = 'President';
+		var body1 = 'Thinner';
+		var body2 = 'Bodybuilding';
+		var body3 = 'Symmetry';
+		var body4 = 'S Shape';
+		var body5 = 'P Lump';
+		var body6 = 'Slightly Fat';
+		var body7 = 'Other';
+		var drink1 = 'Not Drinking';
+		var drink2 = 'Seldom Drink';
+		var drink3 = 'Drink Regularly';
+		var smok1 = 'No Smoking';
+		var smok2 = 'Seldom Smoke';
+		var smok3 = 'Smoke Often';
+		var education1 = 'High School';
+		var education2 = 'Unior College';
+		var education3 = "Bachelor's";
+		var education4 = 'Postgraduate Student';
+		var education5 = 'Doctor / Blogger';
+		var ineed1 = 'Financial guidance';
+		var ineed2 = 'Entrepreneur Mentor';
+		var ineed3 = 'Spiritual Communication';
+		var ineed4 = 'Romantic Travel';
+		var ineed5 = 'Warm Date';
+		var ineed6 = 'Life Guidance';
+		var ineed7 = 'Love and Marriage';
+		var ineed8 = 'Accompany';
+		var hopeful1 = 'Playmate';
+		var hopeful2 = 'Passion Relationship';
+		var hopeful3 = 'lover Relationship';
+		var hopeful4 = 'Love Relationship';
+		var hopeful5 = 'Marriage Relationship';
+		var updateInfoWork = 'Work';
+		var updateInfoCharater = 'character';
+		var wordNum = "The current number of words is";
+		btnArray = ['cancel', 'confirm'];
+	}else{
+		var closeTitle = '關閉';
+		var muiText1 = '請選擇';
+		var muiText2 = "最多只能選8項";
+		var cancel = "取消";
+		var save = "保存";
+		var placeholder = "請輸入至少2個字的昵稱";
+		var muiText3 = "最多不能超過";
+		var muiText4 = "最少不能低於";
+		var noPass = "請重新修改";
+        var inAudit = "稽核中";
+        var pass = "审核通過";
+		var lovePrice1 = '小清新';
+		var lovePrice2 = '浪漫';
+		var lovePrice3 = '輕奢';
+		var lovePrice4 = '高奢';
+		var loveDate1 = '初見';
+		var loveDate2 = '短期';
+		var loveDate3 = '中期';
+		var loveDate4 = '長期';
+		var loveDate5 = '密友';
+		var loveDate6 = '結婚';
+		var income1 = '白領級別';
+		var income2 = '金領級別';
+		var income3 = '高管級別';
+		var income4 = '董事長級別';
+		var income5 = '上市公司主席';
+		var body1 = '較瘦';
+		var body2 = '健美';
+		var body3 = '勻稱';
+		var body4 = 'S型';
+		var body5 = '微胖';
+		var body6 = '偏胖';
+		var body7 = '其他';
+		var drink1 = '不喝酒';
+		var drink2 = '社交應酬';
+		var drink3 = '經常喝酒';
+		var smok1 = '不抽烟';
+		var smok2 = '偶爾抽烟';
+		var smok3 = '經常抽烟';
+		var education1 = '高中';
+		var education2 = '專科';
+		var education3 = '學士學位';
+		var education4 = '碩士研究生';
+		var education5 = '博士/博後';
+		var ineed1 = '理財指導';
+		var ineed2 = '創業導師';
+		var ineed3 = '心靈溝通';
+		var ineed4 = '浪漫旅行';
+		var ineed5 = '溫馨約會';
+		var ineed6 = '人生指導';
+		var ineed7 = '戀愛婚姻';
+		var ineed8 = '溫柔陪伴';
+		var hopeful1 = '玩伴關係';
+		var hopeful2 = '激情關係';
+		var hopeful3 = '情人關係';
+		var hopeful4 = '戀愛關係';
+		var hopeful5 = '婚姻關係';
+		var updateInfoWork = '職業描述';
+		var updateInfoCharater = '個性簽名';
+		var wordNum = "現時字數為";
+        btnArray = ['取消', '確認'];
+	}
+	(function($, doc) {
+		$.init();
+		$.ready(function() {
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			};
+			//地区
+			var cityPicker3 = new $.PopPicker({
+				layer: 2
+			});
+			cityPicker3.setData(cityData3);
+			var showCityPickerButton = doc.getElementById('showCityPicker3');
+			var cityResult3 = doc.getElementById('cityResult3');
+			showCityPickerButton.addEventListener('tap', function(event) {
+				cityPicker3.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({addr: _getParam(items[0], 'text')+ "-" + _getParam(items[1], 'text')}),"post");
+					cityResult3.innerText = _getParam(items[0], 'text') + "-" + _getParam(items[1], 'text');
+					//返回 false 可以阻止选择框的关闭
+					//return false;
+				});
+			}, false);
+			//宠爱指数
+			var lovePricePicker = new $.PopPicker();
+			lovePricePicker.setData([{
+				value: '1',
+				text: lovePrice1
+			}, {
+				value: '2',
+				text: lovePrice2
+			}, {
+				value: '3',
+				text: lovePrice3
+			}, {
+				value: '4',
+				text: lovePrice4
+			}]);
+			var showUserPickerButton = doc.getElementById('lovePrice');
+			var lovePriceResult = doc.getElementById('lovePriceResult');
+			showUserPickerButton.addEventListener('tap', function(event) {
+		    	console.log($('.mui-poppicker-btn-cancel'));
+				lovePricePicker.show(function(items) {
+					console.log(items[0].text)
+					getInterface().post_action("editInfo",JSON.stringify({lovePrice:items[0].text}),"post");
+					lovePriceResult.innerText = items[0].text;
+				});
+				/*if(lang == 'zh'){
+			        document.getElementsByName('mui-poppicker-btn-cancel').innerHTML = '取消';
+			        $('.mui-poppicker-btn-ok')[0].innerHTML = '确定';
+			    }else if(lang == 'en'){
+			        document.getElementsByClassName('mui-poppicker-btn-cancel').innerHTML = 'Cancel';
+			        document.getElementsByClassName('mui-poppicker-btn-ok').innerHTML = 'OK';
+			        // $('.mui-poppicker-btn-cancel')[1].innerHTML = 'Cancel';
+			    }else{
+			        $('.mui-poppicker-btn-cancel')[0].innerHTML = '取消';
+			        $('.mui-poppicker-btn-ok')[0].innerHTML = '確定';
+			    }*/
+			}, false);
+			//甜蜜目标
+			var loveDatePicker = new $.PopPicker();
+			loveDatePicker.setData([{
+				value: '1',
+				text: loveDate1
+			}, {
+				value: '2',
+				text: loveDate2
+			}, {
+				value: '3',
+				text: loveDate3
+			}, {
+				value: '4',
+				text: loveDate4
+			}, {
+				value: '5',
+				text: loveDate5
+			}, {
+				value: '6',
+				text: loveDate6
+			}]);
+			var showUserPickerButton = doc.getElementById('loveDate');
+			var loveDateResult = doc.getElementById('loveDateResult');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				loveDatePicker.show(function(items) {
+					console.log(items[0].text)
+					getInterface().post_action("editInfo",JSON.stringify({loveDate: items[0].text}),"post");
+					loveDateResult.innerText = items[0].text;
+				});
+			}, false);
+			//年收入
+			var incomePicker = new $.PopPicker();
+			incomePicker.setData([{
+				value: '1',
+				text: income1
+			}, {
+				value: '2',
+				text: income2
+			}, {
+				value: '3',
+				text: income3
+			}, {
+				value: '4',
+				text: income4
+			}, {
+				value: '5',
+				text: income5
+			}]);
+			var showUserPickerButton = doc.getElementById('income');
+			var incomeResult = doc.getElementById('incomeResult');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				incomePicker.show(function(items) {
+					console.log(items[0].text)
+					getInterface().post_action("editInfo",JSON.stringify({income: items[0].text}),"post");
+					incomeResult.innerText = items[0].text;
+				});
+			}, false);
+			//总资产
+			/*var assetsPicker = new $.PopPicker();
+			assetsPicker.setData([{
+				value: '1',
+				text: '500万'
+			}, {
+				value: '2',
+				text: '1000万'
+			}, {
+				value: '3',
+				text: '2000万'
+			}, {
+				value: '4',
+				text: '5000万'
+			}, {
+				value: '5',
+				text: '1亿'
+			}, {
+				value: '6',
+				text: '2亿'
+			}, {
+				value: '7',
+				text: '5亿'
+			}, {
+				value: '8',
+				text: '10亿以上'
+			}]);
+			var showUserPickerButton = doc.getElementById('assets');
+			var assetsResult = doc.getElementById('assetsResult');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				assetsPicker.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({assets: items[0].text}),"post");
+					assetsResult.innerText = items[0].text;
+				});
+			}, false);*/
+			//体型
+			var mybodyPicker = new $.PopPicker();
+			mybodyPicker.setData([{
+				value: '1',
+				text: body1
+			}, {
+				value: '2',
+				text: body2
+			}, {
+				value: '3',
+				text: body3
+			}, {
+				value: '4',
+				text: body4
+			}, {
+				value: '5',
+				text: body5
+			}, {
+				value: '6',
+				text: body6
+			}, {
+				value: '7',
+				text: body7
+			}]);
+			var showUserPickerButton = doc.getElementById('mybody');
+			var mybodyResult = doc.getElementById('mybodyResult');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				mybodyPicker.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({body: items[0].text}),"post");
+					mybodyResult.innerText = items[0].text;
+				});
+			}, false);
+			//身高
+			var myHeightPicker = new $.PopPicker();
+			myHeightPicker.setData([{
+				text: '137cm'
+			}, {
+				text: '140cm'
+			}, {
+				text: '143cm'
+			}, {
+				text: '146cm'
+			}, {
+				text: '149cm'
+			}, {
+				text: '152cm'
+			}, {
+				text: '155cm'
+			}, {
+				text: '158cm'
+			}, {
+				text: '161cm'
+			}, {
+				text: '164cm'
+			}, {
+				text: '167cm'
+			}, {
+				text: '170cm'
+			}, {
+				text: '173cm'
+			}, {
+				text: '176cm'
+			}, {
+				text: '179cm'
+			}, {
+				text: '182cm'
+			}, {
+				text: '185cm'
+			}, {
+				text: '188cm'
+			}, {
+				text: '191cm'
+			}, {
+				text: '194cm'
+			}, {
+				text: '194cm以上'
+			}]);
+			var showUserPickerButton = doc.getElementById('myHeight');
+			var myHeightResult = doc.getElementById('myHeightResult');
+			showUserPickerButton.addEventListener('tap', function(event) {
+				myHeightPicker.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({height: items[0].text}),"post");
+					myHeightResult.innerText = items[0].text;
+				});
+			}, false);
+			//饮酒习惯
+			var drinkPicker = new $.PopPicker();
+			drinkPicker.setData([{
+				text: drink1
+			}, {
+				text: drink2
+			}, {
+				text: drink3
+			}]);
+			var drink = doc.getElementById('drink');
+			var drinkResult = doc.getElementById('drinkResult');
+			drink.addEventListener('tap', function(event) {
+				drinkPicker.show(function(items) {
+					console.log(items[0].text)
+					getInterface().post_action("editInfo",JSON.stringify({drink: items[0].text}),"post");
+					drinkResult.innerText = items[0].text;
+				});
+			}, false);
+			//抽烟习惯
+			var smokingPicker = new $.PopPicker();
+			smokingPicker.setData([{
+				text: smok1
+			}, {
+				text: smok2
+			}, {
+				text: smok3
+			}]);
+			var smoking = doc.getElementById('smoking');
+			var smokingResult = doc.getElementById('smokingResult');
+			smoking.addEventListener('tap', function(event) {
+				smokingPicker.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({smoking: items[0].text}),"post");
+					smokingResult.innerText = items[0].text;
+				});
+			}, false);
+			//最高学历
+			var educationPicker = new $.PopPicker();
+			educationPicker.setData([{
+				text: education1
+			}, {
+				text: education2
+			}, {
+				text: education3
+			}, {
+				text: education4
+			}, {
+				text: education5
+			}]);
+			var education = doc.getElementById('education');
+			var educationResult = doc.getElementById('educationResult');
+			education.addEventListener('tap', function(event) {
+				educationPicker.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({education: items[0].text}),"post");
+					educationResult.innerText = items[0].text;
+				});
+			}, false);
+
+			//年龄
+			var agePicker = new $.PopPicker();
+			agePicker.setData([{
+				text: '18'
+			}, {
+				text: '19'
+			}, {
+				text: '20'
+			}, {
+				text: '21'
+			}, {
+				text: '22'
+			}, {
+				text: '23'
+			}, {
+				text: '24'
+			}, {
+				text: '25'
+			}, {
+				text: '26'
+			}, {
+				text: '27'
+			}, {
+				text: '28'
+			}, {
+				text: '29'
+			}, {
+				text: '30'
+			}, {
+				text: '31'
+			}, {
+				text: '32'
+			}, {
+				text: '33'
+			}, {
+				text: '34'
+			}, {
+				text: '35'
+			}, {
+				text: '36'
+			}, {
+				text: '37'
+			}, {
+				text: '38'
+			}, {
+				text: '39'
+			}, {
+				text: '40'
+			}, {
+				text: '41'
+			}, {
+				text: '42'
+			}, {
+				text: '43'
+			}, {
+				text: '44'
+			}, {
+				text: '45'
+			}, {
+				text: '46'
+			}, {
+				text: '47'
+			}, {
+				text: '48'
+			}, {
+				text: '49'
+			}, {
+				text: '50+'
+			}]);
+			var age = doc.getElementById('age');
+			var ageResult = doc.getElementById('ageResult');
+			age.addEventListener('tap', function(event) {
+				agePicker.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({age: items[0].text.split('+')[0]}),"post");
+					console.log(items[0].text.split('+')[0])
+					ageResult.innerText = items[0].text;
+				});
+			}, false);
+			//我需要的
+			var iNeedPicker = new $.PopPicker();
+			if(userSex==2){
+				iNeedPicker.setData([{
+					text: ineed1
+				}, {
+					text: ineed2
+				}, {
+					text: ineed3
+				}, {
+					text: ineed4
+				}, {
+					text: ineed5
+				}, {
+					text: ineed6
+				}, {
+					text: ineed7
+				}]);
+			}else{
+				iNeedPicker.setData([{
+					text: ineed8
+				}, {
+					text: ineed3
+				}, {
+					text: ineed4
+				}, {
+					text: ineed5
+				}, {
+					text: ineed6
+				},{
+					text: ineed7
+				}]);
+			}
+
+			var iNeed = doc.getElementById('iNeed');
+			var iNeedResult = doc.getElementById('iNeedResult');
+			iNeed.addEventListener('tap', function(event) {
+				iNeedPicker.show(function(items) {
+					console.log(items[0].text)
+					getInterface().post_action("editInfo",JSON.stringify({iNeed: items[0].text}),"post");
+					iNeedResult.innerText = items[0].text;
+				});
+			}, false);
+			//我需要的
+			var hopefulPicker = new $.PopPicker();
+			hopefulPicker.setData([{
+				text: hopeful1
+			}, {
+				text: hopeful2
+			}, {
+				text: hopeful3
+			}, {
+				text: hopeful4
+			}, {
+				text: hopeful5
+			}]);
+
+			var hopeful = doc.getElementById('hopeful');
+			var hopefulResult = doc.getElementById('hopefulResult');
+			hopeful.addEventListener('tap', function(event) {
+				hopefulPicker.show(function(items) {
+					getInterface().post_action("editInfo",JSON.stringify({hopeful: items[0].text}),"post");
+					hopefulResult.innerText = items[0].text;
+				});
+			}, false);
+		});
+
+	})(mui, document);
+
+	// 原生返回
+	function leftBtnClick(){
+		getInterface().leftBtnClick();
+	}
+	window.onscroll = function(){
+    	sTop = $('body').scrollTop();
+	}
+	/*//运动
+	$('#sports').on('tap',function(){
+		getInterface().initDataWithArray("#ffffff","","选择运动","关闭","","#AC9455","","#AC9455");
+	})
+	$('#sportType').on('change', 'input', function() {
+    	res1 = getVals('rds');
+		if(res1.length>8){
+			$(this)[0].checked = false
+		}
+	});
+	$('#sportsBtn').on('tap',function(){
+		getInterface().post_action("editInfo",JSON.stringify({sports:res1}),"post");
+		$('#sportsResult').html('');
+		for(var i=0; i<res1.length; i++){
+			var con = res1[i];
+			$('#sportsResult').append('<span class="label label-primary">'+con+'</span>');
+		}
+		getInterface().initDataWithArray("#ffffff","back",coTitle,"","","#AC9455","","");
+		viewApi.back();	// 返回前一页
+	})
+
+	//旅游
+	$('#tour').on('tap',function(){
+		getInterface().initDataWithArray("#ffffff","","选择旅游","关闭","","#AC9455","","#AC9455");
+
+	})
+	$('#tourType').on('change', 'input', function() {
+		res2 = getVals('rdt');
+		if(res2.length>8){
+			$(this)[0].checked = false
+		}
+	});
+	$('#tourBtn').on('tap',function(){
+		getInterface().post_action("editInfo",JSON.stringify({tour:res2}),"post");
+		$('#tourResult').html('');
+		for(var i=0; i<res2.length; i++){
+			var con = res2[i];
+			$('#tourResult').append('<span class="label label-warning">'+con+'</span>');
+		}
+		getInterface().initDataWithArray("#ffffff","back","修改资料","","","#AC9455","","");
+		viewApi.back();	// 返回前一页
+	})*/
+
+	// 顶部关闭
+	function rightBtnClick(){
+		viewApi.back();	// 返回前一页
+		getInterface().initDataWithArray("#ffffff","back",coTitle,"","","#AC9455","","");
+		mui.scrollTo(sTop,200);
+	}
+
+	//工作
+	$('#workSta').on('tap',function(){
+		getInterface().initDataWithArray("#ffffff","",coTitle2,closeTitle,"","#AC9455","","#AC9455");
+	})
+	$('#workDes').on('selected','.mui-table-view.mui-table-view-radio .mui-table-view-cell',function(e){
+		var con = e.detail.el.innerText.split('\n')[0]
+		$('#workResult').text(con)
+		$('#workSta .audit').remove()
+		console.log(con)
+		getInterface().post_action("editInfo",JSON.stringify({selfEdit:'no',work:con}),"post");
+		localStorage.setItem('wselfEdit',false)
+	})
+	//签名
+	$('#characterSta').on('tap',function(){
+		getInterface().initDataWithArray("#ffffff","",coTitle3,closeTitle,"","#AC9455","","#AC9455");
+	})
+	$('#characterDes').on('selected','.mui-table-view.mui-table-view-radio .mui-table-view-cell',function(e){
+		var con = e.detail.el.innerText.split('\n')[0]
+		$('#characterResult').text(con)
+		$('#characterSta .audit').remove()
+		console.log(con)
+		getInterface().post_action("editInfo",JSON.stringify({selfEdit:'no',character:con}),"post");
+		localStorage.setItem('cselfEdit',false)
+	})
+	//介绍
+	$('#selfInfoSta').on('tap',function(){
+		getInterface().initDataWithArray("#ffffff","",coTitle4,closeTitle,"","#AC9455","","#AC9455");
+	})
+	$('#selfInfoDes').on('change','input',function(){
+		var res = getVals('sch');
+		if(res.length>8){
+			$(this)[0].checked = false
+		}
+		$('#selfInfoResult').html('');
+		for(var i=0; i<res.length; i++){
+			var con = res[i];
+			$('#selfInfoResult').append('<span>'+con+'</span>');
+		}
+		$('#selfInfoSta .audit').remove()
+		console.log(res)
+		getInterface().post_action("editInfo",JSON.stringify({selfEdit:'no',selfInfo:res}),"post");
+		localStorage.setItem('sselfEdit',false)
+	})
+
+
+	function getVals(className){
+	    var res = getCheckBoxRes(className);
+	    if(res.length < 1){
+	        mui.toast(muiText1);
+	        // return;
+	    }else if((res.length+1) > 8){
+	    	mui.toast(muiText2);
+	        // return;
+	    }
+	    return res;
+	}
+	function getCheckBoxRes(className){
+	    var rdsObj = document.getElementsByClassName(className);
+	    var checkVal = new Array();
+	    var k = 0;
+	    for(i = 0; i < rdsObj.length; i++){
+	        if(rdsObj[i].checked){
+	    		// console.log($(rdsObj[i]).siblings('label').text())
+	            checkVal[k] = $(rdsObj[i]).siblings('label').text();
+	            k++;
+	        }
+	    }
+	    return checkVal;
+	}
+	// 昵称
+	$("#promptBtn").on('tap','#nickN',function(e) {
+		e.detail.gesture.preventDefault(); //修复iOS 8.x平台存在的bug，使用plus.nativeUI.prompt会造成输入法闪一下又没了
+		var btnArray = [cancel, save];
+		var titleName = $(this).find('.flag-title2').text();
+		var that = $(this);
+		mins=2;
+	    maxs=100;
+	    console.log(that)
+		// 弹出输入框
+		mui.confirm('<textarea id="dialog" placeholder="'+placeholder+'"></textarea><span class="over-hint">'+wordNum+'<i>0</i></span>', titleName, btnArray, function(e) {
+		    var index = e.index;
+		    if(index === 1) {
+		    	var dialogCon = document.getElementById('dialog').value;
+		       var count = document.getElementById('dialog').value.length;
+		       if(count>maxs){
+		       		getInterface().msg_alert(muiText3+maxs);
+		       		$(".mui-popup-button-bold").addClass('warning-btn');
+		       		return false;
+		       }else if(count<mins){
+		       		getInterface().msg_alert(muiText4+mins);
+		       	    return false;
+		       }else{
+		       		// 满足条件
+		       		that.find('.mui-badge').text(dialogCon);
+		       		getInterface().post_action("editInfo",JSON.stringify({nickname: dialogCon}),"post");
+
+		       		localStorage.setItem('infoSta',1);
+		       		if(that.find('.audit').length==0){
+		       			that.find('.flag-title2').after('<span class="mui-badge-orange audit">'+inAudit+'</span>');
+		       		}else{
+		       			that.find('.audit').text(inAudit);
+		       		}
+		       }
+		    }
+		});
+		letter('#dialog', mins, maxs);
+	});
+	// 工作、介绍、签名的输入框
+	$("#promptBtn").on('tap','.titleName',function(e) {
+		e.detail.gesture.preventDefault(); //修复iOS 8.x平台存在的bug，使用plus.nativeUI.prompt会造成输入法闪一下又没了
+		var btnArray = [cancel, save];
+		console.log($(this).parent().siblings()[0].innerText)
+		var titleName = $(this).parent().siblings()[0].innerText;
+		var that = $(this);
+		if(that[0].id == "work" || that[0].id == "character" || that[0].id == "selfInfo"){
+		    mins=2;
+		    maxs=100;
+		}
+		// 弹出输入框
+		mui.confirm('<textarea id="dialog"></textarea><span class="over-hint">'+wordNum+'<i>0</i></span>', titleName, btnArray, function(e) {
+		    var index = e.index;
+		    if(index === 1) {
+		    	var dialogCon = document.getElementById('dialog').value;
+		        var count = document.getElementById('dialog').value.length;
+		        if(count>maxs){
+		       		getInterface().msg_alert(muiText3+maxs);
+		       		$(".mui-popup-button-bold").addClass('warning-btn');
+		       		return false;
+		        }else if(count<mins){
+		       		getInterface().msg_alert(muiText4+mins);
+		       	    return false;
+		        }else{
+		       		// 满足条件
+		       		that.find('.mui-badge').text(dialogCon);
+		       		if(titleName == updateInfoWork ){
+		       			$('#workResult').text(dialogCon);
+		       			console.log(dialogCon)
+						getInterface().post_action("editInfo",JSON.stringify({selfEdit:'yes',work:dialogCon}),"post");
+						localStorage.setItem('wselfEdit',true)
+						localStorage.setItem('infoSta',1);
+						if($('#workSta .audit').length==0){
+							$('#workSta .flag-title').after('<span class="mui-badge-orange audit">'+ininAudit+'</span>');
+						}else{
+							$('#workSta .audit').text(inAudit);
+						}
+		       		}else if(titleName == updateInfoCharater){
+		       			console.log(dialogCon)
+		       			$('#characterResult').text(dialogCon)
+		       			console.log(dialogCon)
+						getInterface().post_action("editInfo",JSON.stringify({selfEdit:'yes',character:dialogCon}),"post");
+						localStorage.setItem('cselfEdit',true)
+						localStorage.setItem('infoSta',1);
+						if($('#characterSta .audit').length==0){
+							$('#characterSta .flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>');
+						}else{
+							$('#characterSta .audit').text(inAudit);
+						}
+		       		}else{
+		       			$('#selfInfoResult').text(dialogCon)
+		       			console.log(dialogCon)
+		       			getInterface().post_action("editInfo",JSON.stringify({selfEdit:'yes',selfInfo:dialogCon}),"post");
+		       			localStorage.setItem('sselfEdit',true)
+						localStorage.setItem('infoSta',1);
+		       			if($('#selfInfoSta .audit').length==0){
+							$('#selfInfoSta .flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>');
+						}else{
+							$('#selfInfoSta .audit').text(inAudit);
+						}
+		       		}
+		        }
+		        getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#333333","","");
+		        viewApi.back();	// 返回前一页
+		    }
+
+		});
+		letter('#dialog', mins, maxs);
+	});
+	//判断不超过几个字
+	function letter(input, min, max) {
+		document.querySelector(input).onkeyup= function(){
+			var length = $(this).val().length
+			$('.over-hint i').text(length);
+			if(length >= min){
+				$(".mui-popup-button-bold").removeClass('warning-btn');
+				$('.over-hint').addClass('safe');
+				if(length > max){
+					$('.over-hint').removeClass('safe');
+					$(".mui-popup-button-bold").addClass('warning-btn')
+				}
+			}else{
+				$('.over-hint').removeClass('safe');
+				$(".mui-popup-button-bold").addClass('warning-btn')
+			}
+		};
+	}
+
+	function return_action(data,data2){
+		if( data2=='getInfo' ){
+			// 得到用户信息
+			var res = data.result;
+			if( res.sex == '2' ){
+				$('#assets').hide();
+				$('#income').hide();
+				$('#selfFemale').show();
+				$('#chareFemale').show();
+				$('#selfMale').hide();
+				$('#chareMale').hide();
+			}else{
+				$('#selfFemale').hide();
+				$('#chareFemale').hide();
+				$('#selfMale').show();
+				$('#chareMale').show();
+			}
+			$('#nickname').text(res.nickname||'');
+			$('#ratePro').attr('value',res.completion);
+			$('#rate').text(res.completion+'%');
+			$('#ageResult').text(res.age||'');
+			$('#cityResult3').text(res.addr||'');
+			$('#lovePriceResult').text(res.lovePrice||'');
+			$('#loveDateResult').text(res.loveDate||'');
+			//兼容年收入
+			switch(res.income){
+				case '50万':
+					$('#incomeResult').text(income1);
+					break;
+				case '100万':
+					$('#incomeResult').text(income2);
+					break;
+				case '200万':
+					$('#incomeResult').text(income3);
+					break;
+				case '500万':
+					$('#incomeResult').text(income4);
+					break;
+				case '1000万':
+					$('#incomeResult').text(income5);
+					break;
+				case '5000万':
+					$('#incomeResult').text(income5);
+					break;
+				case '1亿以上':
+					$('#incomeResult').text(income5);
+					break;
+				default:
+				  	$('#incomeResult').text(res.income);
+			}
+			$('#iNeedResult').text(res.iNeed||'');
+			$('#hopefulResult').text(res.hopeful||'');
+			if(res.sports){
+				for(var i=0; i<res.sports.length; i++){
+					var con = res.sports[i];
+					$('#sportsResult').append('<span class="label label-primary">'+con+'</span>');
+				}
+			}
+			if(res.tour){
+				for(var i=0; i<res.tour.length; i++){
+					var con = res.tour[i];
+					$('#tourResult').append('<span class="label label-warning">'+con+'</span>');
+				}
+			}
+			$('#mybodyResult').text(res.body||'');
+			$('#myHeightResult').text(res.height||'');
+			$('#drinkResult').text(res.drink||'');
+			$('#smokingResult').text(res.smoking||'');
+			$('#educationResult').text(res.education||'')
+
+			if(res.work){
+                $('#workResult').text(res.work);
+                $('#workResult').addClass('workLabel');
+            }
+            if(res.character){
+                $('#characterResult').text(res.character);
+                $('#characterResult').addClass('characterLabel');
+            }
+            if(res.selfInfo){
+                $('#selfInfoResult').text(res.selfInfo);
+                $('#selfInfoResult').addClass('selfInfo1Label');
+            }
+			$('#lookingReuslt').text(res.looking||'');
+			//完整度
+			if(data.result.completion < 90){
+				$('.integrity').show();
+				$('#trip').text(textArr[0]);
+			}else if(data.result.completion >89 && data.result.completion <100){
+				$('.integrity').show();
+				$('#trip').text(textArr[1]);
+			}else{
+				$('.integrity').css('display','none');
+			}
+
+			if(res.nickname){
+				$('#nickN ').find('.flag-title2').after('<span class="mui-badge-orange audit"></span>')
+			}
+			//判断是否为自己输入的，自己输入的需要审核
+			var workSta = localStorage.getItem('wselfEdit');
+			var characterSta = localStorage.getItem('cselfEdit');
+			var selfInfoSta = localStorage.getItem('sselfEdit');
+			if(workSta=='true'){
+				if(res.work){
+					$('#workSta').find('.flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>')
+				}
+			}
+			if(characterSta=='true'){
+				if(res.character){
+					$('#characterSta').find('.flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>')
+				}
+			}
+			if(selfInfoSta=='true'){
+				if(res.selfInfo){
+					$('#selfInfoSta').find('.flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>')
+				}
+			}
+
+			// 判断是否审核通过
+			if(res.auditContent.nickname && res.auditContent.nickname == '2'){
+				$('#nickN .audit').text(inAudit);
+			}else if(res.auditContent.nickname && res.auditContent.nickname == '0'){
+				$('#nickN .audit').text(noPass)
+			}else if(res.auditContent.nickname && res.auditContent.nickname == '1'){
+				$('#nickN .audit').text(pass)
+			}
+			if(!res.auditContent.work && res.auditContent.work == '2'){
+				$('#workSta .audit').text(inAudit);
+			}else if(res.auditContent.work && res.auditContent.work == '0'){
+				$('#workSta .audit').text(noPass)
+			}else if(res.auditContent.work && res.auditContent.work == '1'){
+				$('#workSta .audit').text(pass)
+			}
+			if(!res.auditContent.character && res.auditContent.character == '2'){
+				$('#characterSta .audit').text(inAudit);
+			}else if(res.auditContent.character && res.auditContent.character == '0'){
+				$('#characterSta .audit').text(noPass)
+			}else if(res.auditContent.character && res.auditContent.character == '1'){
+				$('#characterSta .audit').text(pass)
+			}
+			if(!res.auditContent.selfInfo && res.auditContent.selfInfo == '2'){
+				$('#selfInfoSta .audit').text(inAudit);
+			}else if(res.auditContent.selfInfo && res.auditContent.selfInfo == '0'){
+				$('#selfInfoSta .audit').text(noPass)
+			}else if(res.auditContent.selfInfo && res.auditContent.selfInfo == '1'){
+				$('#selfInfoSta .audit').text(pass)
+			}
+			getInterface().hud_hide();
+		}else{
+			localStorage.setItem('completion',data.completion);
+			$('#ratePro').attr('value',data.completion);
+			$('#rate').text(data.completion+'%');
+			if(data.completion < 90){
+				$('#trip').text(textArr[0]);
+			}else if(data.completion >89 && data.completion <100){
+				$('#trip').text(textArr[1]);
+			}else{
+				$('.integrity').css('display','none');
+			}
+			getInterface().reload_main('fix')
+		}
+		if(lang == 'zh'){
+			$('.mui-poppicker-header .mui-poppicker-btn-cancel').text('取消');
+	    	$('.mui-poppicker-header .mui-poppicker-btn-ok').text('确定');
+		}else if(lang == 'en'){
+			$('.mui-poppicker-header .mui-poppicker-btn-cancel').text('Cancel');
+	    	$('.mui-poppicker-header .mui-poppicker-btn-ok').text('OK');
+		}else{
+			$('.mui-poppicker-header .mui-poppicker-btn-cancel').text('取消');
+	    	$('.mui-poppicker-header .mui-poppicker-btn-ok').text('確定');
+		}
+
+	}
+
+
+
+
+	/*var data ={
+	    "ret": 1,
+	    "err": "ok",
+	    "msgNum": 0,
+	    "noticeNum": 0,
+	    "endTime": "于2017-09-12到期",
+	    "shield": "no",
+	    "vipText": "普通用户",
+	    "result": {
+	        "_id": "59b79dd750b08403b47bebfe",
+	        "traceid": {
+	            "_id": "59b79dd750b08403b47bebff",
+	            "userid": "59b79dd750b08403b47bebfe",
+	            "sex": 1,
+	            "__v": 15,
+	            "targetChat": "599be0b41f76c714943fbdf7",
+	            "meta": {
+	                "updatedAt": "2017-09-15T02:52:16.526Z",
+	                "createdAt": "2017-09-12T08:41:59.978Z"
+	            },
+	            "report": [],
+	            "soundChat": true,
+	            "soundCare": true,
+	            "careSet": true,
+	            "browseSet": true,
+	            "listSet": true,
+	            "photoPried": [],
+	            "photoPri": [],
+	            "hated": [],
+	            "hate": [],
+	            "browsed": [
+	                "59805436e86b3e0da72f4b82"
+	            ],
+	            "browse": [
+	                "59899ba6cfb55b350f987a7f",
+	                "599fd2f5035a49247eb76e0c",
+	                "598c17a81c55b04395c067f7",
+	                "59a0da19f81b7f2c1f1a2e39",
+	                "599d78ec9aa8db19677e63af",
+	                "59b6335bc9786360490d299a",
+	                "59805436e86b3e0da72f4b82",
+	                "59b65d3e46f33e67d805a3da",
+	                "59a12073d0f88a325a41a925",
+	                "599a7a80932da50cd6f1b3ab",
+	                "599be0b41f76c714943fbdf7"
+	            ],
+	            "careNum": 0,
+	            "cared": [],
+	            "care": [
+	                "59899ba6cfb55b350f987a7f",
+	                "599fd2f5035a49247eb76e0c",
+	                "59a0da19f81b7f2c1f1a2e39"
+	            ],
+	            "loginAt": "2017-09-15T02:52:16.524Z"
+	        },
+	        "platform": "ios",
+	        "registration_id": "170976fa8ab4c9f5455",
+	        "mobile": "15074436853",
+	        "sex": 1,
+	        "lat": "23.136177",
+	        "lng": "113.295736",
+	        "password": "$2a$10$HpJ0fJRDBxpSyCg8v2tE3.yTne9ACZXDuOCBGJLhoh3Bo0IpKnL.u",
+	        "from": "boss",
+	        "__v": 3,
+	        "addr": "河北-石家庄-长安",
+	        "age": 24,
+	        "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/150744368531505205759.jpg",
+	        "city": "石家庄",
+	        "nickname": "达康书记",
+	        "province": "河北",
+	        "lovePrice": "小清新",
+	        "loveDate": "初见",
+	        "income": "白领级别",
+	        "body": "较瘦",
+	        "height": "137cm",
+	        "drink": "不喝酒",
+	        "smoking": "经常抽烟",
+	        "education": "硕士研究生",
+	        "work": "自由职业者",
+	        "character": "我忘不了你的拥抱和那甜甜的微笑",
+	        "selfInfo": "霸道总裁,时尚",
+	        "iNeed": "温柔陪伴",
+	        "hopeful": "玩伴关系",
+	        "auditAt": "2017-09-12T09:25:55.312Z",
+	        "meta": {
+	            "updatedAt": "2017-09-15T02:52:16.517Z",
+	            "createdAt": "2017-09-12T08:41:59.974Z"
+	        },
+	        "photoPri": [],
+	        "photoPub": [],
+	        "vipLevel": "vip0",
+	        "rmbTotal": 0,
+	        "vip": {
+	            "to": "2017-09-12T08:41:59.974Z",
+	            "from": "2017-09-12T08:41:59.974Z",
+	            "role": false
+	        },
+	        "auditStatus": "failed",
+	        "auditReson": {
+	            "nickname": "22"
+	        },
+	        "auditContent": {
+	            "selfInfo": "1",
+	            "character": "1",
+	            "work": "1",
+	            "avatar": "2",
+	            "nickname": "0"
+	        },
+	        "loc": {
+	            "type": "Point",
+	            "coordinates": [
+	                113.295736,
+	                23.136177
+	            ]
+	        },
+	        "locAuthorize": true,
+	        "loginAt": "2017-09-12T08:41:59.973Z",
+	        "completion": 90,
+	        "tour": [],
+	        "sports": [],
+	        "online": "no",
+	        "isActive": "yes",
+	        "number": 1,
+	        "mock": false
+	    }
+	}
+	// 得到用户信息
+	var res = data.result;
+	if( res.sex == '2' ){
+		$('#assets').hide();
+		$('#income').hide();
+		$('#selfFemale').show();
+		$('#chareFemale').show();
+		$('#selfMale').hide();
+		$('#chareMale').hide();
+	}else{
+		$('#selfFemale').hide();
+		$('#chareFemale').hide();
+		$('#selfMale').show();
+		$('#chareMale').show();
+	}
+	$('#nickname').text(res.nickname||'');
+	$('#ratePro').attr('value',res.completion);
+	$('#rate').text(res.completion+'%');
+	$('#ageResult').text(res.age||'');
+	$('#cityResult3').text(res.addr||'');
+	$('#lovePriceResult').text(res.lovePrice||'');
+	$('#loveDateResult').text(res.loveDate||'');
+	//兼容年收入
+	switch(res.income){
+		case '50万':
+			$('#incomeResult').text(income1);
+			break;
+		case '100万':
+			$('#incomeResult').text(income2);
+			break;
+		case '200万':
+			$('#incomeResult').text(income3);
+			break;
+		case '500万':
+			$('#incomeResult').text(income4);
+			break;
+		case '1000万':
+			$('#incomeResult').text(income5);
+			break;
+		case '5000万':
+			$('#incomeResult').text(income5);
+			break;
+		case '1亿以上':
+			$('#incomeResult').text(income5);
+			break;
+		default:
+		  	$('#incomeResult').text(res.income);
+	}
+	$('#iNeedResult').text(res.iNeed||'');
+	$('#hopefulResult').text(res.hopeful||'');
+	if(res.sports){
+		for(var i=0; i<res.sports.length; i++){
+			var con = res.sports[i];
+			$('#sportsResult').append('<span class="label label-primary">'+con+'</span>');
+		}
+	}
+	if(res.tour){
+		for(var i=0; i<res.tour.length; i++){
+			var con = res.tour[i];
+			$('#tourResult').append('<span class="label label-warning">'+con+'</span>');
+		}
+	}
+	$('#mybodyResult').text(res.body||'');
+	$('#myHeightResult').text(res.height||'');
+	$('#drinkResult').text(res.drink||'');
+	$('#smokingResult').text(res.smoking||'');
+	$('#educationResult').text(res.education||'')
+
+	if(res.work){
+        $('#workResult').text(res.work);
+        $('#workResult').addClass('workLabel');
+    }
+    if(res.character){
+        $('#characterResult').text(res.character);
+        $('#characterResult').addClass('characterLabel');
+    }
+    if(res.selfInfo){
+        $('#selfInfoResult').text(res.selfInfo);
+        $('#selfInfoResult').addClass('selfInfo1Label');
+    }
+	$('#lookingReuslt').text(res.looking||'');
+	//完整度
+	if(data.result.completion < 90){
+		$('.integrity').show();
+		$('#trip').text(textArr[0]);
+	}else if(data.result.completion >89 && data.result.completion <100){
+		$('.integrity').show();
+		$('#trip').text(textArr[1]);
+	}else{
+		$('.integrity').css('display','none');
+	}
+
+	if(res.nickname){
+		$('#nickN ').find('.flag-title2').after('<span class="mui-badge-orange audit"></span>')
+	}
+	//判断是否为自己输入的，自己输入的需要审核
+	var workSta = localStorage.getItem('wselfEdit');
+	var characterSta = localStorage.getItem('cselfEdit');
+	var selfInfoSta = localStorage.getItem('sselfEdit');
+	if(workSta=='true'){
+		if(res.work){
+			$('#workSta').find('.flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>')
+		}
+	}
+	if(characterSta=='true'){
+		if(res.character){
+			$('#characterSta').find('.flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>')
+		}
+	}
+	if(selfInfoSta=='true'){
+		if(res.selfInfo){
+			$('#selfInfoSta').find('.flag-title').after('<span class="mui-badge-orange audit">'+inAudit+'</span>')
+		}
+	}
+
+	// 判断是否审核通过
+	if(res.auditContent.nickname && res.auditContent.nickname == '2'){
+		$('#nickN .audit').text(inAudit);
+	}else if(res.auditContent.nickname && res.auditContent.nickname == '0'){
+		$('#nickN .audit').text(noPass)
+	}else if(res.auditContent.nickname && res.auditContent.nickname == '1'){
+		$('#nickN .audit').text(pass)
+	}
+	if(!res.auditContent.work && res.auditContent.work == '2'){
+		$('#workSta .audit').text(inAudit);
+	}else if(res.auditContent.work && res.auditContent.work == '0'){
+		$('#workSta .audit').text(noPass)
+	}else if(res.auditContent.work && res.auditContent.work == '1'){
+		$('#workSta .audit').text(pass)
+	}
+	if(!res.auditContent.character && res.auditContent.character == '2'){
+		$('#characterSta .audit').text(inAudit);
+	}else if(res.auditContent.character && res.auditContent.character == '0'){
+		$('#characterSta .audit').text(noPass)
+	}else if(res.auditContent.character && res.auditContent.character == '1'){
+		$('#characterSta .audit').text(pass)
+	}
+	if(!res.auditContent.selfInfo && res.auditContent.selfInfo == '2'){
+		$('#selfInfoSta .audit').text(inAudit);
+	}else if(res.auditContent.selfInfo && res.auditContent.selfInfo == '0'){
+		$('#selfInfoSta .audit').text(noPass)
+	}else if(res.auditContent.selfInfo && res.auditContent.selfInfo == '1'){
+		$('#selfInfoSta .audit').text(pass)
+	}
+	getInterface().hud_hide();
+	$('.mui-poppicker-header .mui-poppicker-btn-cancel').text('Cancel');
+	$('.mui-poppicker-header .mui-poppicker-btn-ok').text('OK');*/
+</script>
+</html>

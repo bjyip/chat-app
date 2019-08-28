@@ -1,0 +1,476 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>浏览历史</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+	<link rel="stylesheet" href="css/iconfont.css">
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+	<script src="js/i18next-1.7.7.min.js"></script>
+	<script src="js/bbmis.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+	<style>
+		.index-con .basicInfo {
+		    margin: -2px 0 5px;
+		}
+	</style>
+</head>
+
+<body class="whiteBg">
+	<!--页面主内容区开始-->
+	<div class="mui-page-content index-con">
+		<div class="top-title">
+        	<h6 class="hide-span" data-i18n="his-title">来访的人</h6>
+			<div class="integrity" id="fillInfo">
+	            <span class="" data-i18n="his-integrity">信息完整度</span>
+	            <progress max="100" value="" id="ratePro"></progress>
+	            <span id="rate">0%</span>
+	            <p id="trip"></p>
+	        </div>
+		</div>
+		<span class="hide-span" data-i18n="his-lookMe">谁看过我</span>
+		<div class="historyCon">
+			<div id="collect-item2" class="mui-control-content mui-active">
+				<ul class="mui-table-view" id="collectList2">
+				</ul>
+				<div class="nobdyTips nobdyTips_collect" id='nobdyTips2'>
+					<img src="./img/nolove.png" alt="">
+					<p class="noresult" data-i18n="his-empty">竟然是空的</p>
+					<p class="changeTerm"></p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!--页面主内容区结束-->
+	<script type="text/template" id="listItem">
+		<li class="mui-table-view-cell mui-media collect-item">
+	        <a class="coll-item" href="javascript:;">
+	        	<span class="online"></span>
+	            <img id="photo" class="mui-media-object mui-pull-left" src="img/list_Avatar@2x.png">
+	            <div class="mui-media-body">
+            		<span id="nickname"></span><img class="vip-logo" src="" alt="">
+            		<p class="basicInfo">
+            			<span class="addr"></span><span class="age"></span><span id="lovePrice"></span>
+            		</p>
+            		<p class="mui-ellipsis" id="character"></p>
+	            </div>
+	            <!-- <span class="clock xs-font" id="visitTime"><i class="mui-icon iconfont icon-shizhong"></i>1分钟前</span> -->
+	        </a>
+	    </li>
+	</script>
+	<script src="js/mui.min.js"></script>
+    <script src="js/i18n_data.js"></script>
+	<script type="text/javascript">
+		mui.init();
+        var coTitle = $('h6[data-i18n]').text();
+        getInterface().initDataWithArray("#ffffff","back",coTitle,"","","#AC9455","","");
+		var u = navigator.userAgent;
+	    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+	    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+		function leftBtnClick(){
+			getInterface().leftBtnClick();
+		}
+		// 得到自己信息
+		getInterface().post_action("getInfo",'','get');
+		if(isiOS){
+			getInterface().hud_loading();
+		}
+		var shield1 =localStorage.getItem('shield1');
+		// 关注列表
+		getInterface().post_action("browseList",'','get');
+		getInterface().hud_loading();
+		var myId;
+
+		function return_action(data,data2){
+			if(data2=='browseList'){
+				if(isiOS){
+					getInterface().hud_hide();
+				}
+				if(data.browsed && data.browsed.length != 0){
+					$("#nobdyTips2").css('display','none');
+					showStarList("#collectList2", data.browsed);
+				}else{
+					$("#nobdyTips2").css('display','block');
+					$('#collectList2').remove();
+				}
+				getInterface().hud_hide();
+			}else{
+				if(isiOS){
+					getInterface().hud_hide();
+				}
+				// 设置完整度
+				if(data.result.completion < 90){
+					$('.integrity').show();
+					$('#trip').text(textArr[0]);
+					$('.historyCon').css('margin-top','58px');
+				}else if(data.result.completion >89 && data.result.completion <100){
+					$('.integrity').show();
+					$('#trip').text(textArr[1]);
+					$('.historyCon').css('margin-top','58px');
+				}else{
+					$('.integrity').css('display','none');
+				}
+				$('#ratePro').attr('value',data.result.completion);
+				$('#rate').text(data.result.completion+'%');
+				if(data.shield=='yes'){
+					$('.mui-badge-warning').hide();
+					$('#fillInfo').hide();
+				}else{
+					$('.mui-badge-warning').show();
+				}
+				myId = data.result._id;
+			}
+		}
+
+		function showStarList(sel,res){
+			// var temp = $(sel).find(".collect-item");
+			var results = res;
+			console.log(results)
+			$(sel).html("");
+			for(var i=0; i< results.length; i++){
+				var t = $($("#listItem").html())
+				// 头像
+				if(results[i].auditContent && results[i].auditContent.avatar && results[i].auditContent.avatar=='1' || results[i].avatar && !results[i].auditContent.avatar){
+					t.find('#photo').attr('src',results[i].avatar);
+				}else if(results[i].auditContent && results[i].auditContent.avatar && results[i].auditContent.avatar!='1' && results[i].oldAvatar){
+					t.find('#photo').attr('src',results[i].oldAvatar);
+				}else if(results[i].sex==1){
+					t.find('#photo').attr('src','img/nan01.png');
+				}else{
+					t.find('#photo').attr('src','img/nv01.png');
+				}
+				t.find('#photo').attr('data-id',results[i]._id);
+				t.find('#lovePrice').html(results[i].lovePrice);
+
+				if(results[i].city){
+					if(!results[i].age && !results[i].lovePrice){
+						t.find('.addr').html(results[i].city);
+					}else{
+						t.find('.addr').html(results[i].city+'/');
+					}
+				}
+				if(results[i].age){
+					if(results[i].lovePrice){
+						t.find('.age').html((results[i].age>=50?'50+':results[i].age)+ageLang()+'/');
+					}else{
+						t.find('.age').html((results[i].age>=50?'50+':results[i].age)+ageLang());
+					}
+				}
+				t.find('.lovePrice').html(results[i].lovePrice);
+				if(results[i].nickname){
+					t.find('#nickname').html(results[i].nickname);
+				}else{
+					if(results[i].sex==1){
+						t.find('#nickname').html(maleNicknameLang());
+					}else{
+						t.find('#nickname').html(femaleNicknameLang());
+					}
+				}
+				if(shield1=='no'){
+					if(results[i].vip.role){
+						t.find('#nickname').css('color','#d1aa50');
+						if(results[i].sex==1){
+							if(results[i].vipLevel == "vip1" || results[i].vipLevel == "vip2"){
+								t.find('.vip-logo').attr("src","./img/pic_GoldMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip3"){
+								t.find('.vip-logo').attr("src","./img/pic_DiamondMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip4"){
+								t.find('.vip-logo').attr("src","./img/pic_CrownMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}
+						}else{
+							if(results[i].vipLevel == "vip1" || results[i].vipLevel == "vip2"){
+								t.find('.vip-logo').attr("src","./img/women_pic_MonarchMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip3"){
+								t.find('.vip-logo').attr("src","./img/women_pic_PrincessMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip4"){
+								t.find('.vip-logo').attr("src","./img/women_pic_QueenMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}
+						}
+					}else{
+						t.find('.vip-logo').remove();
+					}
+				}
+
+				if(results[i].online=='yes'){
+					t.find('.online').css('display','inline-block');
+				}
+				t.find('#character').text(results[i].character);
+				$(sel).append(t);
+			}
+
+		}
+
+		// ios原生方法，页面跳转到个人主页
+		$('.historyCon').on('tap','.collect-item a',function(e){
+			e.preventDefault();
+			var userId = $(this).find(".mui-media-object").attr('data-id');
+			getInterface().html_jump_href(service+'/personal.html?personId='+userId+'&myId='+myId, 'yes');
+		})
+		// 跳转到编辑资料
+		$('#fillInfo').on('tap',function(){
+			getInterface().html_jump_href(service+'/newUpdateInfo.html', 'no');
+		})
+		//没有搜索结果，跳高级搜索
+		$('#search_btn').on('tap',function(){
+			getInterface().html_jump_href(service+'/search.html', 'no');
+		})
+		//没有喜欢我的人，跳升级会员
+		$('#cared_btn').on('tap',function(){
+			getInterface().html_jump_href(service+'/newUpgradeVIPPay.html', 'no');
+		})
+
+		function reload_html(){
+			var perstate = localStorage.getItem('perstate');
+			localStorage.setItem('perstate',0)
+			if(perstate==1){
+				getInterface().post_action("browseList",'','get');
+			}
+		}
+
+		/*var data = {
+		    "ret": 1,
+		    "browsed": [
+		        {
+		            "_id": "59bb3a91ec5f2f457553cd11",
+		            "sex": 1,
+		            "age": 50,
+		            "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/150744368551505442470.jpg",
+		            "city": "呼和浩特",
+		            "nickname": "我是小boss",
+		            "lovePrice": "小清新",
+		            "character": "我愿成为你可以依靠的那个男人",
+		            "vipLevel": "vip4",
+		            "vip": {
+		                "coupons": "PKSW",
+		                "category": "alipay",
+		                "to": "2019-09-05T03:44:03.956Z",
+		                "from": "2017-09-15T03:44:03.956Z",
+		                "role": true
+		            },
+		            "auditContent": {
+		                "nickname": "1",
+		                "character": "1",
+		                "selfInfo": "1",
+		                "work": "1",
+		                "avatar":"0"
+		            },
+		            "oldAvatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156264399291505962017.jpg",
+		        },
+		        {
+		            "_id": "597d31f5f6a57559a60938f2",
+		            "sex": 1,
+		            "nickname": "火锅英雄",
+		            "age": 41,
+		            "addr": "广东省广州市",
+		            "lovePrice": "高奢",
+		            "character": "太阳每天都是新的",
+		            "avatar": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/186655520751501570680.jpg",
+		            "vipLevel": "vip0",
+		            "vip": {
+		                "to": "2017-09-08T01:10:13.382Z",
+		                "from": "2017-08-23T01:10:13.382Z",
+		                "role": false
+		            },
+		            "auditContent": {
+		                "character": "1",
+		                "looking": "1",
+		                "nickname": "1",
+		                "selfInfo": "1",
+		                "avatar": "1"
+		            }
+		        }
+		    ]
+		}
+		if(data.browsed && data.browsed.length != 0){
+			$("#nobdyTips2").css('display','none');
+			showStarList("#collectList2", data.browsed);
+		}else{
+			$("#nobdyTips2").css('display','block');
+			$('#collectList2').remove();
+		}
+		var data = {
+		    "ret": 1,
+		    "err": "ok",
+		    "msgNum": 0,
+		    "noticeNum": 0,
+		    "endTime": "于2017-11-16到期",
+		    "shield": "no",
+		    "vipText": "至尊皇冠会员",
+		    "result": {
+		        "_id": "5996a377e5c1703991364636",
+		        "traceid": {
+		            "_id": "5996a377e5c1703991364637",
+		            "userid": "5996a377e5c1703991364636",
+		            "__v": 61,
+		            "targetChat": "598061a0662f050f0c4a7d30",
+		            "sex": 1,
+		            "meta": {
+		                "updatedAt": "2017-09-08T08:41:43.701Z",
+		                "createdAt": "2017-08-18T08:21:11.851Z"
+		            },
+		            "report": [],
+		            "soundChat": true,
+		            "soundCare": true,
+		            "careSet": true,
+		            "browseSet": true,
+		            "listSet": true,
+		            "photoPried": [
+		                "59805436e86b3e0da72f4b82"
+		            ],
+		            "photoPri": [
+		                "59805436e86b3e0da72f4b82"
+		            ],
+		            "hated": [],
+		            "hate": [
+		                "598d78fc2629f052b7e649bd",
+		                "597b169948eb14558dfc1292",
+		                "5987d1bb8bf9880f4156e6d3",
+		                "599f8652a0ef5627f03c4dfe",
+		                "59b0e0906a01bb657756d32b",
+		                "597603e56cffa223ef7df566",
+		                "59906178863b4264f32f066d",
+		                "5971cb7417c86e6fd3bc1a0e",
+		                "5971cb7317c86e6fd3bc19f6",
+		                "5993e0b60f292020da3bf924"
+		            ],
+		            "browsed": [
+		                "598061a0662f050f0c4a7d30",
+		                "5996cd0381f50c474bc0fe36",
+		                "5971cb7117c86e6fd3bc19de",
+		                "59805436e86b3e0da72f4b82",
+		                "597eff5ad8d3f8727b15e6c2",
+		                "59ae0fb6578aa4048c437348",
+		                "59ae82ad1bfea62e95690db7"
+		            ],
+		            "browse": [
+		                "598061a0662f050f0c4a7d30",
+		                "5993e0b60f292020da3bf924",
+		                "598d78fc2629f052b7e649bd",
+		                "5982ed726198024c9e7948f5",
+		                "59805436e86b3e0da72f4b82",
+		                "599a997b84f11e6f7194fd7e",
+		                "5987d1bb8bf9880f4156e6d3",
+		                "5971cb7117c86e6fd3bc19e0",
+		                "5996a1e50c31c13923879b86",
+		                "599f8652a0ef5627f03c4dfe",
+		                "597603e56cffa223ef7df566",
+		                "597ecac28feaab6f8f1a5291",
+		                "597eff5ad8d3f8727b15e6c2",
+		                "5996b5e6e279ce408da58266",
+		                "59a6e307a6af67464d85a83f",
+		                "59906178863b4264f32f066d",
+		                "598dceb8863b4264f32f0654",
+		                "59a147f48c4a692e12bea7c5",
+		                "5971cb7517c86e6fd3bc1a10",
+		                "5990612e863b4264f32f066b",
+		                "59b0e0906a01bb657756d32b",
+		                "5971cb7417c86e6fd3bc1a0e",
+		                "5971cb7317c86e6fd3bc19f6",
+		                "59ae82ad1bfea62e95690db7"
+		            ],
+		            "careNum": 2,
+		            "cared": [
+		                "59ae82ad1bfea62e95690db7",
+		                "59805436e86b3e0da72f4b82"
+		            ],
+		            "care": [
+		                "59805436e86b3e0da72f4b82",
+		                "59ae82ad1bfea62e95690db7"
+		            ],
+		            "loginAt": "2017-09-08T08:26:38.760Z"
+		        },
+		        "platform": "ios",
+		        "registration_id": "170976fa8ab4c9f5455",
+		        "mobile": "15692405978",
+		        "sex": 1,
+		        "lat": "23.136388",
+		        "lng": "113.295743",
+		        "password": "$2a$10$lkwZDF.WP1orbHm2gD8PPeKETioVLclX6o5LYeEF7wT.9lpruTyV6",
+		        "__v": 266,
+		        "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-public/kyjffd6mctbk7k7nwm.jpg",
+		        "nickname": "民国",
+		        "auditAt": "2017-09-08T06:45:56.762Z",
+		        "oldName": "办法",
+		        "lovePrice": "小清新",
+		        "afford": "恋爱婚姻",
+		        "hopeful": "婚姻关系",
+		        "iNeed": "恋爱婚姻",
+		        "loveDate": "初见",
+		        "meta": {
+		            "updatedAt": "2017-09-08T08:39:15.049Z",
+		            "createdAt": "2017-08-18T08:21:11.849Z"
+		        },
+		        "photoPri": [
+		            {
+		                "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-private/156924059781504689122.jpg",
+		                "category": "common",
+		                "enable": true
+		            }
+		        ],
+		        "photoPub": [
+		            {
+		                "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-public/kyjffd6mctbk7k7nwm.jpg",
+		                "enable": true
+		            }
+		        ],
+		        "vipLevel": "vip4",
+		        "rmbTotal": 888,
+		        "vip": {
+		            "category": "alipay",
+		            "to": "2017-11-16T08:22:24.748Z",
+		            "from": "2017-08-18T08:22:24.748Z",
+		            "role": true
+		        },
+		        "auditStatus": "success",
+		        "auditContent": {
+		            "nickname": "1",
+		            "character": "1",
+		            "selfInfo": "1",
+		            "work": "1"
+		        },
+		        "loc": {
+		            "type": "Point",
+		            "coordinates": [
+		                113.295743,
+		                23.136388
+		            ]
+		        },
+		        "locAuthorize": true,
+		        "loginAt": "2017-08-18T08:21:11.849Z",
+		        "completion": 50,
+		        "tour": [],
+		        "sports": [],
+		        "online": "no",
+		        "isActive": "yes",
+		        "number": 1,
+		        "mock": false
+		    }
+		}
+		if(data.result.completion < 90){
+			$('#trip').text(textArr[0]);
+			$('.historyCon').css('margin-top','58px');
+		}else if(data.result.completion >89 && data.result.completion <100){
+			$('#trip').text(textArr[1]);
+			$('.historyCon').css('margin-top','58px');
+		}else{
+			$('.integrity').css('display','none');
+		}
+
+		$('#ratePro').attr('value',data.result.completion);
+		$('#rate').text(data.result.completion+'%');
+		myId = data.result._id;*/
+	</script>
+</body>
+
+</html>

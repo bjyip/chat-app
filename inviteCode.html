@@ -1,0 +1,331 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我的邀请码</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        .mui-popup-text {
+            text-align: left;
+        }
+    </style>
+    <script src="js/zepto.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script type="application/javascript"  src="js/hkJS.js"></script>
+</head>
+
+<body>
+<span class="hide-span" data-i18n="inviteCode-title">我的邀请码</span>
+<div class="code-content">
+    <ul class="mui-table-view" id="upgradePage">
+        <li class="mui-table-view-cell">
+            <a class="inviteCode-title">
+                <span class="top-alert"></span>
+                <span class="go-upgrade"></span>
+            </a>
+        </li>
+    </ul>
+
+    <div id="code-list">
+    </div>
+
+</div>
+<script type="text/template" id="code">
+    <div class="code-item">
+        <span class="code-left"></span>
+        <span class="code-right"></span>
+        <p><span class="validity">有效期：</span><span id="time"></span></p>
+    </div>
+</script>
+<script src="js/mui.min.js"></script>
+ <script src="js/i18n_data.js"></script>
+<script>
+    var coTitle = $('.hide-span').text();
+    var role,text1,text2,validity,topAlert,goUpgrade;
+    if(lang == 'en'){
+        role = "Rule";
+        text1 = 'Members three days to experience invitation codes';
+        text2 = 'No invitation codes yet';
+        validity = "validity: ";
+        topAlert = "For 2 or 6 months membership, 1 or 3 invitation codes will be awarded";
+        goUpgrade = "Upgrade member"
+    }else if(lang == 'ft'){
+        role = "規則";
+        text1 = 'BOSS直約會員邀請碼';
+        text2 = '還沒有邀請碼!';
+        validity = '有效期: ';
+        topAlert = "購買2或6個月會員，可獲1或3個邀請碼";
+        goUpgrade = "前往陞級會員"
+    }else{
+        role = "规则";
+        text1 = 'BOSS直约会员邀请码';
+        text2 = '还没有邀请码!';
+        validity = '有效期: ';
+        topAlert = "购买2或6个月会员，可获1或3个邀请码";
+        goUpgrade = "前往升级会员"
+    }
+    $(function(){
+
+        getInterface().initDataWithArray("#FFFFFF","back",coTitle,role,"","#AC9455","","#AC9455");
+    })
+    function leftBtnClick(){
+        getInterface().leftBtnClick();
+    }
+    function rightBtnClick(){
+        if(lang=='ch'){
+            mui.alert("什么是邀请码?<br>邀请码是注册的时候输入的一串字符，代表您受邀请注册BOSS直约社交平台,如何使用邀请码？<br>1、在平台购买2个月或6个月会员，即可获得1或3个邀请码；<br>2、邀请好友注册时，请正确填写推荐人的邀请码。受邀请人完成注册后，可获得跟一般注册方式不同的额外赠品；<br>3、邀请码最终解释权归BOSS直约官方。");
+            $('.mui-popup-button')[0].innerHTML = '确定';
+            if($('.mui-popup')){
+                $('.mui-popup-title').text('BOSS直约邀请码说明');
+            }
+        }else if(lang=="en"){
+            mui.alert("What is the invitation code?<br>The invitation code is a string of characters entered at the time of registration. It represents you are invited to register BOSS direct social platform, and how to use the invitation code?<br>1、Buy 2 or 6 months membership in the platform, you can get 1 or 3 invitation code；<br>2、When you invite a friend to sign up, please fill in the person's invitation code correctly. Upon completion of the registration by the inviter, you may receive an additional gift which is different from the usual registration；<br>3、The final right to interpret the invitation code is BOSS official。");
+            $('.mui-popup-button')[0].innerHTML = 'OK';
+            if($('.mui-popup')){
+                $('.mui-popup-title').text('Lovesudy Invitation code description');
+            }
+        }else{
+            mui.alert("什麼是邀請碼？<br>邀請碼是注册的時候輸入的一串字元，代表您受邀請注册BOSS直約社交平臺，如何使用邀請碼？<br>1、在平臺購買2個月或6個月會員，即可獲得1或3個邀請碼；<br>2、邀請好友註冊時，請正確填寫推薦人的邀請碼。受邀請人完成注册後，可獲得跟一般注册管道不同的額外贈品；<br>3、邀請碼最終解釋權歸BOSS直約官方。");
+            $('.mui-popup-button')[0].innerHTML = '確定';
+            if($('.mui-popup')){
+                $('.mui-popup-title').text('BOSS直約邀請碼說明');
+            }
+        }
+    }
+
+    getInterface().post_action('getCoupon','','get');
+
+    function return_action(data,data2){
+        if( data2=='getCoupon' ){
+            if(data.ret==1){
+                $('.top-alert').text(topAlert);
+                $('.go-upgrade').text(goUpgrade);
+                $("#code-list").html('')
+                for(var i=0; i<data.result.length; i++){
+                    var code = $($('#code').html());
+                    code.find('.code-right').text(data.result[i].content);
+                    code.find('#time').text(data.result[i].meta.endAt.split('T')[0]);
+                    code.find('.validity').text(validity);
+                    var endTime = data.result[i].meta.endAt;
+                    var currTime = new Date();
+                    // 是否过期
+                    if(Date.parse(endTime)<Date.parse(currTime)){
+                        if(!data.result[i].isUse){
+                            code.append('<img src="img/been_used.png" class="postmark">');
+                            code.addClass('invalid');
+                        }else{
+                            code.append('<img src="img/out_date.png" class="postmark">');
+                            code.addClass('invalid');
+                        }
+                    }
+                    // 是否使用
+                    if(!data.result[i].isUse && Date.parse(endTime)>Date.parse(currTime)){
+                        code.append('<img src="img/been_used.png" class="postmark">');
+                        code.addClass('invalid');
+                    }
+                    if(data.result[i].methods == 'gift'){
+                        code.find('.code-left').text(text1);
+                    }
+
+                    $("#code-list").prepend(code);
+                }
+            }else{
+                getInterface().msg_alert(text2);
+            }
+
+        }
+    }
+
+    $('#upgradePage').on('tap',function(){
+        getInterface().html_jump_href(service+'/paymentVIP.html', 'no');
+    })
+
+
+    /*var data ={
+        "ret": 1,
+        "err": "ok",
+        "result": [
+            {
+                "_id": "59b0f906bf222f686dea8cd1",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "oyrn2",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-08-07T07:45:10.767Z",
+                    "updatedAt": "2017-09-07T07:45:10.767Z",
+                    "createdAt": "2017-07-07T07:45:10.767Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            },
+            {
+                "_id": "59b0ff9718f7f369193ca1e9",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "letw3",
+                "__v": 1,
+                "meta": {
+                    "endAt": "2017-08-07T08:13:11.883Z",
+                    "updatedAt": "2017-09-19T08:06:07.077Z",
+                    "createdAt": "2017-07-07T08:13:11.884Z"
+                },
+                "isUse": false,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": [
+                    "15074436851"
+                ]
+            },
+            {
+                "_id": "59b0ff9718f7f369193ca1eb",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "dbok0",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-10-07T08:13:11.897Z",
+                    "updatedAt": "2017-09-07T08:13:11.897Z",
+                    "createdAt": "2017-09-07T08:13:11.897Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            },
+            {
+                "_id": "59b0ff9718f7f369193ca1ed",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "jpkk5",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-10-07T08:13:11.902Z",
+                    "updatedAt": "2017-09-07T08:13:11.902Z",
+                    "createdAt": "2017-09-07T08:13:11.902Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            },
+            {
+                "_id": "59bb499bc9bcfc466fa72b05",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "ydgl7",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-10-15T03:31:39.898Z",
+                    "updatedAt": "2017-09-15T03:31:39.899Z",
+                    "createdAt": "2017-09-15T03:31:39.899Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            },
+            {
+                "_id": "59bb499bc9bcfc466fa72b07",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "ylin1",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-10-15T03:31:39.906Z",
+                    "updatedAt": "2017-09-15T03:31:39.906Z",
+                    "createdAt": "2017-09-15T03:31:39.906Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            },
+            {
+                "_id": "59bb499bc9bcfc466fa72b09",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "yili5",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-10-15T03:31:39.911Z",
+                    "updatedAt": "2017-09-15T03:31:39.911Z",
+                    "createdAt": "2017-09-15T03:31:39.911Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            },
+            {
+                "_id": "59bb794dcdd3d04a22d5c4c5",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "kyfj0",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-10-15T06:55:09.731Z",
+                    "updatedAt": "2017-09-15T06:55:09.731Z",
+                    "createdAt": "2017-09-15T06:55:09.731Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            },
+            {
+                "_id": "59cc60f3dba94933b1ba6b9f",
+                "createCodeid": "59805436e86b3e0da72f4b82",
+                "methods": "gift",
+                "content": "guwg8",
+                "__v": 0,
+                "meta": {
+                    "endAt": "2017-10-28T02:39:47.723Z",
+                    "updatedAt": "2017-09-28T02:39:47.724Z",
+                    "createdAt": "2017-09-28T02:39:47.724Z"
+                },
+                "isUse": true,
+                "vipTime": 259200000,
+                "useLimit": 1,
+                "useCodeid": []
+            }
+        ]
+    }
+    $('.top-alert').text(topAlert);
+    $('.go-upgrade').text(goUpgrade);
+    $("#code-list").html('')
+    for(var i=0; i<data.result.length; i++){
+        var code = $($('#code').html());
+        code.find('.code-right').text(data.result[i].content);
+        code.find('#time').text(data.result[i].meta.endAt.split('T')[0]);
+        code.find('.validity').text(validity);
+        var endTime = data.result[i].meta.endAt;
+        var currTime = new Date();
+        // 是否过期
+        if(Date.parse(endTime)<Date.parse(currTime)){
+            if(!data.result[i].isUse){
+                code.append('<img src="img/been_used.png" class="postmark">');
+                code.addClass('invalid');
+            }else{
+                code.append('<img src="img/out_date.png" class="postmark">');
+                code.addClass('invalid');
+            }
+        }
+        // 是否使用
+        if(!data.result[i].isUse && Date.parse(endTime)>Date.parse(currTime)){
+            code.append('<img src="img/been_used.png" class="postmark">');
+            code.addClass('invalid');
+        }
+        if(data.result[i].methods == 'gift'){
+            code.find('.code-left').text(text1);
+        }
+        $("#code-list").prepend(code);
+    }*/
+</script>
+</body>
+</html>

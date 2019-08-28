@@ -1,0 +1,891 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>我的资料</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/iconfont.css">
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+	<script src="js/i18next-1.7.7.min.js"></script>
+	<script src="js/bbmis.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+</head>
+
+<body>
+	<!--页面主内容区开始-->
+	<div class="mui-page-content myProfile">
+		<div class="mui-scroll">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media headTitle">
+					<div class="headBgImg" id="headBgImg"></div>
+					<div id="upgrade">
+						<div class="noticeIcon" id="notice">
+							<i class="redFlag"></i>
+							<span class="mui-icon iconfont icon-xinfeng"></span>
+						</div>
+						<div class="hideArrowFlag myInfo" id="myInfo" href="javascript:void(0)">
+							<img id="headPic" class="mui-media-object mui-pull-left" src="">
+							<div class="mui-media-body myInfo">
+								<span id="userName"></span>
+								<p style="padding-top: 10px;">
+									<img class="vip-logo" src="./img/pi_HonourableMember.png" alt="">
+									<span class="userType" id="vipLevel" style="display: none" data-i18n="myprofile-ordinary"></span>
+								</p>
+							</div>
+						</div>
+
+						<div id="hint">
+							<span class="xufei" data-i18n="myprofile-goUpgrade"></span>
+						</div>
+					</div>
+				</li>
+
+				<li class="mui-table-view-cell specialLi">
+					<div id="updateInfo">
+						<i class="mui-icon iconfont icon-xiugai"></i>
+						<span class="text-gray" data-i18n="myprofile-editProfile"></span>
+					</div>
+					<div id="updatePhotoPage">
+						<i class="mui-icon iconfont icon-xiangji"></i>
+						<span class="text-gray" data-i18n="myprofile-updatePhoto"></span>
+					</div>
+					<div id="paymentVIP">
+						<i class="mui-icon iconfont icon-huangguan"></i>
+						<span class="text-gray" data-i18n="myprofile-Upgrade"></span>
+					</div>
+				</li>
+				<li class="mui-table-view-cell" id="collect">
+			        <a class="mui-navigate-right">
+			        	<i class="mui-icon iconfont icon-heart"></i>
+			        	<span data-i18n="myprofile-care"></span>
+			        </a>
+			    </li>
+			   	<li class="mui-table-view-cell" id="history">
+			        <a class="mui-navigate-right">
+			        	<i class="mui-icon iconfont icon-yanjing"></i>
+			        	<span data-i18n="myprofile-history"></span>
+			        </a>
+			    </li>
+			    <li class="mui-table-view-cell" id="inviteCode">
+			        <a class="mui-navigate-right"><img src="img/icon_Invite-code.png" style="width: 22px;margin-right: 7px;"><span data-i18n="myprofile-invateCode"></span></a>
+			    </li>
+			    <li class="mui-table-view-cell marTop" id="feedback">
+			        <a class="mui-navigate-right"><i class="mui-icon iconfont icon-dianhua"></i><span data-i18n="myprofile-feedback"></span></a>
+			    </li>
+			    <li class="mui-table-view-cell" id="about">
+			        <a class="mui-navigate-right"><i class="mui-icon iconfont icon-guanyu"></i><span data-i18n="myprofile-about"></span></a>
+			    </li>
+			    <li class="mui-table-view-cell marTop" id="sysSeetting">
+			        <a class="mui-navigate-right"><i class="mui-icon iconfont icon-shezhi"></i><span data-i18n="myprofile-setting"></span></a>
+			    </li>
+			</ul>
+		</div>
+	</div>
+	<!--页面主内容区结束-->
+<script src="js/mui.min.js"></script>
+<script src="js/mui.view.js "></script>
+<script src="js/i18n_data.js"></script>
+<script type="text/javascript">
+	if(lang == 'zh'){
+        var vip2 = '伯爵会员';
+        var vip3 = '公爵会员';
+        var vip4 = '国王会员';
+        var vip22 = '郡主会员';
+        var vip33 = '公主会员';
+        var vip44 = '女王会员';
+    }else if(lang == 'en'){
+        var vip2 = 'Count Member';
+        var vip3 = 'Duke Member';
+        var vip4 = 'King Member';
+        var vip22 = 'Infanta Member';
+        var vip33 = 'Princess Member';
+        var vip44 = 'Queen Member';
+    }else{
+        var vip2 = '伯爵會員';
+        var vip3 = '公爵會員';
+        var vip4 = '國王會員';
+        var vip22 = '郡主會員';
+        var vip33 = '公主會員';
+        var vip44 = '女王會員';
+    }
+	mui.init();
+	//存储系统语言
+	getInterface().webGetSysLanguage();
+	function return_getSysLanguage(lang){
+		localStorage.setItem('lang',lang)
+	}
+
+	//隐藏邀请码和通知中心
+	getInterface().getAPPInfo();
+	function return_APPInfo(data){
+		//ios调用接口
+		var u = navigator.userAgent;
+		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+		var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+		if(isiOS){
+			getInterface().post_action("apkInfo",JSON.stringify({prrv: 'as',vest: 'boss', versionName: data}),"post");
+		}
+	}
+
+
+	getInterface().hud_loading(); //loading
+	getInterface().post_action("getInfo",'',"get");
+	var shield1;
+
+    getInterface().post_action("unnotice",'',"get");
+	var userSex;
+
+	var isVipFlag = false;
+	function return_action(data,data2){
+		//隐藏通知中心和邀请码
+		if(data2=='apkInfo'){
+			if(data.ret == 1){
+				if(data.data.alipay == 'yes'){
+					$('#notice').hide();
+					$("#inviteCode").hide();
+				}
+			}
+		}
+		//显示角标
+		if(data2 == 'unnotice'){
+			if(data.ret == 1){
+				if(data.unreadNum>0){
+					$('.redFlag').show();
+					getInterface().mineBadgeNum(1);
+				}else{
+					$('.redFlag').hide();
+				}
+			}
+		}else if(data2 == 'getInfo'){
+			//背景图片
+			if(data.result.avatar && data.result.auditContent.avatar && data.result.auditContent.avatar!='0' || data.result.avatar && !data.result.auditContent.avatar){
+				if(data.result.avatar.indexOf('x-oss')==-1){
+					$('#headBgImg').css('background-image','url('+data.result.avatar+'?x-oss-process=image/resize,h_80)');
+				}else{
+					$('#headBgImg').css('background-image','url('+data.result.avatar+')');
+				}
+			}else if(data.result.auditContent && data.result.auditContent.avatar && data.result.auditContent.avatar=='0' && data.result.oldAvatar){
+				if(data.result.oldAvatar.indexOf('x-oss')==-1){
+					$('#headBgImg').css('background-image','url('+data.result.oldAvatar+'?x-oss-process=image/resize,h_80)');
+				}else{
+					$('#headBgImg').css('background-image','url('+data.result.oldAvatar+')');
+				}
+			}else if(data.result.sex==1){
+				$('#headBgImg').css('background-image','url(img/nan01.png)');
+			}else{
+				$('#headPic').attr('src','img/nv01.png');
+				$('#headBgImg').css('background-image','url(img/nv01.png)');
+			}
+
+			localStorage.setItem('myInfo',JSON.stringify(data))
+			userSex = data.result.sex;
+			// 头像
+			if(data.result.avatar&&data.result.auditContent.avatar && data.result.auditContent.avatar!='0' || data.result.avatar && !data.result.auditContent.avatar){
+				if(data.result.avatar.indexOf('x-oss')==-1){
+					$('#headPic').attr('src',data.result.avatar+'?x-oss-process=image/resize,h_65');
+				}else{
+					$('#headPic').attr('src',data.result.avatar);
+				}
+			}else if(data.result.auditContent && data.result.auditContent.avatar && data.result.auditContent.avatar=='0' && data.result.oldAvatar){
+				if(data.result.avatar.indexOf('x-oss')==-1){
+					$('#headPic').attr('src',data.result.oldAvatar+'?x-oss-process=image/resize,h_65');
+				}else{
+					$('#headPic').attr('src',data.result.oldAvatar);
+				}
+			}else if(data.result.sex==1){
+				$('#headPic').attr('src','img/nan01.png');
+			}else{
+				$('#headPic').attr('src','img/nv01.png');
+			}
+
+			// 昵称
+			if(data.result.mock){
+				$('#userName').text(data.result.nickname);
+			}else{
+				if(data.result.nickname && data.result.auditContent.nickname && data.result.auditContent.nickname!='0'){//审核通过
+			        $('#userName').text(data.result.nickname);
+			    }else if(data.result.auditContent && data.result.auditContent.nickname && data.result.auditContent.nickname=='0' && data.result.oldName){//没通过
+			        $('#userName').text(data.result.oldName);
+			    }else{
+			        if(data.result.sex==1){
+			            $('#userName').text(maleNicknameLang());
+			        }else{
+			            $('#userName').text(femaleNicknameLang());
+			        }
+			    }
+			}
+
+			$('.vip-logo').show();
+			$('#vipLevel').show();
+			if(data.result.sex==1){
+				if(data.result.vipLevel == "vip0"){
+					$('.vip-logo').hide();
+				}else if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+					$('.vip-logo').attr("src","./img/pic_GoldMember.png");
+					$('#vipLevel').text(vip2);
+				}else if(data.result.vipLevel == "vip3"){
+					$('.vip-logo').attr("src","./img/pic_DiamondMember.png");
+					$('#vipLevel').text(vip3);
+				}else if(data.result.vipLevel == "vip4"){
+					$('.vip-logo').attr("src","./img/pic_CrownMember.png");
+					$('#vipLevel').text(vip4);
+				}
+			}else{
+				if(data.result.vipLevel == "vip0"){
+					$('.vip-logo').hide();
+				}else if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+					$('.vip-logo').attr("src","./img/women_pic_MonarchMember.png");
+					$('#vipLevel').text(vip22);
+				}else if(data.result.vipLevel == "vip3"){
+					$('.vip-logo').attr("src","./img/women_pic_PrincessMember.png");
+					$('#vipLevel').text(vip33);
+				}else if(data.result.vipLevel == "vip4"){
+					$('.vip-logo').attr("src","./img/women_pic_QueenMember.png");
+					$('#vipLevel').text(vip44);
+				}
+			}
+			getInterface().hud_hide();
+		}else{
+			getInterface().reload_main('fix')
+			localStorage.setItem('infoSta',1);
+			localStorage.setItem('completion',data.completion)
+		}
+		//获取vip开关
+		getInterface().action_info();
+	}
+
+	function return_info(data,data2){
+		if(data=='yes'){
+			localStorage.setItem('shield1','yes');
+			shield1 = 'yes';
+			//屏蔽
+		    if(shield1=='yes'){
+				$('#paymentVIP').hide();
+				$('#hint').hide();
+				$('.vip-logo').hide();
+				$('#vipLevel').hide();
+				$('#inviteCodeTitle').hide();
+				$('#inviteCode').hide();
+				$('#notice').hide();
+			}else{
+				$('#paymentVIP').show();
+				$('#hint').show();
+			}
+		}else{
+			if(data2=='00'){//双关
+				localStorage.setItem('shield1','yes');
+				shield1 = 'yes';
+				//屏蔽
+			    if(shield1=='yes'){
+					$('#paymentVIP').hide();
+					$('#hint').hide();
+					$('.vip-logo').hide();
+					$('#vipLevel').hide();
+					$('#inviteCodeTitle').hide();
+					$('#inviteCode').hide();
+					$('#notice').hide();
+				}else{
+					$('#paymentVIP').show();
+					$('#hint').show();
+				}
+			}else if(data2=='11'){//双开
+				if(userSex == 1 || userSex == 2){
+					//男女都不屏蔽
+					localStorage.setItem('shield1','no');
+					shield1 = 'no';
+				}
+    		}else if(data2=='10'){//男开女关
+    			if(userSex == 1){
+					//不操作
+					localStorage.setItem('shield1','no');
+					shield1 = 'no';
+				}else if(userSex == 2){
+					//屏蔽女
+					localStorage.setItem('shield1','yes');
+					shield1 = 'yes';
+					//屏蔽
+				    if(shield1=='yes'){
+						$('#paymentVIP').hide();
+						$('#hint').hide();
+						$('.vip-logo').hide();
+						$('#vipLevel').hide();
+						$('#inviteCodeTitle').hide();
+						$('#inviteCode').hide();
+						$('#notice').hide();
+					}else{
+						$('#paymentVIP').show();
+						$('#hint').show();
+					}
+				}
+			}else if(data2=='01'){//男关女开
+				if(userSex == 1){
+					//屏蔽男
+					localStorage.setItem('shield1','yes');
+					shield1 = 'yes';
+					//屏蔽
+				    if(shield1=='yes'){
+						$('#paymentVIP').hide();
+						$('#hint').hide();
+						$('.vip-logo').hide();
+						$('#vipLevel').hide();
+						$('#inviteCodeTitle').hide();
+						$('#inviteCode').hide();
+						$('#notice').hide();
+					}else{
+						$('#paymentVIP').show();
+						$('#hint').show();
+					}
+				}else if(userSex == 2){
+					//不操作
+					localStorage.setItem('shield1','no');
+					shield1 = 'no';
+				}
+			}
+		}
+	}
+
+	// 刷新我的资料
+	function reload_mine(){
+		var infoSta = localStorage.getItem('infoSta');
+		var photoSta = localStorage.getItem('photoSta');
+		var upgradeSta = localStorage.getItem('upgradeSta');
+		var payState = localStorage.getItem('payState');
+		var noticeSta = localStorage.getItem('noticeSta');
+		// 存储跳首页变量（避免每次tab点击首页都刷新）
+		localStorage.setItem('infoSta','0');
+		localStorage.setItem('photoSta','0');
+		localStorage.setItem('upgradeSta','0');
+		localStorage.setItem('payState',0)
+		localStorage.setItem('noticeSta','0');
+		if(infoSta==1 || photoSta==1 || upgradeSta==1 || payState==1 || noticeSta==1){
+			//localStorage.setItem('infoSta',1);
+			getInterface().post_action("getInfo",'',"get");
+		}
+		//每次进入页面调红点的接口
+		getInterface().post_action("unnotice",'',"get");
+	}
+
+	// 跳转到修改资料
+	$('#updateInfo').on('tap',function(){
+		getInterface().html_jump_href(service+'/newUpdateInfo.html?userSex='+userSex, 'yes');
+	});
+	// 跳转到上传照片
+	$('#updatePhotoPage').on('tap',function(){
+		if(userSex){
+			getInterface().html_jump_href(service+'/updatePhoto.html?userSex='+userSex, 'yes');
+		}else{
+			getInterface().post_action("getInfo",{},"get");
+		}
+	})
+
+	//页面跳转
+	$('#hint').on('tap',function(){
+		getInterface().html_jump_href(service+'/paymentVIP.html', 'no');
+	})
+	$('#paymentVIP').on('tap',function(){
+		getInterface().html_jump_href(service+'/paymentVIP.html', 'no');
+	})
+	$('#collect').on('tap',function(){
+		getInterface().html_jump_href(service+'/collect.html', 'no');
+	})
+	$('#history').on('tap',function(){
+		getInterface().html_jump_href(service+'/history.html', 'no');
+	})
+	$('#inviteCode').on('tap',function(){
+		getInterface().html_jump_href(service+'/inviteCode.html', 'no');
+	})
+	$('#feedback').on('tap',function(){
+		getInterface().html_jump_href(service+'/feedback.html', 'no');
+	})
+	$('#about').on('tap',function(){
+		getInterface().html_jump_href(service+'/about.html', 'no');
+	})
+	$('#sysSeetting').on('tap',function(){
+		getInterface().html_jump_href(service+'/systemSetting.html', 'no');
+	})
+	$('#myInfo').on('tap',function(){
+		getInterface().html_jump_href(service+'/information.html', 'no');
+	})
+	var noticeHrefFlag = false;
+	$('#notice').on('tap',function(){
+		noticeHrefFlag = true;
+		//点击信封发请求告诉ios需要清空角标
+		getInterface().mineBadgeNum('');
+	})
+	//清空角标后的回调
+	function return_mineBadgeNum(){
+		if(noticeHrefFlag == true){
+			noticeHrefFlag = false;
+			getInterface().html_jump_href(service+'/notice.html', 'no');
+		}
+	}
+
+	var timer = setInterval(function(){
+		// 跳转到充值VIP
+		if(shield1 == 'no'){//屏蔽了就不能跳转
+			$('#li_mask').show();
+			$('#li_mask').on('tap',function(){
+				getInterface().html_jump_href(service+'/paymentVIP.html', 'no');
+			});
+			$('.myProfile').css('overflow-x','hidden');
+		}else{
+			$('#li_mask').hide();
+			$('.upgrade').unbind();
+			$('.hideArrowFlag').removeClass('mui-navigate-right');
+		}
+		if(shield1 != undefined){
+			clearInterval(timer);
+		}
+	},500);
+
+
+
+	/*var data = {
+	    "ret": 1,
+	    "err": "ok",
+	    "msgNum": 0,
+	    "noticeNum": 0,
+	    "endTime": "于2018-09-02到期",
+	    "shield": "no",
+	    "vipText": "尊贵会员",
+	    "result": {
+	        "_id": "597318174c1a8c0350ccc296",
+	        "traceid": {
+	            "_id": "597318174c1a8c0350ccc297",
+	            "userid": "597318174c1a8c0350ccc296",
+	            "__v": 320,
+	            "targetChat": "59805436e86b3e0da72f4b82",
+	            "feedback": {
+	                "info": "把",
+	                "photo": "http://love-chat.oss-cn-shanghai.aliyuncs.com/feedback/svkwrb0dtivn5vrbbm.jpg",
+	                "email": "695988558@qq.com",
+	                "mobile": "",
+	                "reply": ""
+	            },
+	            "sex": 1,
+	            "meta": {
+	                "updatedAt": "2017-09-28T03:25:10.885Z",
+	                "createdAt": "2017-07-22T09:17:11.208Z"
+	            },
+	            "report": [],
+	            "soundChat": true,
+	            "soundCare": true,
+	            "careSet": true,
+	            "browseSet": true,
+	            "listSet": true,
+	            "photoPried": [
+	                "59780383a5c2d9366ba0774d",
+	                "5971c4db5425e56dd7b2909c",
+	                "597f2ba66a5c38769563dbb2",
+	                "597edb66ef98d970e0fc8d79",
+	                "59bf6b700088e20e76d625ed"
+	            ],
+	            "photoPri": [
+	                "59780383a5c2d9366ba0774d",
+	                "599dc52b9aa8db19677e64a8",
+	                "599eb025035a49247eb7691c",
+	                "599efbcb035a49247eb76b0a",
+	                "59a0da19f81b7f2c1f1a2e39",
+	                "59a13df654aadc3606438fa2",
+	                "5997e402feb9137ff994fe4d",
+	                "59805436e86b3e0da72f4b82"
+	            ],
+	            "hated": [
+	                "599bcab81f76c714943fbd7f"
+	            ],
+	            "hate": [
+	                "59c0f70360426433a3ac0a76",
+	                "59c234625823de5abe3c97d0",
+	                "59c0d69931c70e305eb23b5e",
+	                "5997e402feb9137ff994fe4d",
+	                "59899ba6cfb55b350f987a7f",
+	                "598061a0662f050f0c4a7d30",
+	                "59b038f5ce43577ebd3c4e2f"
+	            ],
+	            "browsed": [
+	                "59731099685a1101c00cbe62",
+	                "5973105286b21501945aa7e5",
+	                "59780383a5c2d9366ba0774d",
+	                "5973154472292702a79a9488",
+	                "597edb66ef98d970e0fc8d79",
+	                "597f2ba66a5c38769563dbb2",
+	                "597ef32b509b8c7230ab6c8b",
+	                "597eff5ad8d3f8727b15e6c2",
+	                "598d69c1bdb5a14c8fec214e",
+	                "59913afcc4e4cb604e729e27",
+	                "599311c6b4a51165585b6387",
+	                "599571eeb4a51165585b647b",
+	                "599be0b41f76c714943fbdf7",
+	                "599bd0c71f76c714943fbdc6",
+	                "599d3dcf9aa8db19677e61ec",
+	                "5971cb7417c86e6fd3bc1a0e",
+	                "599e9e86b30b9d24087238b7",
+	                "599efbcb035a49247eb76b0a",
+	                "599eb025035a49247eb7691c",
+	                "599bcab81f76c714943fbd7f",
+	                "599fc54c035a49247eb76dcd",
+	                "597d31f5f6a57559a60938f2",
+	                "59a0da19f81b7f2c1f1a2e39",
+	                "59a02f9af81b7f2c1f1a2c5d",
+	                "59a03d24f81b7f2c1f1a2ca7",
+	                "599d8ada9aa8db19677e645d",
+	                "59a561919615c04442d13ee9",
+	                "597eac4cbdb23c6817671ed1",
+	                "59ae89cbce43577ebd3c4abb",
+	                "59afd492ce43577ebd3c4da7",
+	                "597ee8fdef98d970e0fc8d88",
+	                "59bf6b700088e20e76d625ed",
+	                "59c0d0cefa8a972f5d1793ec",
+	                "59805436e86b3e0da72f4b82"
+	            ],
+	            "browse": [
+	                "5973154472292702a79a9488",
+	                "59731099685a1101c00cbe62",
+	                "5971c4de5425e56dd7b290c2",
+	                "5975aa2df1c5ad1e2b69fa05",
+	                "59755c113d9a0313d1bd62fe",
+	                "5971c4de5425e56dd7b290c0",
+	                "5971c4de5425e56dd7b290bc",
+	                "5971c4dd5425e56dd7b290b6",
+	                "5971c4dc5425e56dd7b290aa",
+	                "5976a9a66cffa223ef7df569",
+	                "5973105286b21501945aa7e5",
+	                "5976b022352e082967db52b1",
+	                "5971c4db5425e56dd7b2909a",
+	                "5971c4db5425e56dd7b29094",
+	                "59780383a5c2d9366ba0774d",
+	                "597566d63d9a0313d1bd631c",
+	                "597d31f5f6a57559a60938f2",
+	                "597b16f548eb14558dfc1296",
+	                "5971c4d55425e56dd7b2904c",
+	                "5971c4d95425e56dd7b29084",
+	                "5971c4d55425e56dd7b29052",
+	                "5971c4d65425e56dd7b2905a",
+	                "5971c4d85425e56dd7b29076",
+	                "5971c4d75425e56dd7b29064",
+	                "5971c4dc5425e56dd7b290a4",
+	                "5971c4dd5425e56dd7b290ba",
+	                "597eac4cbdb23c6817671ed1",
+	                "597edb66ef98d970e0fc8d79",
+	                "5971cb7017c86e6fd3bc19dc",
+	                "5971c4dc5425e56dd7b290a6",
+	                "5971c4dc5425e56dd7b290a2",
+	                "5971c4db5425e56dd7b2909c",
+	                "5971c4da5425e56dd7b2908e",
+	                "5971c4da5425e56dd7b2908c",
+	                "5971c4da5425e56dd7b29090",
+	                "5971c4da5425e56dd7b29092",
+	                "5971c4da5425e56dd7b2908a",
+	                "5971c4d95425e56dd7b29086",
+	                "5971c4d85425e56dd7b29078",
+	                "5971c4d85425e56dd7b29070",
+	                "5971c4d75425e56dd7b2906a",
+	                "5971c4d75425e56dd7b29066",
+	                "5971c4d95425e56dd7b29082",
+	                "5971c4d85425e56dd7b29074",
+	                "5971c4d75425e56dd7b2906c",
+	                "597f2ba66a5c38769563dbb2",
+	                "5971c4d65425e56dd7b29060",
+	                "5971c4d55425e56dd7b2904e",
+	                "5971c4dd5425e56dd7b290b4",
+	                "5971c4d65425e56dd7b2905c",
+	                "597ef32b509b8c7230ab6c8b",
+	                "5971cb7217c86e6fd3bc19ec",
+	                "5971cb7117c86e6fd3bc19de",
+	                "597ee8fdef98d970e0fc8d88",
+	                "598061a0662f050f0c4a7d30",
+	                "597552a46fbde609fe403baa",
+	                "5971cb7117c86e6fd3bc19e6",
+	                "59898dc3cfb55b350f987a59",
+	                "597eff5ad8d3f8727b15e6c2",
+	                "598c17a81c55b04395c067f7",
+	                "5971cb7417c86e6fd3bc1a0e",
+	                "5971cb7517c86e6fd3bc1a10",
+	                "598c0a6a1c55b04395c067f3",
+	                "5971cb7117c86e6fd3bc19e2",
+	                "598c6396d273e748cd8c142d",
+	                "59805436e86b3e0da72f4b82",
+	                "597ef70ad8d3f8727b15e6b5",
+	                "5971cb7517c86e6fd3bc1a16",
+	                "598c5c5bd273e748cd8c1424",
+	                "598c6f53d273e748cd8c143e",
+	                "599159c76dd9d0615ef47830",
+	                "59913afcc4e4cb604e729e27",
+	                "59915ce26dd9d0615ef47840",
+	                "5971cb7417c86e6fd3bc1a0c",
+	                "5971cb7617c86e6fd3bc1a1d",
+	                "5971cb7517c86e6fd3bc1a1b",
+	                "599571eeb4a51165585b647b",
+	                "599677e9a50d3d73d31074f1",
+	                "598f1d60103bf253b0dfffe7",
+	                "59899ba6cfb55b350f987a7f",
+	                "598c246d1c55b04395c06807",
+	                "599164f06dd9d0615ef4786a",
+	                "59914a116dd9d0615ef477ea",
+	                "599148e36dd9d0615ef477e1",
+	                "5971cb7317c86e6fd3bc1a00",
+	                "599d8ada9aa8db19677e645d",
+	                "599e9e86b30b9d24087238b7",
+	                "599e9774b3d29422fa06987a",
+	                "599dc52b9aa8db19677e64a8",
+	                "599d75569aa8db19677e638d",
+	                "599d75219aa8db19677e6389",
+	                "599cf4ea9aa8db19677e6103",
+	                "599eb025035a49247eb7691c",
+	                "599f9f08035a49247eb76ce4",
+	                "599dacb39aa8db19677e648c",
+	                "599bcab81f76c714943fbd7f",
+	                "5997e402feb9137ff994fe4d",
+	                "5997dfe3da6b387fcf475554",
+	                "599808777cd1fb01838a8015",
+	                "599a6d877cd1fb01838a8122",
+	                "599a9b245a28930d7901c8ec",
+	                "599f0a9a035a49247eb76b38",
+	                "599efbcb035a49247eb76b0a",
+	                "599fc54c035a49247eb76dcd",
+	                "599fd2f5035a49247eb76e0c",
+	                "599fd197035a49247eb76dfa",
+	                "599fc880035a49247eb76dd1",
+	                "59a00ec3f81b7f2c1f1a2bed",
+	                "59a0da19f81b7f2c1f1a2e39",
+	                "59a03d24f81b7f2c1f1a2ca7",
+	                "59a02f9af81b7f2c1f1a2c5d",
+	                "59a03d42f81b7f2c1f1a2caf",
+	                "59a13df654aadc3606438fa2",
+	                "59a0ea4a50a60d3183e54ab9",
+	                "59a13323d0f88a325a41a97b",
+	                "59a123b6d0f88a325a41a948",
+	                "59a12073d0f88a325a41a925",
+	                "59a7a9cf0691165c10216694",
+	                "59a3ea209615c04442d13aff",
+	                "59a00949f81b7f2c1f1a2be7",
+	                "598f1372103bf253b0dfffe5",
+	                "59bf67a08394300e1447d9ff",
+	                "59a76e767829795685998683",
+	                "59bf6b700088e20e76d625ed",
+	                "59a3b4c79615c04442d139d9",
+	                "599be0b41f76c714943fbdf7",
+	                "598d69c1bdb5a14c8fec214e",
+	                "59c0d0cefa8a972f5d1793ec",
+	                "59c0a4fe19a78d2821f1fda0",
+	                "59b038f5ce43577ebd3c4e2f",
+	                "59afdf4dce43577ebd3c4dcf",
+	                "59af9d5bce43577ebd3c4cac",
+	                "59afbcaace43577ebd3c4d14",
+	                "59a10f50d0f88a325a41a8bd",
+	                "59c0f70360426433a3ac0a76",
+	                "59c0d69931c70e305eb23b5e",
+	                "59c205091ddee8575e384f15",
+	                "59c234625823de5abe3c97d0",
+	                "59c22c3de30c9259864b8a31",
+	                "59c63210e4cae3231d42b40c",
+	                "59afd492ce43577ebd3c4da7",
+	                "59afd41bce43577ebd3c4da2"
+	            ],
+	            "careNum": 4,
+	            "cared": [
+	                "59c0d0cefa8a972f5d1793ec",
+	                "59805436e86b3e0da72f4b82"
+	            ],
+	            "care": [
+	                "597edb66ef98d970e0fc8d79",
+	                "597f2ba66a5c38769563dbb2",
+	                "59a3b4c79615c04442d139d9",
+	                "599be0b41f76c714943fbdf7"
+	            ],
+	            "loginAt": "2017-09-28T03:25:10.881Z"
+	        },
+	        "platform": "ios",
+	        "registration_id": "170976fa8ab4c9f5455",
+	        "mobile": "15692405972",
+	        "sex": 1,
+	        "lat": "23.13648",
+	        "lng": "113.295656",
+	        "password": "$2a$10$r9mIDF7QkItaItOi8i9iM.U4Nl1Or3WNlLj0NeiPMNKjQ2n20UtyK",
+	        "auditAt": "2017-09-28T03:07:55.179Z",
+	        "__v": 774,
+	        "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-avatar/156924059721506567352.jpg",
+	        "nickname": "台山彭于晏",
+	        "age": 24,
+	        "addr": "北京市北京市",
+	        "lovePrice": "高奢",
+	        "loveDate": "初见",
+	        "income": "1亿以上",
+	        "assets": "10亿以上",
+	        "body": "健美",
+	        "height": "173cm",
+	        "drink": "社交应酬",
+	        "smoking": "不抽烟",
+	        "education": "学士学位",
+	        "work": "程序员",
+	        "character": "霸道总裁就是我，干我所干，乐我所乐",
+	        "selfInfo": "猛男",
+	        "looking": "我正在寻找一位盖世英雄,有一天他会身披金甲圣衣、驾着七彩祥云来娶我。我猜中了开头,却猜不中这结局。",
+	        "afford": "情感补充",
+	        "hopeful": "情人关系",
+	        "iNeed": "温馨约会",
+	        "oldName": "阳江谢霆锋",
+	        "from": "boss",
+	        "oldAvatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-avatar/156924059721505974524.jpg",
+	        "lan": "ft",
+	        "sortAt": "2017-09-28T02:55:59.441Z",
+	        "meta": {
+	            "updatedAt": "2017-09-28T03:20:00.091Z",
+	            "createdAt": "2017-08-09T07:00:42.845Z"
+	        },
+	        "photoPri": [
+	            {
+	                "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-private/156924059721505703826.jpg",
+	                "category": "common",
+	                "enable": true
+	            },
+	            {
+	                "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-private/156924059721505703948.jpg",
+	                "category": "common",
+	                "enable": true
+	            }
+	        ],
+	        "photoPub": [
+	            {
+	                "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-public/156924059721505703816.jpg",
+	                "enable": true
+	            }
+	        ],
+	        "vipLevel": "vip1",
+	        "rmbTotal": 0,
+	        "vip": {
+	            "category": "alipay",
+	            "to": "2018-09-02T09:17:11.207Z",
+	            "from": "2017-07-22T09:17:11.207Z",
+	            "role": true
+	        },
+	        "auditStatus": "failed",
+	        "auditContent": {
+	            "character": "1",
+	            "selfInfo": "1",
+	            "looking": "1",
+	            "nickname": "1",
+	            "work": "1",
+	            "avatar": "0"
+	        },
+	        "loc": {
+	            "type": "Point",
+	            "coordinates": [
+	                113.295656,
+	                23.13648
+	            ]
+	        },
+	        "locAuthorize": true,
+	        "loginAt": "2017-07-22T09:17:11.207Z",
+	        "completion": 100,
+	        "tour": [
+	            "滑浪风帆",
+	            "私人庄园",
+	            "高尔夫胜地"
+	        ],
+	        "sports": [
+	            "游泳",
+	            "健身",
+	            "篮球",
+	            "斯诺克"
+	        ],
+	        "online": "no",
+	        "isActive": "yes",
+	        "number": 1,
+	        "mock": false
+	    }
+	}
+	//背景图片
+	if(data.result.avatar && data.result.auditContent.avatar && data.result.auditContent.avatar!='0' || data.result.avatar && !data.result.auditContent.avatar){
+		if(data.result.avatar.indexOf('x-oss')==-1){
+			$('#headBgImg').css('background-image','url('+data.result.avatar+'?x-oss-process=image/resize,h_80)');
+		}else{
+			$('#headBgImg').css('background-image','url('+data.result.avatar+')');
+		}
+	}else if(data.result.auditContent && data.result.auditContent.avatar && data.result.auditContent.avatar=='0' && data.result.oldAvatar){
+		if(data.result.oldAvatar.indexOf('x-oss')==-1){
+			$('#headBgImg').css('background-image','url('+data.result.oldAvatar+'?x-oss-process=image/resize,h_80)');
+		}else{
+			$('#headBgImg').css('background-image','url('+data.result.oldAvatar+')');
+		}
+	}else if(data.result.sex==1){
+		$('#headBgImg').css('background-image','url(img/nan01.png)');
+	}else{
+		$('#headPic').attr('src','img/nv01.png');
+		$('#headBgImg').css('background-image','url(img/nv01.png)');
+	}
+
+	localStorage.setItem('myInfo',JSON.stringify(data))
+	userSex = data.result.sex;
+	// 头像
+	if(data.result.avatar&&data.result.auditContent.avatar && data.result.auditContent.avatar!='0' || data.result.avatar && !data.result.auditContent.avatar){
+		if(data.result.avatar.indexOf('x-oss')==-1){
+			$('#headPic').attr('src',data.result.avatar+'?x-oss-process=image/resize,h_65');
+		}else{
+			$('#headPic').attr('src',data.result.avatar);
+		}
+	}else if(data.result.auditContent && data.result.auditContent.avatar && data.result.auditContent.avatar=='0' && data.result.oldAvatar){
+		if(data.result.avatar.indexOf('x-oss')==-1){
+			$('#headPic').attr('src',data.result.oldAvatar+'?x-oss-process=image/resize,h_65');
+		}else{
+			$('#headPic').attr('src',data.result.oldAvatar);
+		}
+	}else if(data.result.sex==1){
+		$('#headPic').attr('src','img/nan01.png');
+	}else{
+		$('#headPic').attr('src','img/nv01.png');
+	}
+
+	// 昵称
+	if(data.result.mock){
+		$('#userName').text(data.result.nickname);
+	}else{
+		if(data.result.nickname && data.result.auditContent.nickname && data.result.auditContent.nickname!='0'){//审核通过
+	        $('#userName').text(data.result.nickname);
+	    }else if(data.result.auditContent && data.result.auditContent.nickname && data.result.auditContent.nickname=='0' && data.result.oldName){//没通过
+	        $('#userName').text(data.result.oldName);
+	    }else{
+	        if(data.result.sex==1){
+	            $('#userName').text(maleNicknameLang());
+	        }else{
+	            $('#userName').text(femaleNicknameLang());
+	        }
+	    }
+	}
+
+	$('.vip-logo').show();
+	$('#vipLevel').show();
+	if(data.result.sex==1){
+		if(data.result.vipLevel == "vip0"){
+			$('.vip-logo').hide();
+		}else if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+			$('.vip-logo').attr("src","./img/pic_GoldMember.png");
+			$('#vipLevel').text(vip2);
+		}else if(data.result.vipLevel == "vip3"){
+			$('.vip-logo').attr("src","./img/pic_DiamondMember.png");
+			$('#vipLevel').text(vip3);
+		}else if(data.result.vipLevel == "vip4"){
+			$('.vip-logo').attr("src","./img/pic_CrownMember.png");
+			$('#vipLevel').text(vip4);
+		}
+	}else{
+		if(data.result.vipLevel == "vip0"){
+			$('.vip-logo').hide();
+		}else if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+			$('.vip-logo').attr("src","./img/women_pic_MonarchMember.png");
+			$('#vipLevel').text(vip22);
+		}else if(data.result.vipLevel == "vip3"){
+			$('.vip-logo').attr("src","./img/women_pic_PrincessMember.png");
+			$('#vipLevel').text(vip33);
+		}else if(data.result.vipLevel == "vip4"){
+			$('.vip-logo').attr("src","./img/women_pic_QueenMember.png");
+			$('#vipLevel').text(vip44);
+		}
+	}
+	getInterface().hud_hide();*/
+</script>
+</body>
+
+</html>

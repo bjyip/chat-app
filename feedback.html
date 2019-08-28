@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" class="feedback">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>联系客服</title>
+	<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/feedback.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+	<script src="js/bbmis.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+	<style>
+		#help{
+			display: none;
+		}
+		#email{
+			padding-left: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="mui-content">
+        <h6 class="hide-span" data-i18n="feedback-title">联系客服</h6>
+
+		<div class="row mui-input-row">
+			<textarea id='question' class="mui-input-clear question" placeholder="(必填)请详细描述你的问题和意见..."></textarea>
+		</div>
+		<p data-i18n="feedback-pic">图片(选填,提供问题截图,总大小10M以下)</p>
+		<div id='image-list' class="row image-list">
+			<div class="image-item">
+				<div id="updatePic"><span class="mui-icon mui-icon-plusempty"></span></div>
+			</div>
+		</div>
+		<div class="mui-input-row contactBox" style="margin-top:10px;">
+			<div class="mui-inline" data-i18n="feedback-email">邮箱地址</div>
+			<input id='email' type="email" class="mui-input-clear contact mui-inline" placeholder="(必填,方便我们联系你 )" />
+		</div>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell" id="help">
+		        <a class="mui-navigate-right" data-i18n="feedback-help">帮助</a>
+		    </li>
+		</ul>
+		<div class="submit">
+			<button id="submit" class="mui-btn" data-i18n="feedback-submit">提交</button>
+		</div>
+
+	</div>
+	<script src="js/mui.min.js"></script>
+    <script src="js/i18n_data.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		var coTitle = $('h6[data-i18n]').text();
+    	getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+		mui('.mui-scroll-wrapper').scroll();
+		var shield1 =localStorage.getItem('shield1');
+
+
+		function leftBtnClick(){
+			getInterface().leftBtnClick();
+		}
+		 if(lang == 'zh'){
+	        var tip1 = '请输入正确的邮箱格式！';
+	        var tip2 = '请填写描述信息！';
+	        var tip3 = '谢谢您的意见反馈，我们将在24小时内给您回复！';
+	        $('#question').attr('placeholder','(必填)请详细描述你的问题和意见...');
+	        $('#email').attr('placeholder','(必填,方便我们联系你 )');
+	    }else if(lang == 'en'){
+	        var tip1 = 'Please enter the correct mailbox format!';
+	        var tip2 = 'Please fill in the description information!';
+	        var tip3 = 'Thank you for your feedback. We will give you a reply within 24 hours!';
+	        $('#question').attr('placeholder','(Required) please describe your questions and opinions in more detail...');
+	        $('#email').attr('placeholder','(Required, we can contact you)');
+	    }else{
+	        var tip1 = '請輸入正確的郵箱格式！';
+	        var tip2 = '請填寫描述資訊！';
+	        var tip3 = '謝謝您的意見回饋，我們將在24小時內給您回復！！';
+	        $('#question').attr('placeholder','(必填，方便我們聯系你)');
+	    }
+
+		$('#updatePic').on('tap',function(){
+			getInterface().post_photo('feedback/','','');
+		})
+		function return_photo(data){
+			$('#updatePic').remove();
+			var pic = '<img id="feedbackImg" src="'+data+'">'
+			$('.image-item').append(pic);
+			getInterface().post_action("getsts",'',"get");
+		}
+
+		$('#submit').on('tap',function(){
+			var data={
+				info: $('#question').val(),
+				photo: $('#feedbackImg').attr('src'),
+				mobile: $('#contact').val(),
+				email: $('#email').val()
+			}
+			var email= data.email;
+			if(data.info){
+				if(!email.match(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){
+					getInterface().msg_alert(tip1);
+				}else{
+					getInterface().post_action("feedback",JSON.stringify(data),"post");
+				}
+			}else{
+				getInterface().msg_alert(tip2);
+			}
+
+		})
+
+		function return_action(data,data2){
+			if(data2 == 'feedback'){
+				if(data.ret==1){
+					getInterface().msg_alert(tip3);
+					$('#question').val('');
+					$('#email').val('');
+					$('#feedbackImg').remove();
+					$('.image-item').append('<div id="updatePic">+</div>');
+				}else{
+					getInterface().msg_alert(data.msg);
+				}
+			}
+		}
+		if(shield1=='no'){
+			$('#help').show();
+		}
+		$('#help').on('tap',function(){
+			getInterface().html_jump_href(service+'/help.html', 'no');
+		})
+	</script>
+</body>
+
+</html>

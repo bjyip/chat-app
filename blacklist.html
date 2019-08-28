@@ -1,0 +1,401 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>黑名单</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script type="application/javascript"  src="js/hkJS.js"></script>
+    <style>
+        .collect-item p {
+            height: 14px;
+        }
+        #nickname {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <!--页面主内容区开始-->
+    <div class="mui-page-content" id="black_div">
+    <span class="hide-span" data-i18n="black-title">黑名单</span>
+         <div class="mui-control-content mui-active">
+            <ul class="mui-table-view" id="blackList">
+            </ul>
+        </div>
+        <div class="nobdyTips nobdyTips_collect" id='nobdyTips1'>
+            <p class="noresult" data-i18n="black-noBlack">未有黑名单</p>
+            <p class="changeTerm"></p>
+            <!-- <button id='search_btn'>看看附近有谁</button> -->
+        </div>
+    </div>
+    <!--页面主内容区结束-->
+    <script type="text/template" id="code">
+        <li class="mui-table-view-cell mui-media collect-item">
+            <div class="mui-slider-right mui-disabled">
+                <a class="mui-btn mui-btn-red canShield" data-i18n="black-canShield">取消屏蔽</a>
+            </div>
+            <a class="mui-slider-handle coll-item" href="javascript:;">
+                <span class="online"></span>
+                <img id="photo" class="mui-media-object mui-pull-left" src="">
+                <div class="mui-media-body">
+                    <span id="nickname"></span>
+                    <img class="vip-logo" src="" alt="">
+                    <p class="basicInfo">
+                        <span class="addr"></span><span class="age"></span><span class="lovePrice"></span>
+                    </p>
+                </div>
+            </a>
+        </li>
+    </script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/i18n_data.js"></script>
+    <script type="text/javascript">
+        //初始化事件
+        mui.init({
+            gestureConfig:{
+               longtap: true, //默认为false
+            }
+        });
+
+        var coTitle = $('span[data-i18n]').text();
+        getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+
+        var shield1 = localStorage.getItem('shield1');
+
+        function leftBtnClick(){
+            getInterface().leftBtnClick();
+        }
+
+        getInterface().hud_loading(); //loading
+        // 关注列表
+        getInterface().post_action("hateList",'','get');
+        function return_action(data,data2){
+            if(data2=='hateList'){
+                $("#blackList").html('')
+                for(var i=0; i<data.hates.length; i++){
+                    var code = $($('#code').html());
+                    code.attr('userId',data.hates[i]._id);
+                    // 头像
+                    if(data.hates[i].auditContent && data.hates[i].auditContent.avatar && data.hates[i].auditContent.avatar=='1' || data.hates[i].avatar && !data.hates[i].auditContent.avatar){
+                        code.find('#photo').attr('src',data.hates[i].avatar);
+                    }else if(data.hates[i].auditContent && data.hates[i].auditContent.avatar && data.hates[i].auditContent.avatar!='1' && data.hates[i].oldAvatar){
+                        code.find('#photo').attr('src',data.hates[i].oldAvatar);
+                    }else if(data.hates[i].sex==1){
+                        code.find('#photo').attr('src','img/nan01.png');
+                    }else{
+                        code.find('#photo').attr('src','img/nv01.png');
+                    }
+
+                    code.find('#photo').attr('userId',data.hates[i]._id);
+                    if(data.hates[i].nickname){
+                        code.find('#nickname').text(data.hates[i].nickname);
+                    }else if(data.hates[i].sex==1){
+                        code.find('#nickname').text(maleNicknameLang());
+                    }else{
+                        code.find('#nickname').text(femaleNicknameLang());
+                    }
+                    if(data.hates[i].online=='yes'){
+                        code.find('.online').css('display','inline-block');
+                    }
+                    // 判断是否高级会员及等级
+                    if(shield1=='no'){
+                        var sex = data.hates[i].sex;
+                        if(data.hates[i].vipLevel == "vip1" || data.hates[i].vipLevel == "vip2"){
+                            code.find('#nickname').css("color",'#d1aa50');
+                            code.find('.vip-logo').css('display','inline-block');
+                            code.find('.vip-logo').attr("src",sex==1?"./img/pic_GoldMember.png":"./img/women_pic_MonarchMember.png");
+                        }else if(data.hates[i].vipLevel == "vip3"){
+                            code.find('#nickname').css("color",'#d1aa50');
+                            code.find('.vip-logo').css('display','inline-block');
+                            code.find('.vip-logo').attr("src",sex==1?"./img/pic_DiamondMember.png":"./img/women_pic_PrincessMember.png");
+                        }else if(data.hates[i].vipLevel == "vip4"){
+                            code.find('#nickname').css("color",'#d1aa50');
+                            code.find('.vip-logo').css('display','inline-block');
+                            code.find('.vip-logo').attr("src",sex==1?"./img/pic_CrownMember.png":"./img/women_pic_QueenMember.png");
+                        }else{
+                            code.find('.vip-logo').hide();
+                        }
+                    }
+
+                    code.find('.addr').text(data.hates[i].addr==undefined?'':data.hates[i].addr+'/');
+                    code.find('.age').text(data.hates[i].age==undefined?'':(data.hates[i].age>=50?'50+':data.hates[i].age)+ageLang()+'/');
+                    code.find('.lovePrice').html(data.hates[i].lovePrice);
+                    $("#blackList").append(code);
+                    //删除翻译
+                    changeLang('canShield')
+                }
+                //是否需要屏蔽
+                getInterface().action_info();
+
+                if(data.hates.length == 0){
+                    $("#nobdyTips1").css('display','block');
+                }else{
+                    $("#nobdyTips1").css('display','none');
+                }
+                getInterface().hud_hide();
+            }else{
+                if(data.ret==1){
+                    localStorage.setItem('balckTag',1)
+                }
+            }
+
+        }
+
+        //是否需要屏蔽
+        function return_info(data,data2){
+            if(data == 'yes'){
+                $('.vip-logo').css('display','none');
+            }
+        }
+
+        //长按删除
+        $('#blackList').on('longtap','.collect-item',function(e){
+            $(this).addClass('mui-selected');
+            $(this).siblings('li').removeClass('mui-selected');
+            $(this).find('#delete').addClass('mui-selected');
+            $(this).find('.mui-btn-red').animate({'transform':'translate(-116px, 0px)'});
+            $(this).find('.mui-slider-handle').animate({'transform':'translate(-116px, 0px)'});
+        })
+        // 点击隐藏删除
+        $('#black_div').on('tap touchstart',function(){
+            $(this).removeClass('mui-selected');
+            $(this).find('#delete').removeClass('mui-selected');
+            $(this).find('.mui-btn-red').animate({'transform':'translate(0px, 0px)','speed':'fast'});
+            $(this).find('.mui-slider-handle').animate({'transform':'translate(0px, 0px)','speed':'fast'});
+        });
+
+        var btnArray = ['取消', '确认'],sureTitle = '确认删除该条记录？',blackTem = '黑名单';
+        if(lang == 'en'){
+            btnArray = ['cancel', 'confirm'];
+            sureTitle = 'Confirm delete this record?'
+            blackTem = 'Blacklist';
+        }else if(lang == 'ft'){
+            btnArray = ['取消', '確認'];
+            sureTitle = '確認删除該條記錄？'
+            blackTem = '黑名單';
+        }
+        $('#black_div').on('tap', '.mui-btn', function(event) {
+            var elem = this;
+            var li = elem.parentNode.parentNode;
+            mui.confirm(sureTitle, blackTem, btnArray, function(e) {
+                if (e.index == 1) {
+                    var userId = $(li).attr('userId')
+                    getInterface().post_action("unHate",JSON.stringify({id: userId}),'post');
+                    li.parentNode.removeChild(li);
+                }else {
+                    setTimeout(function() {
+                        mui.swipeoutClose(li);
+                    }, 0);
+                }
+            });
+        });
+
+
+
+        /*var data ={
+            "ret": 1,
+            "hates": [
+                {
+                    "_id": "597eac4cbdb23c6817671ed1",
+                    "traceid": "597eac4cbdb23c6817671ed2",
+                    "platform": "ios",
+                    "registration_id": "",
+                    "mobile": "18078854977",
+                    "sex": 1,
+                    "lat": "23.136474",
+                    "lng": "113.295586",
+                    "password": "$2a$10$JUPrtKBOwyfuedkv3gUzb.jwQpyxvXEmVKkO/WyUy8GO/fARRg/JW",
+                    "auditAt": "2017-07-31T04:04:28.271Z",
+                    "__v": 104,
+                    "nickname": "我们绅士",
+                    "age": 50,
+                    "addr": "广东省广州市",
+                    "lovePrice": "小清新",
+                    "loveDate": "密友",
+                    "income": "50万",
+                    "assets": "500万",
+                    "body": "匀称",
+                    "height": "173cm",
+                    "drink": "不喝酒",
+                    "smoking": "不抽烟",
+                    "education": "学士学位",
+                    "work": "你想要的这行",
+                    "character": "我就是我，是颜色不一样的烟火",
+                    "selfInfo": "你们好啊，自我感觉良好，希望你也良好哟！",
+                    "looking": "希望你有能力，有特色，符合我理想中的高要求啊！",
+                    "avatar": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/180788549771502432887.jpg",
+                    "afford": "浪漫旅行",
+                    "hopeful": "激情关系",
+                    "iNeed": "浪漫旅行",
+                    "meta": {
+                        "updatedAt": "2017-09-18T11:55:34.880Z",
+                        "createdAt": "2017-08-14T05:43:54.268Z"
+                    },
+                    "photoPri": [
+                        {
+                            "addr": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-private/180788549771502432920.jpg",
+                            "category": "common",
+                            "enable": true
+                        },
+                        {
+                            "addr": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-private/180788549771502432930.jpg",
+                            "category": "common",
+                            "enable": true
+                        }
+                    ],
+                    "photoPub": [
+                        {
+                            "addr": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/180788549771502432887.jpg",
+                            "enable": true
+                        },
+                        {
+                            "addr": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/180788549771502432906.jpg",
+                            "enable": true
+                        }
+                    ],
+                    "vipLevel": "vip1",
+                    "rmbTotal": 0,
+                    "vip": {
+                        "to": "2017-09-30T04:04:28.271Z",
+                        "from": "2017-07-31T04:04:28.271Z",
+                        "role": true
+                    },
+                    "auditStatus": "success",
+                    "auditContent": {
+                        "character": "1",
+                        "looking": "1",
+                        "nickname": "1",
+                        "selfInfo": "1",
+                        "avatar": "2"
+                    },
+                    "loc": {
+                        "type": "Point",
+                        "coordinates": [
+                            113.295586,
+                            23.136474
+                        ]
+                    },
+                    "locAuthorize": false,
+                    "loginAt": "2017-07-31T04:04:28.271Z",
+                    "completion": 100,
+                    "tour": [
+                        "阳光海滩",
+                        "人文历史",
+                        "都市购物",
+                        "派对交友",
+                        "私人庄园",
+                        "地貌奇观",
+                        "篮球联赛",
+                        "巡回演唱会"
+                    ],
+                    "sports": [
+                        "游泳",
+                        "跑步",
+                        "网球",
+                        "羽毛球",
+                        "篮球",
+                        "斯诺克",
+                        "保龄球",
+                        "棋牌"
+                    ],
+                    "online": "no",
+                    "isActive": "yes",
+                    "number": 1,
+                    "mock": false
+                },
+                {
+                    "_id": "59bb3a91ec5f2f457553cd11",
+                    "sex": 1,
+                    "age": 50,
+                    "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/150744368551505442470.jpg",
+                    "city": "呼和浩特",
+                    "nickname": "我是小boss",
+                    "lovePrice": "小清新",
+                    "character": "我愿成为你可以依靠的那个男人",
+                    "vipLevel": "vip4",
+                    "vip": {
+                        "coupons": "PKSW",
+                        "category": "alipay",
+                        "to": "2019-09-05T03:44:03.956Z",
+                        "from": "2017-09-15T03:44:03.956Z",
+                        "role": true
+                    },
+                    "auditContent": {
+                        "nickname": "1",
+                        "character": "1",
+                        "selfInfo": "1",
+                        "work": "1",
+                        "avatar":"0"
+                    },
+                    "oldAvatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156264399291505962017.jpg",
+                },
+                ]
+        }
+        // $("#blackList").html('')
+        for(var i=0; i<data.hates.length; i++){
+            var code = $($('#code').html());
+            code.attr('userId',data.hates[i]._id);
+            if(data.hates[i].auditContent && data.hates[i].auditContent.avatar && data.hates[i].auditContent.avatar!='0' || data.hates[i].avatar && !data.hates[i].auditContent.avatar){
+                code.find('#photo').attr('src',data.hates[i].avatar);
+            }else if(data.hates[i].auditContent && data.hates[i].auditContent.avatar && data.hates[i].auditContent.avatar=='0' && data.hates[i].oldAvatar){
+                code.find('#photo').attr('src',data.hates[i].oldAvatar);
+            }else if(ddata.hates[i].sex==1){
+                code.find('#photo').attr('src','img/nan01.png');
+            }else{
+                code.find('#photo').attr('src','img/nv01.png');
+            }
+            code.find('#photo').attr('userId',data.hates[i]._id);
+            if(data.hates[i].nickname){
+                code.find('#nickname').text(data.hates[i].nickname);
+            }else if(data.hates[i].sex==1){
+                code.find('#nickname').text("绅士");
+            }else{
+                code.find('#nickname').text("甜心");
+            }
+            if(data.hates[i].online=='yes'){
+                code.find('.online').css('display','inline-block');
+            }
+            // 判断是否高级会员及等级
+            var sex = data.hates[i].sex;
+            if(data.hates[i].vipLevel == "vip1" || data.hates[i].vipLevel == "vip2"){
+                code.find('#nickname').css("color",'#d1aa50');
+                code.find('.vip-logo').css('display','inline-block');
+                code.find('.vip-logo').attr("src",sex==1?"./img/pic_GoldMember.png":"./img/women_pic_MonarchMember.png");
+            }else if(data.hates[i].vipLevel == "vip3"){
+                code.find('#nickname').css("color",'#d1aa50');
+                code.find('.vip-logo').css('display','inline-block');
+                code.find('.vip-logo').attr("src",sex==1?"./img/pic_DiamondMember.png":"./img/women_pic_PrincessMember.png");
+            }else if(data.hates[i].vipLevel == "vip4"){
+                code.find('#nickname').css("color",'#d1aa50');
+                code.find('.vip-logo').css('display','inline-block');
+                code.find('.vip-logo').attr("src",sex==1?"./img/pic_CrownMember.png":"./img/women_pic_QueenMember.png");
+            }else{
+                code.find('.vip-logo').hide();
+            }
+            code.find('.addr').text(data.hates[i].addr==undefined?'':data.hates[i].addr+'/');
+            code.find('.age').text(data.hates[i].age==undefined?'':(data.hates[i].age>=50?'50+':data.hates[i].age)+'岁/');
+            code.find('.lovePrice').html(data.hates[i].lovePrice);
+            $("#blackList").append(code);
+        }
+        //是否需要屏蔽
+        getInterface().action_info();
+
+        if(data.hates.length == 0){
+            $("#nobdyTips1").css('display','block');
+        }else{
+            $("#nobdyTips1").css('display','none');
+        }
+        //删除翻译
+        changeLang('canShield')*/
+    </script>
+</body>
+
+</html>

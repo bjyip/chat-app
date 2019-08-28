@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>关于</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+	<script src="js/bbmis.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+</head>
+
+<body class="whiteBg">
+
+	<!--页面主内容区开始-->
+	<div class="mui-page-content about">
+		<div class="logo">
+			<img src="img/logov1.0-72px.png" width="80">
+			<h5>BOSS直约</h5>
+			<p id="versionText"></p>
+		</div>
+		<div class="about-con">
+			<p>BOSS直约作为高端商务社交平台，独创颜值人工智能分析系统，确保用户资料的真实性。展现精英商务人士的成熟、睿智的价值观，展现魅力女生的的可爱迷人。BOSS直约致力为绅士和甜心缔造一个高效、优品的约会平台。</p>
+		</div>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell" id="version">
+		        <a class="mui-navigate-right">
+					<div class="mui-media-body">
+						版本更新
+					</div>
+					<!-- <span class="mui-badge mui-badge-danger">new</span> -->
+				</a>
+		    </li>
+		</ul>
+		<footer class="copyRight">
+			<p id="p1">约会注意事项及防骗提醒</p>
+			<p id="p2">《用户协议》</p>
+			<p id="p3">《用户隐私政策》</p>
+			<p style="color:#666;font-size:12px;line-height: 16px;margin-bottom: 10px;">copyright&nbsp;©&nbsp;2017 <br>广州聆歌信息科技有限公司</p>
+		</footer>
+	</div>
+
+	<script src="js/mui.min.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		$(function(){
+			getInterface().initDataWithArray("#FFFFFF","back","BOSS直约","","","#AC9455","","");
+		})
+		function leftBtnClick(){
+			getInterface().leftBtnClick();
+		}
+		//获取版本号
+		getInterface().getAPPInfo();
+		function return_APPInfo(data){
+			$('#versionText').text(data)
+		}
+
+		$('#helpPage').on('tap',function(){
+			getInterface().html_jump_href(service+'/help.html', 'none');
+		})
+		$('#p1').on('tap',function(){
+			getInterface().html_jump_href(service+'/remind.html', 'none');
+		})
+		$('#p2').on('tap',function(){
+			getInterface().html_jump_href(service+'/agreement.html', 'none');
+		})
+		$('#p3').on('tap',function(){
+			getInterface().html_jump_href(service+'/privacy.html', 'none');
+		})
+		$('#version').on('tap',function(){
+			getInterface().getNewVersionAPP();
+		})
+	</script>
+</body>
+
+
+
+</html>

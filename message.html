@@ -1,0 +1,615 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>消息列表</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	<script type="text/javascript" src="js/zepto.min.js"></script>
+	<script src="js/i18next-1.7.7.min.js"></script>
+	<script src="js/bbmis.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+	<style type="text/css">
+		.unread {
+		    position: absolute;
+		    top: 50%;
+		    right: 6%;
+		    width: 1.3rem;
+		    height: 1.3rem;
+		    background-color: #D1AA50;
+		    border-radius: 50%;
+		    text-align: center;
+		    color: #fff;
+		    line-height: normal;
+		}
+		.delete {
+			z-index: 999;
+		}
+/*		.online {
+			background-color: #00BCB5;
+			height: 10px;
+			width: 10px;
+			border-radius: 10px;
+			position: absolute;
+			top: 16px;
+			left: 60px;
+			display: none;
+		}*/
+		.state-time {
+			display: inline-block;
+			position: absolute;
+			right: 14px;
+		}
+		.index-con .flag-vip, .time {
+			position: static;
+			vertical-align: super;
+		}
+		.send-state {
+			display: inline-block;
+			width: 22.8px;
+			height: 12px;
+			vertical-align: text-bottom;
+			background: url(./img/Check-Icon.png) no-repeat center;
+			background-size: 100% 100%;
+			vertical-align: text-top;
+		}
+		.mui-media-body {
+			width: 100%;
+		}
+		.basicInfo {
+			width: 85%;
+		}
+        .nickName{
+            color: rgb(120, 100, 54);
+            max-width: 120px;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+	</style>
+</head>
+
+<body class="whiteBg">
+	<!--页面主内容区开始-->
+	<h6 class="hide-span" data-i18n="message-title">消息列表</h6>
+	<div class="mui-page-content index-con mess-con" id='refreshDiv'>
+		<ul class="mui-table-view" id="users">
+		</ul>
+		<div class="nobdyTips nobdyTips_collect" id='nobdyTips1'>
+			<img src="./img/nolove.png" alt="">
+			<p class="noresult" data-i18n="message-empty">您暂未有对话的人</p>
+			<p class="changeTerm"></p>
+			<button id='search_btn' data-i18n="message-search">看看附近有谁</button>
+		</div>
+	</div>
+	<!--页面主内容区结束-->
+</body>
+<script src="js/mui.min.js"></script>
+<script type="text/template" id="text">
+	<li class="mui-table-view-cell mui-media collect-item">
+		<div class="mui-slider-right mui-disabled delete" id="delete">
+            <a class="mui-btn mui-btn-red delete-btn" data-i18n="message-delete">删除</a>
+        </div>
+		<a class="mui-slider-handle coll-item">
+            <img class="mui-media-object mui-pull-left" src="">
+            <span class="online" id="online"></span>
+            <div class="mui-media-body">
+            	<span class="nickName"></span>
+            	<img class="vip-logo" src="./img/white.jpg" alt="">
+        		<div class="state-time"><!-- <span class="send-state" id="send_state"></span> --><span class="time"></span></div>
+            	<span class="unread"></span>
+                <p class='mui-ellipsis basicInfo'></p>
+            </div>
+        </a>
+    </li>
+</script>
+<script src="js/i18n_data.js"></script>
+<script type="text/javascript">
+	//初始化事件
+	mui.init({
+		gestureConfig:{
+		   longtap: true, //默认为false
+	  	}
+	});
+	if(lang == 'zh'){
+		var btnArray = ['取消', '确认'];
+        var tip = '确认删除该条记录？';
+        var minute = '分钟前';
+        var hour = '小时前';
+        var day = '天前';
+        var minutes = '分钟前';
+        var hours = '小时前';
+        var days = '天前';
+    }else if(lang == 'en'){
+		var btnArray = ['Cancel', 'Confirm'];
+        var tip = 'Confirm delete this record?';
+        var minute = ' minute ago';
+        var hour = ' hour ago';
+        var day = ' day ago';
+        var minutes = ' minutes ago';
+        var hours = ' hours ago';
+        var days = ' days ago';
+    }else{
+		var btnArray = ['取消', '確認'];
+        var tip = '確認删除該條記錄？';
+        var minute = '分鐘前';
+        var hour = '小時前';
+        var day = '天前';
+        var minutes = '分鐘前';
+        var hours = '小時前';
+        var days = '天前';
+    }
+	// 兼容安卓
+	var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+    if(isAndroid){
+    	mui.init({
+			gestureConfig:{
+			   drag: false
+		  	}
+		});
+    }
+    var coTitle = $('h6[data-i18n]').text();
+    getInterface().initDataWithArray("#ffffff","",coTitle,"","","#AC9455","","");
+
+
+	// 调用ios原生方法，请求用户列表
+	getInterface().post_action("getMsgs","","get");
+
+	//数据加载时显示加载框
+	getInterface().hud_loading();
+
+	// 调用ios原生方法，返回用户列表
+	function return_action(data,data2) {
+		if(data2 == "getMsgs"){
+			flag = data.acess
+			total = data.msgNum
+			sex = data.sex
+			var results = data.chats;
+			$("#users").html("");
+			if(results.length == 0){
+				$("#nobdyTips1").css('display','block');
+			}else{
+				$("#nobdyTips1").css('display','none');
+			}
+			for( var i = 0;i < results.length;i++){
+				var t = $($("#text").html())
+				//头像
+				if(results[i].user.auditContent.avatar && results[i].user.auditContent.avatar == '1' || !results[i].user.auditContent.avatar && results[i].user.avatar){
+					t.find('.mui-media-object').attr('src',results[i].user.avatar);
+					//头像
+				}else if(results[i].user.auditContent && results[i].user.auditContent.avatar && results[i].user.auditContent.avatar!='1' && results[i].user.oldAvatar){
+					t.find('.mui-media-object').attr('src',results[i].user.oldAvatar);
+				}else{
+					//头像
+					if(sex == 2){
+						t.find('.mui-media-object').attr('src','img/nan01.png');
+					}else if(sex == 1){
+						t.find('.mui-media-object').attr('src','img/nv01.png');
+					}
+				}
+
+				//在线状态
+				if(results[i].user.online == 'yes'){
+					t.find('.online').css('display','inline-block');
+				}
+				//发送状态
+				// if(results[i].user.state == 'yes'){
+				// 	$('#send_state').css('background-image','url(./img/Double-check-Icon.png)');
+				// }else{
+				// 	$('#send_state').css('background-image','url(./img/Check-Icon.png)');
+				// }
+
+				//把当前id记录在标签里面
+				t.find('.mui-media-object').attr('data-id',results[i]._id);
+				t.find('.mui-media-object').attr('data-name',results[i].user.nickname);
+				t.find('.mui-media-object').attr('data-vipLev',results[i].user.vipLevel);
+				//删除id
+				t.find('.mui-media-object').attr('data-delid',results[i]._delid);
+				// //对话信息
+				// t.find('.mui-media-object').attr('data-chatTime',results[i].last_chat_time);
+				// t.find('.mui-media-object').attr('data-creatTime',results[i].last_creat_time);
+				// t.find('.mui-media-object').attr('data-chatContent',results[i].last_chat_content);
+				//昵称
+				if(results[i].user.nickname){
+					t.find('.nickName').html(results[i].user.nickname);
+				}else{
+					if(sex == 1){
+						t.find('.nickName').html(femaleNicknameLang());
+					}else if(sex == 2 ){
+						t.find('.nickName').html(maleNicknameLang());
+					}
+				}
+				//判断是否高级会员及等级
+				if(results[i].user.vipLevel == "vip1" || results[i].user.vipLevel == "vip2"){
+					t.find('.nickName').css("color",'#786436');
+					t.find('.vip-logo').css('display','inline-block');
+					t.find('.vip-logo').attr("src",sex==2?"./img/pic_GoldMember.png":"./img/women_pic_MonarchMember.png");
+				}else if(results[i].user.vipLevel == "vip3"){
+					t.find('.nickName').css("color",'#786436');
+					t.find('.vip-logo').css('display','inline-block');
+					t.find('.vip-logo').attr("src",sex==2?"./img/pic_DiamondMember.png":"./img/women_pic_PrincessMember.png");
+				}else if(results[i].user.vipLevel == "vip4"){
+					t.find('.nickName').css("color",'#786436');
+					t.find('.vip-logo').css('display','inline-block');
+					t.find('.vip-logo').attr("src",sex==2?"./img/pic_CrownMember.png":"./img/women_pic_QueenMember.png");
+				}else{
+					t.find('.vip-logo').hide();
+				}
+				if(!results[i].unReaderNews){
+					t.find('.unread').hide()
+				}else{
+					//未读消息条数
+					t.find('.unread').html(results[i].unReaderNews);
+					t.find('.mui-media-object').attr('data-unread',results[i].unReaderNews);
+				}
+				// mui.toast(results[2].last_chat_time)
+				//距离时间
+				t.find('.time').html(time(results[i].last_chat_time));
+				//最新消息的内容
+				t.find('.basicInfo').html(results[i].last_chat_content);
+				$("#users").append(t);
+			}
+			//是否需要屏蔽
+			getInterface().action_info();
+		}
+        //翻译删除
+        changeLang('delete-btn')
+
+		//隐藏加载狂
+		getInterface().hud_hide();
+	}
+	//是否需要屏蔽
+    function return_info(data,data2){
+		localStorage.setItem('switchFlag',data);
+		localStorage.setItem('switchFlag1',data);
+    	if(data == 'yes'){
+    		$('.nickName').css("color",'#333');
+    		$('.vip-logo').css('display','none');
+    	}
+    }
+
+	//删除对话记录
+	var delFlag = false;
+    $('#users').on('tap','#delete', function(event) {
+
+		delFlag = true;
+        var elem = this;
+        var li = elem.parentNode;
+        mui.confirm(tip, '', btnArray, function(e) {
+            if (e.index == 1) {
+            	delFlag = true;
+                var delId = $(li).find(".mui-media-object").attr('data-delid');
+                // var chatTime = $(li).find(".mui-media-object").attr('data-chatTime');
+                // var creatTime = $(li).find(".mui-media-object").attr('data-creatTime');
+                // var chatContent = $(li).find(".mui-media-object").attr('data-chatContent');
+                // alert('delId:'+delId+'chatTime:'+chatTime+'creatTime:'+creatTime+'chatContent:'+chatContent)
+                //删除接口
+                getInterface().post_action("delMsg",JSON.stringify({id:delId}),'post');
+                li.parentNode.removeChild(li);
+                //计算总的未读条数
+                var thisunr = $(li).find(".mui-media-object").attr('data-unread') || 0;
+                var unr = (total -  thisunr) || 0;
+                getInterface().bageNum(unr.toString());
+            }else {
+            	delFlag = false;
+                setTimeout(function() {
+                    mui.swipeoutClose(li);
+                }, 0);
+            }
+        });
+		event.stopPropagation();
+    });
+
+    //长按删除
+    $('#users').on('longtap','.collect-item',function(e){
+    	delFlag = true;
+    	$(this).addClass('mui-selected');
+    	$(this).find('#delete').addClass('mui-selected');
+    	$(this).find('.mui-btn-red').animate({'transform':'translate(-88px, 0px)','speed':'fast'});
+    	$(this).find('.mui-slider-handle').animate({'transform':'translate(-88px, 0px)','speed':'fast'});
+    })
+    // 点击隐藏删除
+    $('#refreshDiv').on('tap',function(){
+		if(delFlag == true){
+        	$(this).removeClass('mui-selected');
+	    	$(this).find('#delete').removeClass('mui-selected');
+	    	$(this).find('.mui-btn-red').animate({'transform':'translate(0px, 0px)','speed':'fast'});
+	    	$(this).find('.mui-slider-handle').animate({'transform':'translate(0px, 0px)','speed':'fast'});
+	    	setTimeout(function(){
+	    		delFlag = false;
+	    	},20)
+        }
+    });
+
+	// ios原生方法，页面跳转，点击某一个消息
+	//注意 这里使用tap事件会跳转两次，所以用touchstart
+	$('#users').on('tap','.collect-item',function(e){
+		userId = $(this).find(".mui-media-object").attr('data-id');
+		if(sex == 2){
+			var newname = maleNicknameLang();
+		}if(sex == 1){
+			var newname = femaleNicknameLang()
+
+		}
+		name = $(this).find(".mui-media-object").attr('data-name') || newname
+		vipLev = $(this).find(".mui-media-object").attr('data-vipLev')
+		var thisunr = $(this).find(".mui-media-object").attr('data-unread') || 0
+		var unr = (total -  thisunr) || 0
+		getInterface().bageNum(unr.toString());
+	})
+
+	function leftBtnClick(){
+		getInterface().leftBtnClick();
+	}
+	function return_bageNum(){
+		if(delFlag == false){
+			getInterface().html_jump_href(service+'/imChat.html?personId='+userId+'&name='+name+'&vipLev='+vipLev, 'yes');
+		}
+	}
+
+	function time(time){
+		var bettween = new Date().getTime() - new Date(time).getTime()
+		var arr = []
+		if(bettween < 1000*60*60){
+			//小于一个小时
+			var min = (parseInt(bettween / 1000 / 60)+1)  + (((parseInt(bettween / 1000 / 60)+1)==1)?minute:minutes);
+			arr.push(min)
+		}else if(bettween < 1000*60*60*24 && bettween > 1000*60*60){
+			//一小时到24小时
+			var hour = Math.floor(bettween / 1000 / 60 / 60) + ((Math.floor(bettween / 1000 / 60 / 60)==1)?hour:hours);
+			arr.push(hour)
+
+
+		}else if(bettween > 1000*60*60*24){
+
+			//大于一天
+			var day = Math.floor(bettween / 1000 / 60 / 60 /24) + ((Math.floor(bettween / 1000 / 60 / 60 /24)==1)?day:days);
+			arr.push(day)
+
+		}
+		return arr
+	}
+
+	//下拉刷新
+	mui.init({
+	  	pullRefresh : {
+		    container:"#refreshDiv",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+		    down : {
+		      callback: pulldownRefresh
+		    }
+	    }
+	});
+
+	function pulldownRefresh() {
+		setTimeout(function () {
+			getInterface().post_action("getMsgs","","get");
+            mui('#refreshDiv').pullRefresh().endPulldownToRefresh(); //refresh completed
+        }, 1500);
+	}
+
+	//刷新页面
+	function reload_table(){
+		getInterface().post_action("getMsgs","","get");
+
+		var chatstate = localStorage.getItem('chatstate');
+		localStorage.setItem('chatstate',0);
+		if(chatstate == 1){
+			getInterface().post_action("getMsgs","","get");
+		}
+	}
+	//有推送刷新页面
+	function send_message(data){
+		getInterface().post_action("getMsgs","","get");
+	}
+
+	//没有搜索结果，跳高级搜索
+	$('#search_btn').on('tap',function(){
+		getInterface().html_jump_href(service+'/search.html', 'no');
+	})
+
+
+ //    var data ={
+ //        "ret": 1,
+ //        "acess": true,
+ //        "sex": 1,
+ //        "msgNum": 0,
+ //        "chats": [
+ //            {
+ //                "_id": "59805436e86b3e0da72f4b82",
+ //                "_delid": "59c337339898cc7010444bea",
+ //                "toid": {
+ //                    "_id": "59805436e86b3e0da72f4b82",
+ //                    "nickname": "大佳ssssss",
+ //                    "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156264399291505962163.jpg",
+ //                    "oldAvatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156264399291505962017.jpg",
+ //                    "vipLevel": "vip4",
+ //                    "vip": {
+ //                        "category": "alipay",
+ //                        "to": "2018-01-24T10:08:59.281Z",
+ //                        "from": "2017-09-26T10:08:59.281Z",
+ //                        "role": true
+ //                    },
+ //                    "auditContent": {
+ //                        "character": "1",
+ //                        "looking": "1",
+ //                        "nickname": "1",
+ //                        "selfInfo": "1",
+ //                        "work": "1",
+ //                        "avatar": "0"
+ //                    },
+ //                    "completion": 100,
+ //                    "online": "no"
+ //                },
+ //                "last_chat_time": "2017-09-28T03:10:00.511Z",
+ //                "last_chat_content": "嘛？",
+ //                "user": {
+ //                    "_id": "59805436e86b3e0da72f4b82",
+ //                    "nickname": "signing kind",
+ //                    "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156264399291505962163.jpg",
+ //                    "oldAvatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156264399291505962017.jpg",
+ //                    "vipLevel": "vip4",
+ //                    "vip": {
+ //                        "category": "alipay",
+ //                        "to": "2018-01-24T10:08:59.281Z",
+ //                        "from": "2017-09-26T10:08:59.281Z",
+ //                        "role": true
+ //                    },
+ //                    "auditContent": {
+ //                        "character": "1",
+ //                        "looking": "1",
+ //                        "nickname": "1",
+ //                        "selfInfo": "1",
+ //                        "work": "1",
+ //                        "avatar": "0"
+ //                    },
+ //                    "completion": 100,
+ //                    "online": "no"
+ //                },
+ //                "unReaderNews": 0
+ //            },
+ //            {
+ //                "_id": "597eff5ad8d3f8727b15e6c2",
+ //                "_delid": "59ca0be93cc4d67dc57dbc1c",
+ //                "toid": {
+ //                    "_id": "597eff5ad8d3f8727b15e6c2",
+ //                    "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156177833271505806699.jpg",
+ //                    "nickname": "林姐姐",
+ //                    "vipLevel": "vip4",
+ //                    "vip": {
+ //                        "category": "applepay",
+ //                        "to": "2019-04-04T12:59:44.203Z",
+ //                        "from": "2017-07-31T12:59:44.203Z",
+ //                        "role": true
+ //                    },
+ //                    "auditContent": {
+ //                        "character": "1",
+ //                        "looking": "1",
+ //                        "nickname": "1",
+ //                        "selfInfo": "1",
+ //                        "work": "1"
+ //                    },
+ //                    "completion": 100,
+ //                    "online": "no"
+ //                },
+ //                "last_chat_time": "2017-09-26T08:12:25.993Z",
+ //                "last_chat_content": "Nice to meet you,I want to have a sweet date with you",
+ //                "user": {
+ //                    "_id": "597eff5ad8d3f8727b15e6c2",
+ //                    "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/woman-avatar/156177833271505806699.jpg",
+ //                    "nickname": "林姐姐",
+ //                    "vipLevel": "vip4",
+ //                    "vip": {
+ //                        "category": "applepay",
+ //                        "to": "2019-04-04T12:59:44.203Z",
+ //                        "from": "2017-07-31T12:59:44.203Z",
+ //                        "role": true
+ //                    },
+ //                    "auditContent": {
+ //                        "character": "1",
+ //                        "looking": "1",
+ //                        "nickname": "1",
+ //                        "selfInfo": "1",
+ //                        "work": "1"
+ //                    },
+ //                    "completion": 100,
+ //                    "online": "no"
+ //                },
+ //                "unReaderNews": 0
+ //            }
+ //        ]
+ //    }
+	// flag = data.acess
+	// total = data.msgNum
+	// sex = data.sex
+	// var results = data.chats;
+	// $("#users").html("");
+	// if(results.length == 0){
+	// 	$("#nobdyTips1").css('display','block');
+	// }else{
+	// 	$("#nobdyTips1").css('display','none');
+	// }
+	// for( var i = 0;i < results.length;i++){
+	// 	var t = $($("#text").html())
+	// 	//头像
+	// 	if(results[i].user.auditContent.avatar && results[i].user.auditContent.avatar == '1' || !results[i].user.auditContent.avatar && results[i].user.avatar){
+	// 		t.find('.mui-media-object').attr('src',results[i].user.avatar);
+	// 		//头像
+	// 	}else if(results[i].user.auditContent && results[i].user.auditContent.avatar && results[i].user.auditContent.avatar!='1' && results[i].user.oldAvatar){
+	// 		t.find('.mui-media-object').attr('src',results[i].user.oldAvatar);
+	// 	}else{
+	// 		//头像
+	// 		if(sex == 2){
+	// 			t.find('.mui-media-object').attr('src','img/nan01.png');
+	// 		}else if(sex == 1){
+	// 			t.find('.mui-media-object').attr('src','img/nv01.png');
+	// 		}
+	// 	}
+
+	// 	//在线状态
+	// 	if(results[i].user.online == 'yes'){
+	// 		t.find('.online').css('display','inline-block');
+	// 	}
+	// 	//发送状态
+	// 	// if(results[i].user.state == 'yes'){
+	// 	// 	$('#send_state').css('background-image','url(./img/Double-check-Icon.png)');
+	// 	// }else{
+	// 	// 	$('#send_state').css('background-image','url(./img/Check-Icon.png)');
+	// 	// }
+
+	// 	//把当前id记录在标签里面
+	// 	t.find('.mui-media-object').attr('data-id',results[i]._id);
+	// 	t.find('.mui-media-object').attr('data-name',results[i].user.nickname);
+	// 	t.find('.mui-media-object').attr('data-vipLev',results[i].user.vipLevel);
+	// 	//删除id
+	// 	t.find('.mui-media-object').attr('data-delid',results[i]._delid);
+	// 	// //对话信息
+	// 	// t.find('.mui-media-object').attr('data-chatTime',results[i].last_chat_time);
+	// 	// t.find('.mui-media-object').attr('data-creatTime',results[i].last_creat_time);
+	// 	// t.find('.mui-media-object').attr('data-chatContent',results[i].last_chat_content);
+	// 	//昵称
+	// 	if(results[i].user.nickname){
+	// 		t.find('.nickName').html(results[i].user.nickname);
+	// 	}else{
+	// 		if(sex == 1){
+	// 			t.find('.nickName').html(femaleNicknameLang());
+	// 		}else if(sex == 2 ){
+	// 			t.find('.nickName').html(maleNicknameLang());
+	// 		}
+	// 	}
+	// 	//判断是否高级会员及等级
+	// 	if(results[i].user.vipLevel == "vip1" || results[i].user.vipLevel == "vip2"){
+	// 		t.find('.nickName').css("color",'#786436');
+	// 		t.find('.vip-logo').css('display','inline-block');
+	// 		t.find('.vip-logo').attr("src",sex==2?"./img/pic_GoldMember.png":"./img/women_pic_MonarchMember.png");
+	// 	}else if(results[i].user.vipLevel == "vip3"){
+	// 		t.find('.nickName').css("color",'#786436');
+	// 		t.find('.vip-logo').css('display','inline-block');
+	// 		t.find('.vip-logo').attr("src",sex==2?"./img/pic_DiamondMember.png":"./img/women_pic_PrincessMember.png");
+	// 	}else if(results[i].user.vipLevel == "vip4"){
+	// 		t.find('.nickName').css("color",'#786436');
+	// 		t.find('.vip-logo').css('display','inline-block');
+	// 		t.find('.vip-logo').attr("src",sex==2?"./img/pic_CrownMember.png":"./img/women_pic_QueenMember.png");
+	// 	}else{
+	// 		t.find('.vip-logo').hide();
+	// 	}
+	// 	if(!results[i].unReaderNews){
+	// 		t.find('.unread').hide()
+	// 	}else{
+	// 		//未读消息条数
+	// 		t.find('.unread').html(results[i].unReaderNews);
+	// 		t.find('.mui-media-object').attr('data-unread',results[i].unReaderNews);
+	// 	}
+
+	// 	//距离时间
+	// 	t.find('.time').html(time(results[i].last_chat_time));
+	// 	//最新消息的内容
+	// 	t.find('.basicInfo').html(results[i].last_chat_content);
+	// 	$("#users").append(t);
+	// }
+</script>
+</html>

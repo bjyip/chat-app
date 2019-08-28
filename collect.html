@@ -1,0 +1,645 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>心仪对象</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no" />
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+	<link rel="stylesheet" type="text/css" href="css/iconfont.css">
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/zepto.min.js"></script>
+	<script src="js/i18next-1.7.7.min.js"></script>
+	<script src="js/bbmis.js"></script>
+	<script type="application/javascript"  src="js/hkJS.js"></script>
+	<style>
+		.favorite .mui-media-body{
+			width: 70%;
+		}
+	</style>
+</head>
+
+<body class="whiteBg">
+	<!--页面主内容区开始-->
+	<div class="mui-page-content index-con">
+		<span class="hide-span" data-i18n="collect-title">心仪对象</span>
+		<div class="top-title">
+			<div class="integrity" id="fillInfo">
+	            <span class="" data-i18n="collect-integrity">信息完整度</span>
+	            <progress max="100" value="" id="ratePro"></progress>
+	            <span id="rate">0%</span>
+	            <p id="trip"></p>
+	        </div>
+			<div class="tabTitle">
+				<div class="mui-segmented-control">
+					<a class="mui-control-item mui-active" href="#collect-item1" data-i18n="collect-tab1">我心仪的</a>
+					<a class="mui-control-item" href="#collect-item2" data-i18n="collect-tab2">心仪我的</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="tabCon favorite">
+			<div id="collect-item1" class="mui-control-content mui-active">
+				<ul class="mui-table-view" id="collectList">
+				</ul>
+				<div class="nobdyTips nobdyTips_collect" id='nobdyTips1'>
+					<img src="./img/nolove.png" alt="">
+					<p class="noresult" data-i18n="collect-unlove">您暂未有喜欢的人</p>
+					<p class="changeTerm"></p>
+					<button id='search_btn' data-i18n="collect-who">看看附近有谁</button>
+				</div>
+			</div>
+			<div id="collect-item2" class="mui-control-content">
+				<ul class="mui-table-view" id="collectList2">
+				</ul>
+				<div class="nobdyTips nobdyTips_collect" id='nobdyTips2'>
+					<img src="./img/nolove.png" alt="">
+					<p class="noresult" data-i18n="collect-empty">竟然是空的</p>
+					<p class="changeTerm"></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--页面主内容区结束-->
+	<script type="text/template" id="listItem">
+		<li class="mui-table-view-cell mui-media collect-item">
+	        <a class="coll-item" href="javascript:;">
+        		<span class="online"></span>
+	            <img id="photo" class="mui-media-object mui-pull-left" src="">
+	            <div class="mui-media-body">
+            		<span id="nickname"></span><img class="vip-logo" src="" alt="">
+            		<p class="basicInfo">
+            			<span class="addr"></span><span class="age"></span><span class="lovePrice"></span>
+            		</p>
+	        		<p>
+	        			<span class="mui-icon-extra mui-icon-extra-heart"></span>
+	        			<span class="xs-font text-gray" id="likeMe" data-i18n="co-care">关注了你</span>
+	        		</p>
+	            </div>
+        		<span class="mui-icon iconfont icon-danxiang"></span>
+	        </a>
+	    </li>
+	</script>
+	<script src="js/mui.min.js"></script>
+    <script src="js/i18n_data.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		var coCare = '关注了TA';
+		var coCared = '关注了你';
+
+
+		var coTitle = $('.hide-span').text();
+        // mui.toast(coTitle)
+        getInterface().initDataWithArray("#ffffff","back",coTitle,"","","#AC9455","","");
+
+		function leftBtnClick(){
+			getInterface().leftBtnClick();
+		}
+
+		var shield1 = localStorage.getItem('shield1');
+		var u = navigator.userAgent;
+	    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+	    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+		// 关注列表
+		getInterface().post_action("careList",'','get');
+		// 得到自己信息
+		getInterface().post_action("getInfo",'','get');
+
+		function return_action(data,data2){
+			if(data2=='careList'){
+				showStarList("#collectList", data.care);
+				if(data.care.length == 0){
+					$("#nobdyTips1").css('display','block');
+					$('#collectList').remove();
+				}else{
+					$("#nobdyTips1").css('display','none');
+				}
+				showStarList("#collectList2", data.cared);
+				// alert(data.cared.length)
+				if(data.cared.length == 0){
+					$("#nobdyTips2").css('display','block');
+					$('#collectList2').remove();
+				}else{
+					$("#nobdyTips2").css('display','none');
+				}
+				//心仪我的icon渲染
+				for(var i=0; i<data.cared.length; i++){
+					console.log($('#collectList2 .iconfont')[i].classList)
+					$('#collectList2 .iconfont')[i].classList.remove("icon-xianghu");
+					$('#collectList2 .iconfont')[i].classList.add("icon-danxiang");
+				}
+				for(i in data.care){
+					for(j in data.cared){
+						if( data.care[i]._id.indexOf(data.cared[j]._id) != -1){
+							$('#collectList2 .iconfont')[j].classList.remove("icon-danxiang");
+							$('#collectList2 .iconfont')[j].classList.add("icon-xianghu");
+						}
+					}
+				}
+				//我心仪的icon渲染
+				for(i in data.cared){
+					for(j in data.care){
+						if( data.cared[i]._id.indexOf(data.care[j]._id) != -1){
+							$('#collectList .iconfont')[j].classList.remove("icon-danxiang");
+							$('#collectList .iconfont')[j].classList.add("icon-xianghu");
+						}
+					}
+				}
+				getInterface().hud_hide();
+			}else{
+				// 设置完整度
+				if(data.result.completion < 90){
+					$('.integrity').show();
+					$('#trip').text(textArr[0]);
+					$('.tabCon').css('margin-top','95px');
+				}else if(data.result.completion >89 && data.result.completion <100){
+					$('.integrity').show();
+					$('#trip').text(textArr[1]);
+					$('.tabCon').css('margin-top','95px');
+				}else{
+					$('.integrity').css('display','none');
+					$('.tabCon').css('margin-top','35px');
+				}
+				$('#ratePro').attr('value',data.result.completion);
+				$('#rate').text(data.result.completion+'%');
+				myId = data.result._id;
+			}
+		}
+
+		function showStarList(sel,res){
+			var temp = $(sel).find(".collect-item");
+			var results = res;
+			var userSex = localStorage.getItem("userSex");
+
+			$(sel).html("");
+			for(var i=0; i<results.length; i++){
+				var t = $($("#listItem").html());
+				// 头像
+				if(results[i].auditContent && results[i].auditContent.avatar && results[i].auditContent.avatar=='1' || results[i].avatar && !results[i].auditContent.avatar){
+					t.find('#photo').attr('src',results[i].avatar);
+				}else if(results[i].auditContent && results[i].auditContent.avatar && results[i].auditContent.avatar!='1' && results[i].oldAvatar){
+					t.find('#photo').attr('src',results[i].oldAvatar);
+				}else if(results[i].sex==1){
+					t.find('#photo').attr('src','img/nan01.png');
+				}else{
+					t.find('#photo').attr('src','img/nv01.png');
+				}
+
+				t.find('#photo').attr('data-id',results[i]._id);
+				if(results[i].city){
+					if(!results[i].age && !results[i].lovePrice){
+						t.find('.addr').html(results[i].city);
+					}else{
+						t.find('.addr').html(results[i].city+'/');
+					}
+				}
+				if(results[i].age){
+					if(results[i].lovePrice){
+						t.find('.age').html((results[i].age>=50?'50+':results[i].age)+ageLang()+'/');
+					}else{
+						t.find('.age').html((results[i].age>=50?'50+':results[i].age)+ageLang());
+					}
+				}
+				if(results[i].lovePrice){
+					t.find('.lovePrice').html(results[i].lovePrice);
+				}
+				if(results[i].nickname){
+					t.find('#nickname').html(results[i].nickname);
+				}else{
+					if(results[i].sex==1){
+						t.find('#nickname').html(maleNicknameLang());
+					}else{
+						t.find('#nickname').html(femaleNicknameLang());
+					}
+				}
+
+				if(shield1=='no'){
+					if(results[i].vip.role){
+						t.find('#nickname').css('color','#d1aa50');
+						if(results[i].sex==1){
+							if(results[i].vipLevel == "vip1" || results[i].vipLevel == "vip2"){
+								t.find('.vip-logo').attr("src","./img/pic_GoldMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip3"){
+								t.find('.vip-logo').attr("src","./img/pic_DiamondMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip4"){
+								t.find('.vip-logo').attr("src","./img/pic_CrownMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}
+						}else{
+							if(results[i].vipLevel == "vip1" || results[i].vipLevel == "vip2"){
+								t.find('.vip-logo').attr("src","./img/women_pic_MonarchMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip3"){
+								t.find('.vip-logo').attr("src","./img/women_pic_PrincessMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}else if(results[i].vipLevel == "vip4"){
+								t.find('.vip-logo').attr("src","./img/women_pic_QueenMember.png");
+								t.find('.vip-logo').css('display','inline-block');
+							}
+						}
+					}else{
+						t.find('.vip-logo').remove();
+					}
+				}
+				if(results[i].online=='yes'){
+					t.find('.online').css('display','inline-block');
+				}
+				if(lang == 'en'){
+					coCare = 'Follow';
+					coCared = 'Follow you';
+				}else if(lang == 'ft'){
+					coCare = '關注了TA';
+					coCared = '關注了你';
+				}
+				if(sel=='#collectList'){
+					t.find('#likeMe').text(coCare);
+				}
+				if(sel=='#collectList2'){
+					t.find('#likeMe').text(coCared);
+				}
+				$(sel).append(t);
+			}
+		}
+
+		function reload_html(){
+			var perstate = localStorage.getItem('perstate');
+			var careSta = localStorage.getItem('carestate');
+			localStorage.setItem('perstate',0)
+			localStorage.setItem('carestate',0)
+			if(perstate==1 || careSta==1){
+				getInterface().post_action("careList",'','get');
+			}
+		}
+		// ios原生方法，页面跳转到个人主页
+		$('.tabCon').on('tap','.collect-item a',function(e){
+			e.preventDefault();
+			var userId = $(this).find(".mui-media-object").attr('data-id');
+			getInterface().html_jump_href(service+'/personal.html?personId='+userId+'&myId='+myId, 'yes');
+		})
+		// 跳转到编辑资料
+		$('#fillInfo').on('tap',function(){
+			getInterface().html_jump_href(service+'/newUpdateInfo.html', 'no');
+		})
+		//没有搜索结果，跳高级搜索
+		$('#search_btn').on('tap',function(){
+			getInterface().html_jump_href(service+'/search.html', 'no');
+		})
+		//没有喜欢我的人，跳升级会员
+		$('#cared_btn').on('tap',function(){
+			getInterface().html_jump_href(service+'/upgradeVIPPay.html', 'no');
+		})
+
+
+		// var data = {
+		//     "ret": 1,
+		//     "care": [
+		//         {
+		//             "online": "yes",
+		//             "_id": "59c359709b7eb8729bc3b833",
+		//             "sex": 1,
+		//             "age": 18,
+		//             "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/156924059781505974654.jpg",
+		//             "city": "北京",
+		//             "nickname": "绅士",
+		//             "vipLevel": "vip0",
+		//             "vip": {
+		//                 "to": "2017-09-21T06:17:20.954Z",
+		//                 "from": "2017-09-21T06:17:20.954Z",
+		//                 "role": false
+		//             },
+		//             "auditContent": {
+		//                 "avatar": "2",
+		//                 "nickname": "2"
+		//             }
+		//         },
+		//         {
+		//             "_id": "597318174c1a8c0350ccc296",
+		//             "sex": 1,
+		//             "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-avatar/156924059721505974524.jpg",
+		//             "nickname": "台山彭于晏",
+		//             "age": 24,
+		//             "lovePrice": "高奢",
+		//             "character": "霸道总裁就是我，干我所干，乐我所乐",
+		//             "oldName": "阳江谢霆锋",
+		//             "oldAvatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-avatar/156924059721505974524.jpg",
+		//             "vipLevel": "vip1",
+		//             "vip": {
+		//                 "category": "alipay",
+		//                 "to": "2018-09-02T09:17:11.207Z",
+		//                 "from": "2017-07-22T09:17:11.207Z",
+		//                 "role": true
+		//             },
+		//             "auditContent": {
+		//                 "character": "1",
+		//                 "selfInfo": "1",
+		//                 "looking": "1",
+		//                 "nickname": "1",
+		//                 "work": "1",
+		//                 "avatar": "2"
+		//             }
+		//         },
+		//         {
+		//             "_id": "598a6bd7fe5ed13af4aaaf7a",
+		//             "sex": 1,
+		//             "nickname": "爱乐",
+		//             "age": 45,
+		//             "lovePrice": "轻奢",
+		//             "character": "浮生若梦，为欢几何？",
+		//             "avatar": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/86s0y3ftaxsodwcxc2.jpg",
+		//             "city": "广州市",
+		//             "vipLevel": "vip0",
+		//             "vip": {
+		//                 "to": "2017-08-31T01:56:39.722Z",
+		//                 "from": "2017-08-09T01:56:39.722Z",
+		//                 "role": false
+		//             },
+		//             "auditContent": {
+		//                 "character": "1",
+		//                 "looking": "1",
+		//                 "nickname": "1",
+		//                 "selfInfo": "1"
+		//             }
+		//         },
+		//         {
+		//             "_id": "5997ce7baa15e47e4c04a0af",
+		//             "sex": 1,
+		//             "nickname": "莱莱",
+		//             "age": 21,
+		//             "city": "武汉市",
+		//             "lovePrice": "小清新",
+		//             "character": "我愿成为你可以依靠的那个男人",
+		//             "avatar": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/l6y07a46o6cge0mnwc.jpg",
+		//             "vipLevel": "vip4",
+		//             "vip": {
+		//                 "category": "alipay",
+		//                 "to": "2017-12-17T03:08:15.932Z",
+		//                 "from": "2017-09-18T03:08:15.932Z",
+		//                 "role": true
+		//             },
+		//             "auditContent": {
+		//                 "selfInfo": "1",
+		//                 "character": "1",
+		//                 "work": "1",
+		//                 "nickname": "1"
+		//             }
+		//         },
+		//         {
+		//             "_id": "598a7a02fe5ed13af4aaafa6",
+		//             "sex": 1,
+		//             "avatar": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/w5u34que8zznigrv6k.jpg",
+		//             "nickname": "jeremy",
+		//             "age": 35,
+		//             "lovePrice": "高奢",
+		//             "character": "我愿成为你可以依靠的那个男人",
+		//             "oldName": "哈哈",
+		//             "city": "上海市",
+		//             "vipLevel": "vip1",
+		//             "vip": {
+		//                 "to": "2018-08-09T02:57:06.916Z",
+		//                 "from": "2017-08-09T02:57:06.916Z",
+		//                 "role": true
+		//             },
+		//             "auditContent": {
+		//                 "character": "1",
+		//                 "looking": "1",
+		//                 "nickname": "1",
+		//                 "selfInfo": "1",
+		//                 "work": "1",
+		//                 "avatar": "1"
+		//             }
+		//         },
+		//         {
+		//             "_id": "599d43209aa8db19677e620d",
+		//             "sex": 1,
+		//             "nickname": "叶子",
+		//             "age": 33,
+		//             "city": "天津市",
+		//             "lovePrice": "浪漫",
+		//             "character": "霸道总裁就是我，干我所干，乐我所乐",
+		//             "avatar": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/ekyycf0sp1bn0crqpc.jpg",
+		//             "vipLevel": "vip0",
+		//             "vip": {
+		//                 "category": "coupon",
+		//                 "coupons": "xyav6",
+		//                 "to": "2017-08-26T08:56:00.661Z",
+		//                 "from": "2017-08-23T08:56:00.661Z",
+		//                 "role": false
+		//             },
+		//             "auditContent": {
+		//                 "selfInfo": "1",
+		//                 "character": "1",
+		//                 "work": "1",
+		//                 "nickname": "1"
+		//             }
+		//         },
+		//         {
+		//             "_id": "599d56c99aa8db19677e631b",
+		//             "sex": 1,
+		//             "nickname": "亮哥",
+		//             "age": 41,
+		//             "city": "上海市",
+		//             "lovePrice": "浪漫",
+		//             "character": "只要你不嫌弃我，我可以陪你天长地久",
+		//             "avatar": "http://love-chat.oss-cn-shanghai.aliyuncs.com/man-public/7b21fjbjazl0iah30n.jpg",
+		//             "vipLevel": "vip0",
+		//             "vip": {
+		//                 "category": "coupon",
+		//                 "coupons": "xyav6",
+		//                 "to": "2017-08-26T10:19:53.512Z",
+		//                 "from": "2017-08-23T10:19:53.512Z",
+		//                 "role": false
+		//             },
+		//             "auditContent": {
+		//                 "selfInfo": "1",
+		//                 "character": "1",
+		//                 "work": "1",
+		//                 "nickname": "1"
+		//             }
+		//         }
+		//     ],
+		//     "cared": [
+		//         {
+		//             "_id": "59c0cb77ad59fb2ed3b871ee",
+		//             "sex": 1,
+		//             "age": 21,
+		//             "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/184262554481505807241.jpg",
+		//             "city": "北京",
+		//             "nickname": "绅士",
+		//             "vipLevel": "vip4",
+		//             "vip": {
+		//                 "coupons": "kucj5",
+		//                 "category": "alipay",
+		//                 "to": "2018-03-18T07:49:32.061Z",
+		//                 "from": "2017-09-19T07:49:32.061Z",
+		//                 "role": true
+		//             },
+		//             "auditContent": {
+		//                 "avatar": "2",
+		//                 "nickname": "2"
+		//             }
+		//         }
+		//     ]
+		// }
+		// showStarList("#collectList", data.care);
+		// if(data.care.length == 0){
+		// 	$("#nobdyTips1").css('display','block');
+		// 	$('#collectList').remove();
+		// }else{
+		// 	$("#nobdyTips1").css('display','none');
+		// }
+		// showStarList("#collectList2", data.cared);
+		// // alert(data.cared.length)
+		// if(data.cared.length == 0){
+		// 	$("#nobdyTips2").css('display','block');
+		// 	$('#collectList2').remove();
+		// }else{
+		// 	$("#nobdyTips2").css('display','none');
+		// }
+
+		// //心仪我的icon渲染
+		// for(var i=0; i<data.cared.length; i++){
+		// 	console.log($('#collectList2 .iconfont')[i].classList)
+		// 	$('#collectList2 .iconfont')[i].classList.remove("icon-xianghu");
+		// 	$('#collectList2 .iconfont')[i].classList.add("icon-danxiang");
+		// }
+		// for(i in data.care){
+		// 	for(j in data.cared){
+		// 		if( data.care[i]._id.indexOf(data.cared[j]._id) != -1){
+		// 			$('#collectList2 .iconfont')[j].classList.remove("icon-danxiang");
+		// 			$('#collectList2 .iconfont')[j].classList.add("icon-xianghu");
+		// 		}
+		// 	}
+		// }
+		// //我心仪的icon渲染
+		// for(i in data.cared){
+		// 	for(j in data.care){
+		// 		if( data.cared[i]._id.indexOf(data.care[j]._id) != -1){
+		// 			$('#collectList .iconfont')[j].classList.remove("icon-danxiang");
+		// 			$('#collectList .iconfont')[j].classList.add("icon-xianghu");
+		// 		}
+		// 	}
+		// }
+		// getInterface().hud_hide();
+		// var data ={
+		//     "ret": 1,
+		//     "err": "ok",
+		//     "msgNum": 0,
+		//     "noticeNum": 0,
+		//     "endTime": "于2017-09-15到期",
+		//     "shield": "no",
+		//     "vipText": "普通用户",
+		//     "result": {
+		//         "_id": "59bb91125002fa55a40f742a",
+		//         "traceid": {
+		//             "_id": "59bb91125002fa55a40f742b",
+		//             "userid": "59bb91125002fa55a40f742a",
+		//             "sex": 2,
+		//             "__v": 4,
+		//             "meta": {
+		//                 "updatedAt": "2017-09-15T09:00:25.622Z",
+		//                 "createdAt": "2017-09-15T08:36:34.287Z"
+		//             },
+		//             "report": [],
+		//             "soundChat": true,
+		//             "soundCare": true,
+		//             "careSet": true,
+		//             "browseSet": true,
+		//             "listSet": true,
+		//             "photoPried": [],
+		//             "photoPri": [],
+		//             "hated": [],
+		//             "hate": [],
+		//             "browsed": [],
+		//             "browse": [
+		//                 "597eac4cbdb23c6817671ed1",
+		//                 "59bb3a91ec5f2f457553cd11"
+		//             ],
+		//             "careNum": 0,
+		//             "cared": [],
+		//             "care": [
+		//                 "597eac4cbdb23c6817671ed1",
+		//                 "59bb3a91ec5f2f457553cd11"
+		//             ],
+		//             "loginAt": "2017-09-15T09:00:25.620Z"
+		//         },
+		//         "platform": "ios",
+		//         "registration_id": "170976fa8ab4c9f5455",
+		//         "mobile": "15074436856",
+		//         "sex": 2,
+		//         "lat": "23.136614",
+		//         "lng": "113.295842",
+		//         "password": "$2a$10$5V5.c3L6DN0LhgJTzjwSoeNts94xOORV1Pk1xIXLSs6ibuzlg05GO",
+		//         "from": "boss",
+		//         "__v": 0,
+		//         "addr": "吉林-长春-南关",
+		//         "age": 38,
+		//         "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/(null)1505465964.jpg",
+		//         "city": "长春",
+		//         "nickname": "丁义珍",
+		//         "province": "吉林",
+		//         "meta": {
+		//             "updatedAt": "2017-09-15T09:00:25.608Z",
+		//             "createdAt": "2017-09-15T08:36:34.285Z"
+		//         },
+		//         "photoPri": [],
+		//         "photoPub": [],
+		//         "vipLevel": "vip0",
+		//         "rmbTotal": 0,
+		//         "vip": {
+		//             "to": "2017-09-15T08:36:34.285Z",
+		//             "from": "2017-09-15T08:36:34.285Z",
+		//             "role": false
+		//         },
+		//         "auditStatus": "ing",
+		//         "auditContent": {
+		//             "avatar": "2",
+		//             "nickname": "2"
+		//         },
+		//         "loc": {
+		//             "type": "Point",
+		//             "coordinates": [
+		//                 113.295842,
+		//                 23.136614
+		//             ]
+		//         },
+		//         "locAuthorize": true,
+		//         "loginAt": "2017-09-15T08:36:34.284Z",
+		//         "completion": 100,
+		//         "tour": [],
+		//         "sports": [],
+		//         "online": "no",
+		//         "isActive": "yes",
+		//         "number": 1,
+		//         "mock": false
+		//     }
+		// }
+		// if(data.result.completion < 90){
+		// 	$('.integrity').show();
+		// 	$('#trip').text(textArr[0]);
+		// 	$('.tabCon').css('margin-top','95px');
+		// }else if(data.result.completion >89 && data.result.completion <100){
+		// 	$('.integrity').show();
+		// 	$('#trip').text(textArr[1]);
+		// 	$('.tabCon').css('margin-top','95px');
+		// }else{
+		// 	$('.integrity').css('display','none');
+		// 	$('.tabCon').css('margin-top','35px');
+		// }
+
+		// $('#ratePro').attr('value',data.result.completion);
+		// $('#rate').text(data.result.completion+'%');
+
+		// if(data.shield=='yes'){
+		// 	$('.mui-badge-warning').hide();
+		// 	$('#fillInfo').hide();
+		// }else{
+		// 	$('.mui-badge-warning').show();
+		// }
+		// myId = data.result._id;
+	</script>
+</body>
+
+</html>

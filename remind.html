@@ -1,0 +1,74 @@
+﻿<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>BOSS直约</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <!-- <link href="css/mui.min.css" rel="stylesheet" /> -->
+  <link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+  <!-- <link rel="stylesheet" href="css/style.css" /> -->
+  <script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+  <script type="application/javascript"  src="js/hkJS.js"></script>
+  <style>
+    .remind-body {
+      background-color: #F8F6F6;
+      margin: 0;
+    }
+    .remind {
+      margin-top: 30px;
+      background-color: #fff;
+      padding: 1px 14px 4px 14px;
+    }
+    .remind p {
+      color: #333;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .remind span {
+      color: #333;
+      font-size: 12px;
+      line-height: 20px;
+    }
+    .remind .right {
+      text-align: right;
+    }
+    .hide-span{
+      display: none;
+    }
+  </style>
+</head>
+<body class="remind-body">
+    <span class="hide-span" data-i18n="remind-title">初次约会注意事项</span>
+    <div class="remind">
+      <p>初次约会注意事项</p>
+      <span>亲爱的BOSS直约会员，感谢您使用BOSS直约，为了您得到更 好的约会恋爱体验及提高您的约会恋爱安全系数，请您 仔细阅读一下事项说明：</span>
+      <p>初次约会如何保护好我的个人权益？</p>
+      <span>1.初次聊天时，对方即向您索要定金，意向金或者礼物 时，请务必谨慎，以防被骚扰或者欺骗。<br>
+2.如果达成约会意向，发现对方和本人不符合，想要转 介绍约会对象，请及时向我们举报，以防中介、色情交 易、酒托等。<br>
+3.在约会通信过程中，除非您对对方有了充分并可靠的 了解，请不要泄露任何真实重要的隐私信息，包括：身 份证号码、家庭住址、银行卡等。</span>
+
+
+<p>彼此了解后愿意单独约会，我该如何注意安全？</p>
+<span>1.与对方约会前，要提前确定好约会地点，时间。事先 查看周围建筑，选择公共场所约会，并告知家人、朋友 ，随时与他们保持联系。<br>
+2.约会时要察言观色，有利于加深对对方感性认知，建 立正确客观的第一印象。<br>
+3.约会时注意不要携带贵重物品及太多现金，避免打劫 行为的发生。<br>
+4.请保持必要的谨慎及警惕，个人人身和财产安全重于 一切，在任何情况下都要确保自己的判断，并保证自己 的行为不会伤害到自己或者他人。</span>
+
+
+<p>最后祝您约会恋爱约会！</p>
+
+<p class="right">By BOSS直约技术团队</p>
+    </div>
+
+</body>
+<script src="js/i18n_data.js"></script>
+<script>
+  var coTitle = $('span[data-i18n]').text();
+  getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+
+  function leftBtnClick(){
+    getInterface().leftBtnClick();
+  }
+</script>
+</html>

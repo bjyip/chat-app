@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>修改密码</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script type="application/javascript"  src="js/hkJS.js"></script>
+</head>
+
+<body>
+<div class="code-content">
+    <div class="mui-card">
+        <span class="hide-span" data-i18n="editPass-title">修改密码</span>
+        <div class="mui-input-group" id="input_example">
+            <div class="mui-input-row">
+                <label data-i18n="editPass-oldPass">旧密码</label>
+                <input id="oldPassword" type="password" class="mui-input-password" placeholder="请输入旧密码">
+            </div>
+            <div class="mui-input-row">
+                <label data-i18n="editPass-newPass">新密码</label>
+                <input id="newPass" type="password" class="mui-input-password" placeholder="请输入新密码">
+            </div>
+            <div class="mui-input-row">
+                <label data-i18n="editPass-confirmPass">确认密码</label>
+                <input id="conformPassword" type="password" class="mui-input-password" placeholder="请再次输入密码">
+            </div>
+            <div class="submit">
+                <button class="mui-btn btn-primary" id="confirmBtn" data-i18n="editPass-confirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="js/mui.min.js"></script>
+<script src="js/i18n_data.js"></script>
+<script>
+    var coTitle = $('span[data-i18n]').text();
+    getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+    function leftBtnClick(){
+        getInterface().leftBtnClick();
+    }
+    if(lang == 'zh'){
+        $('#oldPassword').attr('placeholder','请输入旧密码');
+        $('#newPass').attr('placeholder','请输入新密码');
+        $('#conformPassword').attr('placeholder','请再次输入密码');
+        var tip1 = '请输入正确的内容！';
+        var tip2 = '修改密码成功！';
+    }else if(lang == 'en'){
+        $('.mui-input-row label').css('width','42%');
+        $('.mui-input-row label~input').css({'width':'58%','font-size':'12px'});
+        $('#oldPassword').attr('placeholder','Enter an old password');
+        $('#newPass').attr('placeholder','Enter a new password');
+        $('#conformPassword').attr('placeholder','Enter your password again');
+        var tip1 = 'Please enter the correct content!';
+        var tip2 = 'Password successfully modified!';
+    }else{
+        $('#oldPassword').attr('placeholder','請輸入舊密碼');
+        $('#newPass').attr('placeholder','請輸入新密碼');
+        $('#conformPassword').attr('placeholder','請再次輸入密碼');
+        var tip1 = '請輸入正確的內容！';
+        var tip2 = '修改密碼成功！';
+
+    }
+
+    //校验验证码
+    function validate(){
+        var newPass = $("#newPass").val();
+        var oldPassword = $("#oldPassword").val();
+        var conformPassword = $("#conformPassword").val();
+
+        if(newPass.length>0 && oldPassword.length>0) { //若输入的验证码长度为0
+            getInterface().post_action("changePwd",JSON.stringify({newPassword:newPass,oldPassword:oldPassword,conformPassword:conformPassword}),"post");
+        }else{
+            mui.alert(tip1); //则弹出请输入验证码
+        }
+    }
+
+
+    $('#confirmBtn').on('tap', function() {
+        validate();
+    });
+
+
+    function return_action(data,data2){
+        if( data2=='changePwd' ){
+            if(data.ret==1){
+                mui.toast(tip2);
+                setTimeout(function(){
+                    getInterface().leftBtnClick();
+                },1500)
+            }else{
+                mui.alert(data.err);
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

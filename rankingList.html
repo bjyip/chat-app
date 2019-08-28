@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>排行榜</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/icons-extra.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/zepto.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script type="application/javascript"  src="js/hkJS.js"></script>
+     <style>
+        .mui-popup-text {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <!--页面主内容区开始-->
+    <div class="mui-page-content">
+         <div class="mui-control-content mui-active">
+            <ul class="mui-table-view" id="rankingList">
+            	<li class="mui-table-view-cell mui-media headTitle">
+					<a class="mui-navigate-right hideArrowFlag">
+						<img id="headPic" class="mui-media-object mui-pull-left" src="">
+						<div class="mui-media-body" id="myRanking">
+						</div>
+					</a>
+				</li>
+				<li class="displayBox">
+					<div class="second rankingItem">
+						<img src="img/pic_second.png" width="42">
+						<div class="photoBoxDiv">
+							<img id="sPhoto" class="tapE" src="">
+							<p id="sname"></p>
+						</div>
+					</div>
+					<div class="first rankingItem">
+						<img src="img/pic_champion.png" width="52">
+						<div class="photoBoxDiv">
+							<img id="fPhoto" class="tapE" src="">
+							<p id="fname"></p>
+						</div>
+					</div>
+					<div class="third rankingItem">
+						<img src="img/pic_bronze.png" width="42">
+						<div class="photoBoxDiv">
+							<img id="tPhoto" class="tapE" src="">
+							<p id="tname"></p>
+						</div>
+					</div>
+				</li>
+
+            </ul>
+        </div>
+    </div>
+    <!--页面主内容区结束-->
+    <script type="text/template" id="code">
+		<li class="mui-table-view-cell mui-media collect-item">
+            <a class="coll-item rankingItem" href="javascript:;">
+                <img id="photo" class="mui-media-object mui-pull-left tapE" src="">
+                <div class="mui-media-body">
+                    <span id="nickname"></span>
+                    <span class="work"></span><span class="age"></span>
+                </div>
+                <span class="ranking"></span>
+            </a>
+        </li>
+    </script>
+    <script src="js/mui.min.js"></script>
+    <script type="text/javascript">
+        mui.init();
+        $(function(){
+            getInterface().initDataWithArray("#FFFFFF","back","排行榜","规则","","#333333","","#7D1B4D");
+        })
+        function leftBtnClick(){
+            getInterface().leftBtnClick();
+        }
+        function rightBtnClick(){
+            mui.alert("1、女性用户可以浏览充值次数最多的男性用户<br>2、男性用户可以浏览最多人关注的女性用户","排行规则")
+        }
+        var myInfo = JSON.parse(localStorage.getItem('myInfo'));
+        // var sex = myInfo.result.sex;
+        // var myId = myInfo.result._id;
+        var sex=1
+
+        // 关注列表
+        if(sex=='2'){
+        	getInterface().post_action("ranking",JSON.stringify({sex:'1'}),'get');
+        }else{
+        	getInterface().post_action("ranking",JSON.stringify({sex:'2'}),'get');
+        }
+        function return_action(data,data2){
+            if(data2=='ranking'){
+            	if(data.avatar){
+					$('#headPic').attr('src',data.avatar);
+				}else if(sex==1){
+					$('#headPic').attr('src','img/nan01.png');
+				}else{
+					$('#headPic').attr('src','img/nv01.png');
+				}
+                if(sex=='2'){
+                    $('#myRanking').html("我在女生排行："+'<span style="font-size:24px;">'+data.ranking+'<span>')
+                }else{
+                     $('#myRanking').html("我在男生排行："+'<span style="font-size:24px;">'+data.ranking+'<span>')
+                }
+		    	if(data.users[0].avatar){
+					$('#fPhoto').attr("src",data.users[0].avatar);
+				}else if(data.users[0].sex==1){
+					$('#fPhoto').attr('src','img/nan01.png');
+				}else{
+					$('#fPhoto').attr('src','img/nv01.png');
+				}
+		    	$('#fPhoto').attr("data-id",data.users[0]._id);
+		    	if(data.users[0].nickname){
+		    		$('#fname').text(data.users[0].nickname);
+		    	}else if(data.users[0].sex==1){
+		    		$('#fname').text("绅士");
+		    	}else{
+		    		$('#fname').text("甜心");
+		    	}
+
+		    	if(data.users[1].avatar){
+					$('#sPhoto').attr("src",data.users[1].avatar);
+				}else if(data.users[1].sex==1){
+					$('#sPhoto').attr('src','img/nan01.png');
+				}else{
+					$('#sPhoto').attr('src','img/nv01.png');
+				}
+		    	$('#sPhoto').attr("data-id",data.users[1]._id);
+		    	if(data.users[1].nickname){
+		    		$('#sname').text(data.users[1].nickname);
+		    	}else if(data.users[1].sex==1){
+		    		$('#sname').text("绅士");
+		    	}else{
+		    		$('#sname').text("甜心");
+		    	}
+
+		    	if(data.users[2].avatar){
+		    		$('#tPhoto').attr("src",data.users[2].avatar);
+				}else if(data.users[2].sex==1){
+					$('#tPhoto').attr('src','img/nan01.png');
+				}else{
+					$('#tPhoto').attr('src','img/nv01.png');
+				}
+		    	$('#tPhoto').attr("data-id",data.users[2]._id);
+		    	if(data.users[2].nickname){
+		    		$('#tname').text(data.users[2].nickname);
+		    	}else if(data.users[2].sex==1){
+		    		$('#tname').text("绅士");
+		    	}else{
+		    		$('#tname').text("甜心");
+		    	}
+            	for(var i=5; i>=3; i--){
+            		var t = $($("#code").html());
+            		if(data.users[i].avatar){
+						t.find('#photo').attr('src',data.users[i].avatar);
+					}else if(data.users[i].sex==1){
+						t.find('#photo').attr('src','img/nan01.png');
+					}else{
+						t.find('#photo').attr('src','img/nv01.png');
+					}
+					t.find('#photo').attr('data-id',data.users[i]._id);
+					if(data.users[i].nickname){
+						t.find('#nickname').html(data.users[i].nickname);
+					}else{
+						if(data.users[i].sex=='2'){
+							t.find('#nickname').html("甜心");
+						}else{
+							t.find('#nickname').html("绅士");
+						}
+					}
+                    if(data.users[i].work){
+                        t.find('.work').html(data.users[i].work+'/');
+                    }
+					t.find('.age').html(data.users[i].age);
+					t.find('.ranking').html(i+1);
+					$('.displayBox').after(t)
+            	}
+            }
+        }
+
+    	// ios原生方法，页面跳转到个人主页
+		$('#rankingList').on('tap','.rankingItem',function(e){
+			e.preventDefault();
+			var userId = $(this).find(".tapE").attr('data-id');
+			getInterface().html_jump_href(service+'/personal.html?personId='+userId+'&myId='+myId, 'yes');
+		})
+    </script>
+</body>
+
+</html>

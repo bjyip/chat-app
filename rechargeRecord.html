@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>充值记录</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script src="js/moment.js"></script>
+    <script type="application/javascript"  src="js/hkJS.js"></script>
+    <style>
+        .mui-pull-right{
+            text-align: right;
+        }
+        .mui-table-view .mui-media, .mui-table-view .mui-media-body {
+            overflow: initial;
+        }
+    </style>
+</head>
+
+<body>
+    <!--页面主内容区开始-->
+    <div class="mui-page-content recharge">
+        <h6 class="hide-span" data-i18n="record-title">充值记录</h6>
+        <ul class="mui-table-view">
+        </ul>
+    </div>
+    <script type="text/template" id="listItem">
+        <li class="mui-table-view-cell mui-media">
+            <a href="javascript:;">
+                <div class="mui-pull-right">
+                    <span class=" text-primary" id="price"></span>
+                    <p class='mui-ellipsis text-gray' id=status></p>
+                </div>
+                <div class="mui-media-body">
+                    <span class=" text-primary" id='content'></span>
+                    <p class='text-gray' id="time"></p>
+                </div>
+            </a>
+        </li>
+    </script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/i18n_data.js"></script>
+    <script type="text/javascript">
+        mui.init();
+        if(lang == 'zh'){
+            var text1 = 'BOSS直约 14天会员充值';
+            var text2 = 'BOSS直约 28天会员充值';
+            var text3 = 'BOSS直约 90天会员充值';
+            var text4 = '充值成功';
+            var text5 = '充值失败';
+        }else if(lang == 'en'){
+            var text1 = '14 days recharge';
+            var text2 = '28 days recharge';
+            var text3 = '90 days recharge';
+            var text4 = 'Recharge Successfully';
+            var text5 = 'Recharge failed';
+        }else{
+            var text1 = 'BOSS直約 14天會員充值';
+            var text2 = 'BOSS直約 28天會員充值';
+            var text3 = 'BOSS直約 90天會員充值';
+            var text4 = '充值成功';
+            var text5 = '充值失敗';
+        }
+        var coTitle = $('h6[data-i18n]').text();
+        getInterface().initDataWithArray("#FFFFFF","back",coTitle,"","","#AC9455","","");
+
+        function leftBtnClick(){
+            getInterface().leftBtnClick();
+        }
+        getInterface().post_action("paylist",'',"get");
+        //获取版本号
+        getInterface().getAPPInfo();
+        function return_APPInfo(data){
+            $('#versionText').text(data)
+        }
+
+        function return_action(data,data2){
+            if(data2=='paylist'){
+                for(var i=0; i<data.list.length; i++){
+                    var item = $($('#listItem').html());
+                    item.find('#price').text('-'+data.list[i].value);
+                    item.find('#time').text(moment(data.list[i].meta.createdAt).format("YYYY-MM-DD HH:mm"));
+                    if(data.list[i].meal=='meal_a'){
+                        item.find('#content').text(text1);
+                    }else if(data.list[i].meal=='meal_b'){
+                        item.find('#content').text(text2);
+                    }else{
+                        item.find('#content').text(text3);
+                    }
+                    if(data.list[i].status=='success'){
+                        item.find('#status').text(text4);
+                    }else{
+                        item.find('#status').text(text5);
+                    }
+                    $('.recharge ul').append(item);
+                }
+            }
+        }
+
+        // var data ={
+        //     "ret": 1,
+        //     "list": [
+        //         {
+        //             "_id": "59b7741e0e0f587f122608a4",
+        //             "userid": "59b6335bc9786360490d299a",
+        //             "from": "boss",
+        //             "nickname": "姐姐",
+        //             "sex": "2",
+        //             "mobile": "15692405970",
+        //             "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/156924059701505112936.jpg",
+        //             "payType": "alipay",
+        //             "value": 488,
+        //             "time": 7776000000,
+        //             "outTradeId": "1505195038780",
+        //             "params": "app_id=2017071007700699&biz_content=%7B%22body%22%3A%2290%E5%A4%A9%E4%BC%9A%E5%91%98%E4%BD%BF%E7%94%A8%E6%9C%9F%22%2C%22subject%22%3A%2290%E5%A4%A9%E4%BC%9A%E5%91%98%E4%BD%BF%E7%94%A8%E6%9C%9F%22%2C%22out_trade_no%22%3A%221505195038780%22%2C%22timeout_express%22%3A%2210m%22%2C%22total_amount%22%3A0.02%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%2C%22goods_type%22%3A%220%22%7D&charset=utf-8&format=JSON&method=alipay.trade.app.pay&notify_url=http%3A%2F%2Flovechat.legle.cc%2Falipay%2Fcallback&sign_type=RSA&timestamp=2017-09-12%2013%3A43%3A58&version=1.0&sign=Cu%2BdFIp02wTnbnCWuJE9H1j%2FYwWYJ8dNEpXSogldPkzEDk5Mfy%2Bqv56swVpivMUdr1zCemG3ynJQmj3MaZO2Imb7HqPYxtMZGOcCsqiB1y5od07Nn4cJjtXN3s8UlC9ahsk8q8pE%2FkSu%2BhHEwUn8l0jhbDO8dCJd6l5RlPEiIuc%3D",
+        //             "meal": "meal_b",
+        //             "__v": 0,
+        //             "meta": {
+        //                 "updatedAt": "2017-09-12T05:43:58.783Z",
+        //                 "createdAt": "2017-09-12T05:43:58.783Z"
+        //             },
+        //             "status": "ing"
+        //         }
+        //     ]
+        // }
+        // for(var i=0; i<data.list.length; i++){
+        //     var item = $($('#listItem').html());
+        //     item.find('#price').text('-'+data.list[i].value);
+        //     item.find('#time').text(moment(data.list[i].meta.createdAt).format("YYYY-MM-DD HH:mm"));
+        //     if(data.list[i].meal=='meal_a'){
+        //         item.find('#content').text(text1);
+        //     }else if(data.list[i].meal=='meal_b'){
+        //         item.find('#content').text(text2);
+        //     }else{
+        //         item.find('#content').text(text3);
+        //     }
+        //     if(data.list[i].status=='success'){
+        //         item.find('#status').text(text4);
+        //     }else{
+        //         item.find('#status').text(text5);
+        //     }
+        //     $('.recharge ul').append(item);
+        // }
+
+    </script>
+</body>
+
+
+
+</html>

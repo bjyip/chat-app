@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <link href="css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/swiper-3.4.2.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script src="js/zepto.min.js"></script>
+    <script src="js/i18next-1.7.7.min.js"></script>
+    <script src="js/bbmis.js"></script>
+    <script type="application/javascript" src="js/hkJS.js"></script>
+    <style>
+        .picBox>div, #photoPri>div {
+            position: relative;
+        }
+        .leftInfo img{
+            width: 30px;
+            height: auto;
+        }
+        /* .layer{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        } */
+        .biglayer{
+            background: #F8F6F6;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 3;
+            display: none;
+        }
+        .priPic {
+          position: absolute;
+          bottom: 40%;
+          color: #e0c45e;
+          font-size: 18px;
+          padding: 0px 50px 15px;
+          left: 50%;
+          border-radius: 4px;
+          background: url(./img/Image_huabian.png) no-repeat left bottom;
+          background-size: 104%;
+          margin-left: -104px;
+          z-index: 999;
+          opacity:0
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mui-page-content swiper-container swiper-container-v personal-con mui-scroll-wrapper">
+        <div class="swiper-wrapper mui-scroll wrappClick">
+            <!--第一屏-->
+            <div class="swiper-slide">
+                <div class="photoWall">
+                    <div class="swiper-container swiper-container-h">
+                        <div class="swiper-wrapper" id="loopPic">
+                            <div class="swiper-slide" id="defaultPic"><img src="img/imagebg2.png"></div>
+                        </div>
+                    </div>
+                    <div class="pagination"></div>
+                    <div class="phoLayer"></div><!-- 预防ios侧滑bug -->
+                </div>
+                <div class="infopanel">
+                    <div class="personInfo">
+                        <div class="leftInfo">
+                            <div><img class="vip-logo" src="" alt=""></div>
+                            <span id="city"></span><span id="age"></span><span id="lovePrice"></span>
+                            <p class="mui-ellipsis-2" id="selfInfo"></p>
+                        </div>
+                        <div class="collect">
+                            <span id="imChat"><img src="img/Ic_messages.png"></span>
+                            <span id="star"><img src="img/Ic_heart-pre.png"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center" id="center-fiexd">
+                <div class="mui-segmented-control">
+                    <a id="mabout" class="mui-control-item" href="#aboutMe"><span data-i18n="personal-data">TA的资料</span><img src="img/icon_Userlist.png" width="12"></a>
+                    <a id="mpic" class="mui-control-item" href="#lookPic"><span data-i18n="personal-photo">TA的照片</span><img src="img/icon_Imagelist.png" width="17"></a>
+                </div>
+                <div class="layer"></div>
+            </div>
+
+            <div class="swiper-slide" id="test-slide">
+               <div class="swiper-container swiperVertical mui-control-content mui-active" id='aboutMe'>
+                   <div class="swiper-wrapper">
+                       <div class="swiper-slide">
+                           <ul class="mui-table-view">
+                               <li class="mui-table-view-cell info-title" data-i18n="personal-information">基本信息</li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-nickname">昵称</span>
+                                       <span class="mui-badge noBg" id="nickname1"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-age">年龄</span>
+                                       <span class="mui-badge noBg" id="age1"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-area">地区</span>
+                                       <span class="mui-badge noBg" id="addr"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell info-title" data-i18n="personal-about">关于我</li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-index">宠爱指数</span>
+                                       <span class="mui-badge noBg" id="lovePrice1"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-target">甜蜜目标</span>
+                                       <span class="mui-badge noBg" id="loveDate1"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-income">年收入</span>
+                                       <span class="mui-badge noBg" id="income"></span>
+                                   </a>
+                               </li>
+                               <!-- <li class="mui-table-view-cell titleName">
+                                   <a style="min-height:60px" class="picText">
+                                       运动
+                                       <div class="mui-badge noBg" id="sportsResult1"></div>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a style="min-height:60px" class="picText">
+                                       旅游&nbsp;<span><img src="img/list_tourism@2x.png" width="20"></span>
+                                       <div class="mui-badge noBg" id="tourResult1"></div>
+                                   </a>
+                               </li> -->
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-shape">体型</span>
+                                       <span class="mui-badge noBg" id="body"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-height">身高</span>
+                                       <span class="mui-badge noBg" id="height"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-drink">饮酒习惯</span>
+                                       <span class="mui-badge noBg" id="drink"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-smoke">抽烟习惯</span>
+                                       <span class="mui-badge noBg" id="smoking"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-education">最高学历</span>
+                                       <span class="mui-badge noBg" id="education"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell info-title" data-i18n="personal-introduce">自我介绍</li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-work">职业描述</span>
+                                       <span class="mui-badge noBg word-normal" id="work"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a class="Mtext">
+                                       <span data-i18n="personal-sign">个性签名</span>
+                                       <span class="mui-badge noBg word-normal" id="character"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a class="Mtext">
+                                       <span data-i18n="personal-introduce">自我介绍</span>
+                                       <span class="mui-badge noBg word-normal" id="selfInfo1"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-need">TA需要的</span>
+                                       <span class="mui-badge noBg word-normal" id="iNeed"></span>
+                                   </a>
+                               </li>
+                               <li class="mui-table-view-cell titleName">
+                                   <a>
+                                       <span data-i18n="personal-relation">期待关系</span>
+                                       <span class="mui-badge noBg word-normal" id="hopeful"></span>
+                                   </a>
+                               </li>
+                           </ul>
+                       </div>
+                   </div>
+                   <div class="swiper-scrollbar">
+                   </div>
+               </div>
+
+               <div class="swiper-container swiperVertical mui-control-content mui-active" id='lookPic'>
+                   <div class="swiper-wrapper">
+                       <div class="swiper-slide">
+                           <div class="photoBox">
+                               <div class="photo">
+                                   <div class="title">
+                                       <span class="text-primary" data-i18n="personal-public">公开照</span>
+                                   </div>
+                                   <div class="mui-row picBox" id="photoPub">
+                                       <div class="mui-col-sm-4 mui-col-xs-4 pho">
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="photo lockPho">
+                                   <div class="title">
+                                       <span class="text-primary text-left" data-i18n="personal-private">私密照</span>
+                                   </div>
+                                   <div class="mui-row picBox" id="photoPri">
+                                       <div class="mui-col-sm-4 mui-col-xs-4 pho">
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="swiper-scrollbar">
+                   </div>
+               </div>
+           </div>
+        </div>
+    </div>
+    <div class="biglayer"></div>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.zoom.js"></script>
+<script src="js/mui.previewimage.js"></script>
+<script src="js/swiper.min.js"></script>
+<script src="js/i18n_data.js"></script>
+<script type="text/javascript">
+    mui.init();
+    if(lang == 'zh'){
+        var tips = '提示';
+        var shield = '屏蔽此人';
+        var report = '举报';
+        var request = '是否请求访问私照';
+        var cancel = '取消';
+        var confirm = '确定';
+        var requestBtn = '请求访问私照';
+        var level1 = '白领级别';
+        var level2 = '金领级别';
+        var level3 = '高管级别';
+        var level4 = '董事长级别';
+        var level5 = '上市公司主席';
+        var nopic = '该会员没有照片~';
+        var succeed = '请求已发送';
+        var blacksuc = '屏蔽成功！';
+    }else if(lang == 'en'){
+        var tips = 'Tips';
+        var shield = 'Blacklist';
+        var report = 'Report';
+        var request = 'Do you want access to private photos?';
+        var cancel = 'Cancel';
+        var confirm = 'Confirm';
+        var requestBtn = 'Request to view private photos';
+        var level1 = 'White Collar';
+        var level2 = 'Gold Collar';
+        var level3 = 'Senior Executive';
+        var level4 = 'Chairman';
+        var level5 = 'Chairman of listed company';
+        var nopic = 'The member has no picture~';
+        var succeed = 'Request Sent';
+        var blacksuc = 'Successful';
+    }else{
+        var tips = '提示';
+        var shield = '拉黑此人';
+        var report = '舉報';
+        var request = '是否請求訪問私照';
+        var cancel = '取消';
+        var confirm = '確定';
+        var requestBtn = '請求訪問私照';
+        var level1 = '白領級別';
+        var level2 = '金領級別';
+        var level3 = '高管級別';
+        var level4 = '董事長級別';
+        var level5 = '上市公司主席';
+        var nopic = '該會員沒有照片~';
+        var succeed = '請求已發送';
+        var blacksuc = '拉黑成功！';
+    }
+    var userId = getQueryString('personId');
+    var userName
+    var myId =  getQueryString('myId');
+    var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    var isPriPho = true;
+    var switchFlag = localStorage.getItem('switchFlag');
+    // //点击滑动
+    var slideFlag = true;
+    // //当前屏幕高度
+    var slideHeight = document.body.scrollHeight;
+    var slideTop = document.body.scrollTop;
+
+    //得到他人信息
+    getInterface().post_action("getInfo",JSON.stringify({userId: userId}),"get");
+
+    getInterface().hud_loading();
+
+    // 获取app版本
+    var edition = localStorage.getItem('edition');
+    //存储开关
+    getInterface().action_info();
+    function return_info(data,data2){
+        if(data == 'yes'){
+            localStorage.setItem('switchFlag',data);
+            localStorage.setItem('switchFlag1',data);
+        }
+    }
+    // 返回
+    function leftBtnClick(){
+        getInterface().leftBtnClick();
+    }
+    function rightBtnClick(){
+        getInterface().bottom_alert(tips,shield,report)
+    }
+    function return_sureMsg(data){
+        data = decodeURI(data);
+        // getInterface().msg_alert(data.length)
+        if(data==shield){
+            getInterface().post_action("userHate",JSON.stringify({id: userId}),"post");
+
+        }else if(data==report){
+            // 跳转到举报
+            getInterface().html_jump_href(service+'/report.html?userId='+userId, 'no');
+        }
+    }
+
+    mui.previewImage();
+    var shield1 = localStorage.getItem('shield1');
+    var mobileH = document.documentElement.clientHeight;
+
+    $('#center-fiexd').css('top',mobileH-44);
+    $('.swiperVertical').css('height',mobileH);
+
+
+    var swiperV = new Swiper('.swiper-container-v',{
+        // onlyExternal : true,
+        direction : 'vertical',
+        autoHeight: true,
+        onSlideChangeEnd: function(swiper){
+          //活动让按钮显示在顶部
+          if(swiper.activeIndex==0){
+            $('#center-fiexd').css('top',mobileH-44);
+            $('#center-fiexd .mui-active').removeClass('mui-active');//向上滑动隐藏active类
+            slideFlag = true;
+          }else if(swiper.activeIndex==1){
+            var sliedeH = $('.swiper-wrapper').height();
+            slideFlag = false;
+            $('#center-fiexd').css('top',sliedeH);
+            //向下滑动显示资料
+            if(!$('#center-fiexd .mui-control-item').hasClass('mui-active')){
+                $('#center-fiexd .mui-control-item').eq(0).addClass('mui-active');
+            }
+          }
+        }
+    })
+
+    //单击切屏
+    $('.mui-segmented-control').on('tap','.mui-control-item',function(){
+        console.log($(this).hasClass('mui-active'))
+        if(slideFlag){
+            $('.wrappClick').css({'transform':'translate3d(0px, -'+slideHeight+'px, 0px)','transition-duration': '300ms'});
+            var sliedeH = $('.swiper-wrapper').height();
+            $('#center-fiexd').css('top',sliedeH);
+            slideFlag = false;
+            swiperV.activeIndex = 1;
+        }else{
+            if($(this).hasClass('mui-active')){
+                $('.wrappClick').css({'transform':'translate3d(0px, 0px, 0px)','transition-duration': '300ms'});
+                $('#center-fiexd').css('top',mobileH-44);
+                slideFlag = true;
+                swiperV.activeIndex = 0;
+                $(this).removeClass('mui-active');
+            }
+        }
+    })
+
+    /*内容滚动*/
+    var iSwiper = new Swiper('.swiperVertical',{
+        scrollbar: '.swiper-scrollbar',
+        direction: 'vertical',
+        slidesPerView: 'auto',
+        mousewheelControl: true,
+        freeMode: true,
+        roundLengths : true,
+        observer:true,//修改swiper自己或子元素时，自动初始化swiper
+        observeParents:true,//修改swiper的父元素时，自动初始化swiper
+    });
+
+
+    // 请求查看私照askPic
+    $('#loopPic').on('tap','.askPic span',function(){
+        var myInfo = JSON.parse(localStorage.getItem('myInfo'));
+        var isVip = myInfo.result.vip.role;
+        getInterface().tipMsg_alert(request,cancel,confirm);
+
+    })
+    //请求查看私照
+    function return_sureTipMsg(data){
+        getInterface().post_action("requirePhotoPri",JSON.stringify({to: userId}),"post")
+    }
+
+    //设置关注
+    $('.collect').on('tap','#star',function(){
+        var sImg = $(this).find('img').attr('src');
+        if( sImg.indexOf('pre')==-1 ){
+            console.log("1")
+            getInterface().post_action('uncare',JSON.stringify({id: userId}),'post')
+            $(this).find('img').attr('src','img/Ic_heart-pre.png');
+        }else{
+            console.log("2")
+            getInterface().post_action('userCare',JSON.stringify({id: userId}),'post')
+            $(this).find('img').attr('src','img/Ic_heart.png');
+        }
+    })
+
+    function return_action(data,data2){
+        if(data2=='getInfo'){
+            if(data.ret == 0){
+                mui.toast(data.err);
+                $('.mui-preview-image').css({'display':'block','background-color':'#ece9e9'})
+                setTimeout(function(){
+                    getInterface().leftBtnClick();
+                },1000)
+            }else{
+                var res = data.result;
+                //女-默认轮播图片
+                if(res.photoPub.length==0 && res.photoPri.length==0 && res.sex==2 ){
+                    $('#defaultPic img').attr('src','img/nv01.png');
+                }else{
+                    $('#defaultPic img').attr('src','img/nan01.png');
+                }
+                // 轮播图
+                if(res.photoPub.length>0 || res.photoPri.length>0){
+                    for(var i in res.photoPub) {
+                        if(res.photoPub[i].enable==true){
+                            var imgHtml = '<div class="swiper-slide"><img src="' + res.photoPub[i].addr+'?x-oss-process=image/resize,w_375' + '"></div>'
+                            $('#loopPic').append(imgHtml)
+                        }
+                    }
+                    //请求查看私照\轮播是否加载默认的
+                    if(isPriPho){
+                        var imgurl = res.sex=='1'?'img/maleDefault.png':'img/femaleDefault.png';
+                        for(var i in res.photoPri) {
+                            if(res.photoPri[i].enable==true && res.photoPri[i].category=='common'){
+
+                                if(lang == 'en'){
+                                    $('#loopPic').append('<div class="swiper-slide askPic"><img src="'+imgurl+'"><span style="padding:0 0 20px;margin-left: -125px;">'+requestBtn+'</span></div>')
+                                }else{
+                                    $('#loopPic').append('<div class="swiper-slide askPic"><img src="'+imgurl+'"><span>'+requestBtn+'</span></div>')
+                                }
+                            }
+                        }
+                        $('#askPri').on('tap', function(event) {
+                            var myInfo = JSON.parse(localStorage.getItem('myInfo'));
+                            var isVip = myInfo.result.vip.role;
+                            getInterface().tipMsg_alert(request,cancel,confirm);
+                        });
+                    }else{
+                        for(var i in res.photoPri) {
+                            if(res.photoPri[i].enable==true && res.photoPri[i].category=='common'){
+                                var imgHtml = '<div class="swiper-slide"><img src="' + res.photoPri[i].addr +'?x-oss-process=image/resize,w_375'+ '"></div>'
+                                $('#loopPic').append(imgHtml)
+                            }
+                        }
+                        $('#askPri').addClass('mui-btn mui-disabled');
+                    }
+                    if($('#loopPic').children().length>1){
+                        $('#defaultPic').remove();
+                    }
+                }
+                vipLev = data.result.vipLevel;
+                $('.vip-logo').show();
+                if(data.result.sex==1){
+                    if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+                        $('.vip-logo').attr("src","./img/pic_GoldMember.png");
+                    }else if(data.result.vipLevel == "vip3"){
+                        $('.vip-logo').attr("src","./img/pic_DiamondMember.png");
+                    }else if(data.result.vipLevel == "vip4"){
+                        $('.vip-logo').attr("src","./img/pic_CrownMember.png");
+                    }
+                }else{
+                    if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+                        $('.vip-logo').attr("src","./img/women_pic_MonarchMember.png");
+                    }else if(data.result.vipLevel == "vip3"){
+                        $('.vip-logo').attr("src","./img/women_pic_PrincessMember.png");
+                    }else if(data.result.vipLevel == "vip4"){
+                        $('.vip-logo').attr("src","./img/women_pic_QueenMember.png");
+                    }
+                }
+                if(shield1=='yes'){
+                    $('.vip-logo').hide();
+                }
+                if(data.result.iNeed){
+                    $('#iNeed').text(data.result.iNeed);
+                }
+                if(data.result.hopeful){
+                    $('#hopeful').text(data.result.hopeful);
+                }
+                //初始化是否关注
+                if( res.traceid.cared && res.traceid.cared.indexOf(myId)!=-1){
+                    $('#star').find('img').attr('src','img/Ic_heart.png');
+                }else{
+                    $('#star').find('img').attr('src','img/Ic_heart-pre.png');
+                }
+                if(res.mock){
+                    $('#nickname').text(res.nickname);
+                    $('#nickname1').text(res.nickname);
+                    userName = res.nickname;
+                }else{
+                    if(res.nickname && res.auditContent.nickname=='1'){//改名且审核通过
+                        $('#nickname').text(res.nickname);
+                        $('#nickname1').text(res.nickname);
+                        userName = res.nickname;
+                    }else if(res.auditContent && res.auditContent.nickname!='1' && res.oldName){//改名没通过
+                        $('#nickname').text(res.oldName);
+                        $('#nickname1').text(res.oldName);
+                        userName = res.oldName;
+                    }else{
+                        if(res.sex==1){
+                            $('#nickname').text(maleNicknameLang());
+                            $('#nickname1').text(maleNicknameLang());
+                            userName = maleNicknameLang();
+                        }else{
+                            $('#nickname').text(femaleNicknameLang());
+                            $('#nickname1').text(femaleNicknameLang());
+                            userName = femaleNicknameLang();
+                        }
+                    }
+                }
+                if(shield1=='no'){
+                    if(res.vip.role){
+                        getInterface().initDataWithArray("#FFFFFF","back",userName,"","","#AC9455","Icon_btnright","");
+                    }else{
+                        getInterface().initDataWithArray("#FFFFFF","back",userName,"","","#333333","Icon_btnright","");
+                    }
+                }else{
+                    getInterface().initDataWithArray("#FFFFFF","back",userName,"","","#333333","Icon_btnright","");
+                }
+
+                if(res.city){
+                    if(!res.age && !res.lovePrice){
+                        $('#city').text(res.city);
+                    }else{
+                        $('#city').html(res.city+'/');
+                    }
+                }else if(res.addr){
+                    if(!res.age && !res.lovePrice){
+                        $('#city').text(res.addr);
+                    }else{
+                        $('#city').text(res.addr+'/');
+                    }
+                }else{
+                    $('#city').text('')
+                }
+                if(res.age){
+                    if(res.lovePrice){
+                       $('#age').html(res.age+ageLang()+'/');
+                    }else{
+                        $('#age').html(res.age+ageLang());
+                    }
+                }
+                if(res.lovePrice){
+                    $('#lovePrice').html(res.lovePrice);
+                }
+                $('#age1').text(res.age||'');
+                $('#addr').text(res.addr||'')
+                $('#selfInfo').text(res.selfInfo||'');
+                $('#lovePrice1').text(res.lovePrice||'');
+                $('#loveDate1').text(res.loveDate||'');
+                //兼容年收入
+                switch(res.income){
+                    case '50万':
+                        $('#income').text(level1);
+                        break;
+                    case '100万':
+                        $('#income').text(level2);
+                        break;
+                    case '200万':
+                        $('#income').text(level3);
+                        break;
+                    case '500万':
+                        $('#income').text(level4);
+                        break;
+                    case '1000万':
+                        $('#income').text(level5);
+                        break;
+                    case '5000万':
+                        $('#income').text(level5);
+                        break;
+                    case '1亿以上':
+                        $('#income').text(level5);
+                        break;
+                    default:
+                        $('#income').text(res.income);
+                }
+                $('#body').text(res.body||'');
+                $('#height').text(res.height||'');
+                $('#drink').text(res.drink||'');
+                $('#smoking').text(res.smoking||'');
+                $('#education').text(res.education||'')
+                if(res.work){
+                    $('#work').text(res.work);
+                    $('#work').addClass('workLabel');
+                    if($('#work').height()>80){
+                        $('#work').parent('a').css('height',$('#work').height());
+                    }
+                }
+                if(res.character){
+                    $('#character').text(res.character);
+                    $('#character').addClass('characterLabel');
+                    if($('#character').height()>80){
+                        $('#character').parent('.Mtext').css('height',$('#character').height());
+                    }
+                }
+                if(res.selfInfo){
+                    $('#selfInfo1').text(res.selfInfo);
+                    $('#selfInfo1').addClass('selfInfo1Label');
+                    if($('#selfInfo1').height()>80){
+                        $('#selfInfo1').parent('.Mtext').css('height',$('#selfInfo1').height())
+                    }
+                }
+                // TA的照片
+                if(res.sex == 1){
+                    // 渲染公开照
+                    loadPic('#photoPub',res.photoPub,'',6,1,'false');
+                    if(res.traceid.photoPried.length==0){
+                        isPriPho = true;
+                    }else{
+                        for(i in res.traceid.photoPried){
+                            if( res.traceid.photoPried[i].indexOf(myId) != -1){
+                                isPriPho = false;
+                            }
+                        }
+                    }
+                    // 渲染私密照
+                    loadPic('#photoPri',res.photoPri,'common',6,2,isPriPho,1);
+                }else{
+                    // 渲染公开照
+                    loadPic('#photoPub',res.photoPub,'',6,1);
+                    if(res.traceid.photoPried.length==0){
+                        isPriPho = true;
+                    }else{
+                        for(i in res.traceid.photoPried){
+                            if( res.traceid.photoPried[i].indexOf(myId) != -1){
+                                isPriPho = false;
+                            }
+                        }
+                    }
+                    // 渲染私密照
+                    loadPic('#photoPri',res.photoPri,'common',6,2,isPriPho,2);
+                }
+                // 女生隐藏年收入
+                if(res.sex==2){
+                    $('#assets').parents('li').hide();
+                    $('#income').parents('li').hide();
+                }
+                // 判断是否有照片
+                if($('.photoBox .pho img').length == 0){
+                    $('.photoBox').append('<p class="phoAlert">'+nopic+'</p>');
+                }else{
+                    $('.phoAlert').remove();
+                }
+                if($('.lockPho .pho img').length == 0){
+                    $('span#askPri').hide();
+                }else{
+                    $('span#askPri').show();
+                }
+                var mobileW = screen.width;
+                var personInfoW = $('.personInfo').width();
+                var personInfoH = $('.personInfo').height();
+                // mui.toast($('#test-slide'))
+                $('.personInfo').css({'left':(mobileW-personInfoW)/2});
+                $(".personInfo").animate({bottom:(mobileH-mobileW-personInfoH+44)/2});
+            }
+            getInterface().hud_hide();
+            $('.biglayer').hide();
+        }else if(data2=='requirePhotoPri'){
+            // alert(JSON.stringify(data))
+            if(data.ret==1){
+                mui.toast(succeed)
+            }else{
+                // 2 该用户已经允许您查看私照; 3 不能平凡请求; 4 没有权限，请升级
+                mui.toast(data.msg)
+            }
+        }else if(data2=='userHate'){
+            if(data.ret==1){
+                mui.toast(blacksuc);
+                // 刷新原生的首页
+                getInterface().reload_main('reload')
+                localStorage.setItem('perstate',1)
+                setTimeout(function(){
+                    getInterface().leftBtnClick();
+                },1000)
+            }
+        }else if(data2=='userCare'){
+            localStorage.setItem('carestate',1);
+        }else{//取消关注
+            localStorage.setItem('carestate',1);
+        }
+    }
+
+    function loadPic(sel,res,type,num,group,isPri,sex){
+        var temp = $(sel).find('.pho');
+        temp.prepend('<img src="" data-preview-src="" data-preview-group="1">');
+        var photos = res;
+        $(sel).html('');
+        if(isPri){
+            for( var i in photos ){
+                // 普通私照
+                if(type && type=='common'){
+                    if(photos[i].enable==true && photos[i].category == type){
+                        var t = temp.clone();
+                        if($(sel).find('.pho').length<num){
+                            t.find('img').attr('src','img/maleDefault.png');//+'?x-oss-process=image/resize,h_300'
+                            t.find('img').attr('data-preview-group',group)
+                            $(sel).append(t);
+                        }
+                    }
+                }else{ // 公开照
+                    var t = temp.clone();
+                    if(photos[i].enable==true && $(sel).find('.pho').length<num){
+                        t.find('img').attr('src',photos[i].addr);
+                        t.find('img').attr('data-preview-group',group)
+                        $(sel).append(t);
+                    }
+                }
+            }
+            if(sex==2){
+                $(sel).find('img').attr('src','img/femaleDefault.png');
+            }
+        }else{
+            for( var i in photos ){
+                // 普通私照
+                if(type && type=='common'){
+                    if(photos[i].enable==true && photos[i].category == type){
+                        var t = temp.clone();
+                        if($(sel).find('.pho').length<num){
+                            t.find('img').attr('src',photos[i].addr);//+'?x-oss-process=image/resize,h_300'
+                            t.find('img').attr('data-preview-group',group)
+                            $(sel).append(t);
+                        }
+                    }
+                }else{ // 公开照
+                    var t = temp.clone();
+                    if(photos[i].enable==true && $(sel).find('.pho').length<num){
+                        t.find('img').attr('src',photos[i].addr);
+                        t.find('img').attr('data-preview-group',group)
+                        $(sel).append(t);
+                    }
+                }
+            }
+        }
+        if($(sel).find('.pho img').length>0){
+            $(sel).parent('.photo').show();
+        }else{
+            $(sel).parent('.photo').hide();
+        }
+    }
+    function getQueryString(name) { //name为传入参数
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    // ios原生方法，跳转到聊天页面
+    $('#imChat').on('tap',function(){
+        getInterface().html_jump_href(service+'/imChat.html?personId='+userId+'&name='+userName+'&vipLev='+vipLev+'&backtype=p', 'yes');
+    })
+    /*轮播图*/
+    var mySwiper = new Swiper('.swiper-container-h',{
+        direction:"horizontal",//横向滑动
+        pagination: '.pagination',
+        // loop:true,// 形成环路（即：可以从最后一张图跳转到第一张图
+        // autoplay: 5000,
+        observer:true,//修改swiper自己或子元素时，自动初始化swiper
+        observeParents:true,//修改swiper的父元素时，自动初始化swiper
+        autoplayDisableOnInteraction : false,
+    });
+
+    $('#photoPri').on("tap",'img',function(){
+      if($(this).attr('src').indexOf('img/femaleDefault.png')!=-1||$(this).attr('src').indexOf('img/maleDefault.png')!=-1){
+        setTimeout(function(){
+            if(lang == 'en'){
+              $('body').append('<span class="priPic" style="padding:0 0 20px;margin-left: -125px;">'+requestBtn+'</span>');
+            }else{
+              $('body').append('<span class="priPic">'+requestBtn+'</span>');
+            }
+          $('body .priPic').animate({'opacity':1})
+        },300)
+      }
+    });
+
+    $('.mui-slider').on('tap',function(){
+      $('body .priPic').animate({'opacity':0})
+    })
+
+    $('body').on('tap','.priPic',function(event){
+      var myInfo = JSON.parse(localStorage.getItem('myInfo'));
+      var isVip = myInfo.result.vip.role;
+      getInterface().tipMsg_alert(request,cancel,confirm);
+    })
+    // $('.priPic').on('tap', function(event) {
+    //   var myInfo = JSON.parse(localStorage.getItem('myInfo'));
+    //   var isVip = myInfo.result.vip.role;
+    //   getInterface().tipMsg_alert('是否请求访问私照','取消','确定');
+    // });
+
+
+
+
+
+
+
+
+
+
+
+
+    // var data ={
+    //     "ret": 1,
+    //     "err": "ok",
+    //     "msgNum": 0,
+    //     "noticeNum": 0,
+    //     "endTime": "于2017-10-19到期",
+    //     "shield": "no",
+    //     "vipText": "黄金会员",
+    //     "result": {
+    //         "_id": "59c0d69931c70e305eb23b5e",
+    //         "traceid": {
+    //             "_id": "59c0d69931c70e305eb23b5f",
+    //             "userid": "59c0d69931c70e305eb23b5e",
+    //             "sex": 2,
+    //             "__v": 11,
+    //             "meta": {
+    //                 "updatedAt": "2017-09-20T06:51:38.364Z",
+    //                 "createdAt": "2017-09-19T08:34:33.247Z"
+    //             },
+    //             "report": [],
+    //             "soundChat": true,
+    //             "soundCare": true,
+    //             "careSet": true,
+    //             "browseSet": true,
+    //             "listSet": true,
+    //             "photoPried": [],
+    //             "photoPri": [],
+    //             "hated": [],
+    //             "hate": [],
+    //             "browsed": [
+    //                 "59c07fa587de011d57cc2e9f",
+    //                 "59c08c0287de011d57cc2f06",
+    //                 "59c207721ddee8575e384f20"
+    //             ],
+    //             "browse": [
+    //                 "59c07fb387de011d57cc2ea2",
+    //                 "59c0cb77ad59fb2ed3b871ee",
+    //                 "59c07fa587de011d57cc2e9f",
+    //                 "59c0045787de011d57cc2e89",
+    //                 "598a7a02fe5ed13af4aaafa6",
+    //                 "597eac4cbdb23c6817671ed1",
+    //                 "59814a09a89d2814d50c0233",
+    //                 "59bf929e62028c155dd64f97"
+    //             ],
+    //             "careNum": 0,
+    //             "cared": [],
+    //             "care": [],
+    //             "loginAt": "2017-09-20T06:51:38.363Z"
+    //         },
+    //         "platform": "ios",
+    //         "registration_id": "170976fa8ab4c9f5455",
+    //         "mobile": "15074436852",
+    //         "sex": 2,
+    //         "lat": "23.136231",
+    //         "lng": "113.295628",
+    //         "password": "$2a$10$5Atp4mSSrpkt8RuqNixlCOmag9mwYMKMzL087RE/NEuhYLEZ8xcu2",
+    //         "from": "boss",
+    //         "__v": 2,
+    //         "addr": "上海-上海",
+    //         "age": 25,
+    //         "avatar": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/headImage/150744368521505810094.jpg",
+    //         "city": "上海",
+    //         "nickname": "卡莉",
+    //         "province": "上海",
+    //         "meta": {
+    //             "updatedAt": "2017-09-20T06:51:38.356Z",
+    //             "createdAt": "2017-09-19T08:34:33.245Z"
+    //         },
+    //         "photoPri": [
+    //             {
+    //                 "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-private/156924059721505703826.jpg",
+    //                 "category": "common",
+    //                 "enable": true
+    //             },
+    //             {
+    //                 "addr": "http://test-love-chat.oss-cn-shenzhen.aliyuncs.com/man-private/156924059721505703948.jpg",
+    //                 "category": "common",
+    //                 "enable": true
+    //             }
+    //         ],
+    //         "photoPub": [],
+    //         "vipLevel": "vip2",
+    //         "rmbTotal": 233,
+    //         "vip": {
+    //             "category": "alipay",
+    //             "to": "2017-10-19T08:54:15.787Z",
+    //             "from": "2017-09-19T08:54:15.787Z",
+    //             "role": true
+    //         },
+    //         "auditStatus": "ing",
+    //         "auditContent": {
+    //             "avatar": "2",
+    //             "nickname": "2"
+    //         },
+    //         "loc": {
+    //             "type": "Point",
+    //             "coordinates": [
+    //                 113.295628,
+    //                 23.136231
+    //             ]
+    //         },
+    //         "locAuthorize": true,
+    //         "loginAt": "2017-09-19T08:34:33.245Z",
+    //         "completion": 40,
+    //         "tour": [],
+    //         "sports": [],
+    //         "online": "no",
+    //         "isActive": "yes",
+    //         "number": 1,
+    //         "mock": false
+    //     }
+    // }
+    // function readGo(){
+    //   var res = data.result;
+    //   //女-默认轮播图片
+    //   if(res.photoPub.length==0 && res.photoPri.length==0 && res.sex==2 ){
+    //       $('#defaultPic img').attr('src','img/nv01.png');
+    //   }else{
+    //       $('#defaultPic img').attr('src','img/nan01.png');
+    //   }
+    //   // 轮播图
+    //   if(res.photoPub.length>0 || res.photoPri.length>0){
+    //       for(var i in res.photoPub) {
+    //           if(res.photoPub[i].enable==true){
+    //               var imgHtml = '<div class="swiper-slide"><img src="' + res.photoPub[i].addr+'?x-oss-process=image/resize,w_375' + '"></div>'
+    //               $('#loopPic').append(imgHtml)
+    //           }
+    //       }
+    //       //请求查看私照\轮播是否加载默认的
+    //       if(isPriPho){
+    //           var imgurl = res.sex=='1'?'img/maleDefault.png':'img/femaleDefault.png';
+    //           for(var i in res.photoPri) {
+    //               if(res.photoPri[i].enable==true && res.photoPri[i].category=='common'){
+
+    //                   if(lang == 'en'){
+    //                       $('#loopPic').append('<div class="swiper-slide askPic"><img src="'+imgurl+'"><span style="padding:0 0 20px;margin-left: -125px;">'+requestBtn+'</span></div>')
+    //                   }else{
+    //                       $('#loopPic').append('<div class="swiper-slide askPic"><img src="'+imgurl+'"><span>'+requestBtn+'</span></div>')
+    //                   }
+    //               }
+    //           }
+    //           $('#askPri').on('tap', function(event) {
+    //               var myInfo = JSON.parse(localStorage.getItem('myInfo'));
+    //               var isVip = myInfo.result.vip.role;
+    //               getInterface().tipMsg_alert(request,cancel,confirm);
+    //           });
+    //       }else{
+    //           for(var i in res.photoPri) {
+    //               if(res.photoPri[i].enable==true && res.photoPri[i].category=='common'){
+    //                   var imgHtml = '<div class="swiper-slide"><img src="' + res.photoPri[i].addr +'?x-oss-process=image/resize,w_375'+ '"></div>'
+    //                   $('#loopPic').append(imgHtml)
+    //               }
+    //           }
+    //           $('#askPri').addClass('mui-btn mui-disabled');
+    //       }
+    //       if($('#loopPic').children().length>1){
+    //           $('#defaultPic').remove();
+    //       }
+    //   }
+    //   vipLev = data.result.vipLevel;
+    //   $('.vip-logo').show();
+    //   if(data.result.sex==1){
+    //       if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+    //           $('.vip-logo').attr("src","./img/pic_GoldMember.png");
+    //       }else if(data.result.vipLevel == "vip3"){
+    //           $('.vip-logo').attr("src","./img/pic_DiamondMember.png");
+    //       }else if(data.result.vipLevel == "vip4"){
+    //           $('.vip-logo').attr("src","./img/pic_CrownMember.png");
+    //       }
+    //   }else{
+    //       if(data.result.vipLevel == "vip1" || data.result.vipLevel == "vip2"){
+    //           $('.vip-logo').attr("src","./img/women_pic_MonarchMember.png");
+    //       }else if(data.result.vipLevel == "vip3"){
+    //           $('.vip-logo').attr("src","./img/women_pic_PrincessMember.png");
+    //       }else if(data.result.vipLevel == "vip4"){
+    //           $('.vip-logo').attr("src","./img/women_pic_QueenMember.png");
+    //       }
+    //   }
+    //   if(shield1=='yes'){
+    //       $('.vip-logo').hide();
+    //   }
+    //   if(data.result.iNeed){
+    //       $('#iNeed').text(data.result.iNeed);
+    //   }
+    //   if(data.result.hopeful){
+    //       $('#hopeful').text(data.result.hopeful);
+    //   }
+    //   //初始化是否关注
+    //   if( res.traceid.cared && res.traceid.cared.indexOf(myId)!=-1){
+    //       $('#star').find('img').attr('src','img/Ic_heart.png');
+    //   }else{
+    //       $('#star').find('img').attr('src','img/Ic_heart-pre.png');
+    //   }
+    //   if(res.mock){
+    //       $('#nickname').text(res.nickname);
+    //       $('#nickname1').text(res.nickname);
+    //       userName = res.nickname;
+    //   }else{
+    //       if(res.nickname && res.auditContent.nickname=='1'){//改名且审核通过
+    //           $('#nickname').text(res.nickname);
+    //           $('#nickname1').text(res.nickname);
+    //           userName = res.nickname;
+    //       }else if(res.auditContent && res.auditContent.nickname!='1' && res.oldName){//改名没通过
+    //           $('#nickname').text(res.oldName);
+    //           $('#nickname1').text(res.oldName);
+    //           userName = res.oldName;
+    //       }else{
+    //           if(res.sex==1){
+    //               $('#nickname').text(maleNicknameLang());
+    //               $('#nickname1').text(maleNicknameLang());
+    //               userName = maleNicknameLang();
+    //           }else{
+    //               $('#nickname').text(femaleNicknameLang());
+    //               $('#nickname1').text(femaleNicknameLang());
+    //               userName = femaleNicknameLang();
+    //           }
+    //       }
+    //   }
+    //   if(shield1=='no'){
+    //       if(res.vip.role){
+    //           getInterface().initDataWithArray("#FFFFFF","back",userName,"","","#AC9455","Icon_btnright","");
+    //       }else{
+    //           getInterface().initDataWithArray("#FFFFFF","back",userName,"","","#333333","Icon_btnright","");
+    //       }
+    //   }else{
+    //       getInterface().initDataWithArray("#FFFFFF","back",userName,"","","#333333","Icon_btnright","");
+    //   }
+
+    //   if(res.city){
+    //       if(!res.age && !res.lovePrice){
+    //           $('#city').text(res.city);
+    //       }else{
+    //           $('#city').html(res.city+'/');
+    //       }
+    //   }else if(res.addr){
+    //       if(!res.age && !res.lovePrice){
+    //           $('#city').text(res.addr);
+    //       }else{
+    //           $('#city').text(res.addr+'/');
+    //       }
+    //   }else{
+    //       $('#city').text('')
+    //   }
+    //   if(res.age){
+    //       if(res.lovePrice){
+    //          $('#age').html(res.age+ageLang()+'/');
+    //       }else{
+    //           $('#age').html(res.age+ageLang());
+    //       }
+    //   }
+    //   if(res.lovePrice){
+    //       $('#lovePrice').html(res.lovePrice);
+    //   }
+    //   $('#age1').text(res.age||'');
+    //   $('#addr').text(res.addr||'')
+    //   $('#selfInfo').text(res.selfInfo||'');
+    //   $('#lovePrice1').text(res.lovePrice||'');
+    //   $('#loveDate1').text(res.loveDate||'');
+    //   //兼容年收入
+    //   switch(res.income){
+    //       case '50万':
+    //           $('#income').text(level1);
+    //           break;
+    //       case '100万':
+    //           $('#income').text(level2);
+    //           break;
+    //       case '200万':
+    //           $('#income').text(level3);
+    //           break;
+    //       case '500万':
+    //           $('#income').text(level4);
+    //           break;
+    //       case '1000万':
+    //           $('#income').text(level5);
+    //           break;
+    //       case '5000万':
+    //           $('#income').text(level5);
+    //           break;
+    //       case '1亿以上':
+    //           $('#income').text(level5);
+    //           break;
+    //       default:
+    //           $('#income').text(res.income);
+    //   }
+    //   $('#body').text(res.body||'');
+    //   $('#height').text(res.height||'');
+    //   $('#drink').text(res.drink||'');
+    //   $('#smoking').text(res.smoking||'');
+    //   $('#education').text(res.education||'')
+    //   if(res.work){
+    //       $('#work').text(res.work);
+    //       $('#work').addClass('workLabel');
+    //       if($('#work').height()>80){
+    //           $('#work').parent('a').css('height',$('#work').height());
+    //       }
+    //   }
+    //   if(res.character){
+    //       $('#character').text(res.character);
+    //       $('#character').addClass('characterLabel');
+    //       if($('#character').height()>80){
+    //           $('#character').parent('.Mtext').css('height',$('#character').height());
+    //       }
+    //   }
+    //   if(res.selfInfo){
+    //       $('#selfInfo1').text(res.selfInfo);
+    //       $('#selfInfo1').addClass('selfInfo1Label');
+    //       if($('#selfInfo1').height()>80){
+    //           $('#selfInfo1').parent('.Mtext').css('height',$('#selfInfo1').height())
+    //       }
+    //   }
+    //   // TA的照片
+    //   if(res.sex == 1){
+    //       // 渲染公开照
+    //       loadPic('#photoPub',res.photoPub,'',6,1,'false');
+    //       if(res.traceid.photoPried.length==0){
+    //           isPriPho = true;
+    //       }else{
+    //           for(i in res.traceid.photoPried){
+    //               if( res.traceid.photoPried[i].indexOf(myId) != -1){
+    //                   isPriPho = false;
+    //               }
+    //           }
+    //       }
+    //       // 渲染私密照
+    //       loadPic('#photoPri',res.photoPri,'common',6,2,isPriPho,1);
+    //   }else{
+    //       // 渲染公开照
+    //       loadPic('#photoPub',res.photoPub,'',6,1);
+    //       if(res.traceid.photoPried.length==0){
+    //           isPriPho = true;
+    //       }else{
+    //           for(i in res.traceid.photoPried){
+    //               if( res.traceid.photoPried[i].indexOf(myId) != -1){
+    //                   isPriPho = false;
+    //               }
+    //           }
+    //       }
+    //       // 渲染私密照
+    //       loadPic('#photoPri',res.photoPri,'common',6,2,isPriPho,2);
+    //   }
+    //   // 女生隐藏年收入
+    //   if(res.sex==2){
+    //       $('#assets').parents('li').hide();
+    //       $('#income').parents('li').hide();
+    //   }
+    //   // 判断是否有照片
+    //   if($('.photoBox .pho img').length == 0){
+    //       $('.photoBox').append('<p class="phoAlert">'+nopic+'</p>');
+    //   }else{
+    //       $('.phoAlert').remove();
+    //   }
+    //   if($('.lockPho .pho img').length == 0){
+    //       $('span#askPri').hide();
+    //   }else{
+    //       $('span#askPri').show();
+    //   }
+    //   var mobileW = screen.width;
+    //   var personInfoW = $('.personInfo').width();
+    //   var personInfoH = $('.personInfo').height();
+    //   // mui.toast($('#test-slide'))
+    //   $('.personInfo').css({'left':(mobileW-personInfoW)/2});
+    //   $(".personInfo").animate({bottom:(mobileH-mobileW-personInfoH+44)/2});
+    // }
+    // readGo();
+</script>
+</body>
+</html>
+  
